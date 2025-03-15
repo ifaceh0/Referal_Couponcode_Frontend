@@ -171,7 +171,7 @@ export default function Navbar() {
                       Shopkeeper
                     </Link>
                     <Link 
-                      to="/signup/user" 
+                      to="/signup/user"
                       className="block px-4 py-2 text-gray-700 hover:bg-gray-200"
                       onClick={() => setShowDropdown(false)}
                     >
@@ -221,10 +221,10 @@ export default function Navbar() {
             </button>
             {showDropdown && (
               <div className="mt-1 bg-white shadow-lg rounded-lg">
-                <Link to="/signup?role=shopkeeper" className="block px-4 py-2 text-gray-700 hover:bg-gray-200" onClick={toggleMenu}>
+                <Link to="/signup/shopkeeper" className="block px-4 py-2 text-gray-700 hover:bg-gray-200" onClick={toggleMenu}>
                   Shopkeeper
                 </Link>
-                <Link to="/usersignup?role=user" className="block px-4 py-2 text-gray-700 hover:bg-gray-200" onClick={toggleMenu}>
+                <Link to="/signup/user" className="block px-4 py-2 text-gray-700 hover:bg-gray-200" onClick={toggleMenu}>
                   User
                 </Link>
               </div>

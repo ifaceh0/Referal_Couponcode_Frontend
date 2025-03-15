@@ -29,12 +29,11 @@ import ClientLayout from "./layout/ClientLayout";
 import UserLayout from "./layout/UserLayout";
 import GenerateCodes from "./pages/shopkeeper/GenerateCodes";
 import ShopkeeperSignIn from "./pages/shopkeeper/signin/ShopkeeperSignIn";
-import ShopkeeperSignUp from "./pages/shopkeeper/signin/ShopkeeperSignUp";
-
+// import ShopkeeperSignUp from "./pages/shopkeeper/signin/ShopkeeperSignUp";
 import ShopkeeperDashboardLayout from "./layout/ShopkeeperDashboardLayout";
-
 import GraphDashboard from "./components/Graphs/graphs";
 import ToastTest from "./pages/shopkeeper/signin/s";
+import SignUpToggle from "./pages/shopkeeper/signin/SignUpToggle";
 //import UserSignUp from "./pages/shopkeeper/signin/UserSignUp";
 
 const App = () => {
@@ -53,7 +52,7 @@ const App = () => {
             }>
               <Route path="/" element={<Home />} />
               <Route path="/signin" element={<ShopkeeperSignIn />} />
-              <Route path="/signup/:role" element={<ShopkeeperSignUp/>} />
+              <Route path="/signup/:role" element={<SignUpToggle/>} />
               <Route path="/t" element={<ToastTest />} />
             </Route>
           <Route
