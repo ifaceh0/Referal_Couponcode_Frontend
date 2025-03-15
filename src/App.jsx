@@ -53,8 +53,7 @@ const App = () => {
             }>
               <Route path="/" element={<Home />} />
               <Route path="/signin" element={<ShopkeeperSignIn />} />
-              <Route path="/signup" element={<ShopkeeperSignUp />} />
-              {/* <Route path="/usersignup" element={<UserSignUp/>} /> */}
+              <Route path="/signup/:role" element={<ShopkeeperSignUp/>} />
               <Route path="/t" element={<ToastTest />} />
             </Route>
           <Route

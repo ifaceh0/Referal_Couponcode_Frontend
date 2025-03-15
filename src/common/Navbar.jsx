@@ -164,14 +164,14 @@ export default function Navbar() {
                 {showDropdown && (
                   <div className="absolute right-0 mt-2 w-40 bg-white shadow-lg rounded-lg">
                     <Link 
-                      to="/signup?role=shopkeeper" 
+                      to="/signup/shopkeeper" 
                       className="block px-4 py-2 text-gray-700 hover:bg-gray-200"
                       onClick={() => setShowDropdown(false)}
                     >
                       Shopkeeper
                     </Link>
                     <Link 
-                      to="/usersignup?role=user" 
+                      to="/signup/user" 
                       className="block px-4 py-2 text-gray-700 hover:bg-gray-200"
                       onClick={() => setShowDropdown(false)}
                     >

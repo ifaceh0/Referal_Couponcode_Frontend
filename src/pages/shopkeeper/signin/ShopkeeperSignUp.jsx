@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { signupShopkeeper } from "../../../api/signin";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import { toast, ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import PhoneInput from 'react-phone-input-2'
@@ -43,6 +43,7 @@ const PhoneInputField = ({ label, name, value, onChange, error }) => (
 
 const ShopkeeperSignUp = () => {
   const [step, setStep] = useState(1);
+  const {role} = useParams();
   const [formData, setFormData] = useState({
     name: "",
     email: "",
@@ -194,7 +195,7 @@ const ShopkeeperSignUp = () => {
       <ToastContainer />
       <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-purple-500 to-orange-400 p-6">
         <div className="bg-white shadow-2xl rounded-xl p-8 w-full max-w-lg relative">
-          <h2 className="text-3xl font-bold mb-6 text-purple-600 text-center">Shopkeeper Sign Up</h2>
+          <h2 className="text-3xl font-bold mb-6 text-purple-600 text-center capitalize">{role} Sign Up</h2>
           {step === 1 ? (
             <>
               <InputField label="Name" type="text" name="name" value={formData.name} onChange={handleInputChange} error={errors.name} />
