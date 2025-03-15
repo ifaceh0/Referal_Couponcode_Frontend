@@ -35,7 +35,7 @@ import ShopkeeperDashboardLayout from "./layout/ShopkeeperDashboardLayout";
 
 import GraphDashboard from "./components/Graphs/graphs";
 import ToastTest from "./pages/shopkeeper/signin/s";
-import UserSignUp from "./pages/shopkeeper/signin/UserSignUp";
+//import UserSignUp from "./pages/shopkeeper/signin/UserSignUp";
 
 const App = () => {
   return (
@@ -54,7 +54,7 @@ const App = () => {
               <Route path="/" element={<Home />} />
               <Route path="/signin" element={<ShopkeeperSignIn />} />
               <Route path="/signup" element={<ShopkeeperSignUp />} />
-              <Route path="/usersignup" element={<UserSignUp/>} />
+              {/* <Route path="/usersignup" element={<UserSignUp/>} /> */}
               <Route path="/t" element={<ToastTest />} />
             </Route>
           <Route
@@ -66,6 +66,7 @@ const App = () => {
             }>
             <Route path="login" element={<LoginPage />} />
             <Route path="client" element={<ClientPage />} />
+           
           </Route>
         {/* </Layout> */}
 
