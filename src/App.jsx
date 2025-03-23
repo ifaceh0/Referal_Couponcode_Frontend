@@ -34,6 +34,7 @@ import ShopkeeperDashboardLayout from "./layout/ShopkeeperDashboardLayout";
 import GraphDashboard from "./components/Graphs/graphs";
 import ToastTest from "./pages/shopkeeper/signin/s";
 import SignUpToggle from "./pages/shopkeeper/signin/SignUpToggle";
+import Scanner from "./pages/scanner/Scanner";
 //import UserSignUp from "./pages/shopkeeper/signin/UserSignUp";
 
 const App = () => {
@@ -104,6 +105,7 @@ const App = () => {
           <Route path="transaction" element={<Transactions />} />
           <Route path="generate-codes" element={<GenerateCodes />} />
           <Route path="g" element={<GraphDashboard />} />
+          <Route path="scanner" element={<Scanner/>} />
         </Route>
 
         {/* Routes for admin pages with AdminLayout */}
@@ -117,6 +119,7 @@ const App = () => {
           <Route path="shopkeepers" element={<Shopkeepers />} />
           <Route path="users" element={<UsersList />} />
           <Route path="settings" element={<AdminSettings />} />
+          
         </Route>
 
         {/* Catch-all for 404 */}
