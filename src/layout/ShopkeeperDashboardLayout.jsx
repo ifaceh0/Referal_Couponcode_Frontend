@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { NavLink, useNavigate } from "react-router-dom";
-import { FaBars, FaTimes, FaUser, FaCog, FaBell } from "react-icons/fa";
+import { FaBars, FaTimes, FaUser, FaCog, FaBell, FaQrcode } from "react-icons/fa";
 import Cookies from "js-cookie";
 
 const ShopkeeperDashboardLayout = ({ children }) => {
@@ -39,25 +39,39 @@ const ShopkeeperDashboardLayout = ({ children }) => {
             { to: "/shopkeeper/dashboard", label: "Dashboard" },
             { to: "/shopkeeper/referral-codes", label: "Referral Codes" },
             { to: "/shopkeeper/coupon-codes", label: "Coupon Codes" },
-            { to: "/shopkeeper/interaction-panel", label: "Interaction Panel" },
+            { to: "/shopkeeper/interaction-panel", label: "Interaction Panel", icon: <FaQrcode /> },
             { to: "/shopkeeper/transaction", label: "Transaction" },
             { to: "/shopkeeper/subscription", label: "Subscription" },
             { to: "/shopkeeper/analytics", label: "Analytics" },
             { to: "/shopkeeper/settings", label: "Settings" },
             // { to: "/shopkeeper/generate-codes", label: "Generate Codes" },
-          ].map(({ to, label }) => (
-            <NavLink
-              key={to}
-              to={to}
-              className={({ isActive }) =>
-                `block py-2 px-4 rounded-md hover:bg-blue-700 transition ${isActive ? "bg-blue-600" : ""}`
-              }
-              onClick={closeSidebar}
-            >
-              {label}
-            </NavLink>
-          ))}
-        </nav>
+        //   ].map(({ to, label }) => (
+        //     <NavLink
+        //       key={to}
+        //       to={to}
+        //       className={({ isActive }) =>
+        //         `block py-2 px-4 rounded-md hover:bg-blue-700 transition ${isActive ? "bg-blue-600" : ""}`
+        //       }
+        //       onClick={closeSidebar}
+        //     >
+        //       {label}
+        //     </NavLink>
+        //   ))}
+        // </nav>
+      ].map(({ to, label, icon }) => (
+        <NavLink
+          key={to}
+          to={to}
+          className={({ isActive }) =>
+            `flex items-center space-x-2 py-2 px-4 rounded-md hover:bg-blue-700 transition ${isActive ? "bg-blue-600" : ""}`
+          }
+          onClick={closeSidebar}
+        >
+          {icon && <span className="text-xl">{icon}</span>}
+          <span>{label}</span>
+        </NavLink>
+      ))}
+    </nav>
       </div>
 
       {/* Main Content */}
