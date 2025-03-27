@@ -179,9 +179,9 @@ const InteractionPanel = () => {
         </button>
       </div>
 
-      {/* Two-column layout */}
-      <div className="max-w-4xl w-full grid grid-cols-2 gap-6">
-        {/* Search Code Card - Left Side */}
+      {/* Responsive Layout */}
+      <div className="max-w-4xl w-full grid grid-cols-1 md:grid-cols-2 gap-6">
+        {/* Search Code Card - Appears First in Mobile View */}
         <div className="bg-gray-50 p-6 rounded-lg shadow">
           <h2 className="text-lg font-semibold mb-2">Search Code</h2>
           <input
@@ -191,15 +191,17 @@ const InteractionPanel = () => {
             onChange={(e) => setCode(e.target.value)}
             className="w-full p-2 border rounded mb-2"
           />
-          <button
-            onClick={handleSearchCode}
-            className="w-full py-2 px-4 bg-green-500 text-white rounded hover:bg-green-600 transition flex items-center justify-center mt-16"
-          >
-            Search
-          </button>
+          <div className="flex justify-center">
+            <button
+              onClick={handleSearchCode}
+              className="w-full max-w-sm py-2 px-4 bg-green-500 text-white rounded hover:bg-green-600 transition mt-16"
+            >
+              Search
+            </button>
+          </div>
         </div>
 
-        {/* Scanner Card - Right Side */}
+        {/* Scanner Card - Appears Below Search Card in Mobile View */}
         <div className="bg-blue-50 p-6 rounded-lg shadow">
           <h2 className="text-lg font-semibold mb-2 text-center">Scan Code</h2>
           <div className="flex flex-col items-center">
@@ -212,13 +214,15 @@ const InteractionPanel = () => {
             <p className="text-sm text-gray-600 mb-3 text-center">
               Scan QR codes or barcodes quickly with your camera
             </p>
-            <button
-              onClick={() => navigate("../scanner")}
-              className="w-full py-2 px-4 bg-blue-500 text-white rounded hover:bg-blue-600 transition flex items-center justify-center"
-            >
-              <FaQrcode className="mr-2" />
-              Open Scanner
-            </button>
+            <div className="flex justify-center w-full">
+              <button
+                onClick={() => navigate("../scanner")}
+                className="w-full max-w-sm py-2 px-4 bg-blue-500 text-white rounded hover:bg-blue-600 transition flex items-center justify-center"
+              >
+                <FaQrcode className="mr-2" />
+                Open Scanner
+              </button>
+            </div>
           </div>
         </div>
       </div>
@@ -251,12 +255,14 @@ const InteractionPanel = () => {
             <>
               <p><strong>Discount Amount:</strong> ${codeDetails.amount}</p>
               <p><strong>Usage Left:</strong> {codeDetails.usageLimitLeft}</p>
-              <button
-                onClick={handleUseCouponCode}
-                className="w-full py-2 px-4 bg-orange-500 text-white rounded hover:bg-orange-600 mt-2 transition"
-              >
-                Use Coupon Code
-              </button>
+              <div className="flex justify-center">
+                <button
+                  onClick={handleUseCouponCode}
+                  className="w-full max-w-sm py-2 px-4 bg-orange-500 text-white rounded hover:bg-orange-600 mt-2 transition"
+                >
+                  Use Coupon Code
+                </button>
+              </div>
             </>
           )}
         </div>

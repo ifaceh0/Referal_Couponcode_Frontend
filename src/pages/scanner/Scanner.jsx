@@ -272,46 +272,17 @@ const Scanner = () => {
         </DialogTitle>
         <DialogContent className="p-6 bg-white">
           {scannedData && (
-            <div className="space-y-4">
-              <div>
-                <p className="text-sm font-semibold text-gray-600">Customer ID</p>
-                <p className="text-lg text-gray-800">{scannedData.customerId}</p>
-              
-
-              
-                <p className="text-sm font-semibold text-gray-600">Name</p>
-                <p className="text-lg text-gray-800">{scannedData.name}</p>
-              
-
-              
-                <p className="text-sm font-semibold text-gray-600">Phone</p>
-                <p className="text-lg text-gray-800">{scannedData.phone}</p>
-              
-
-              
-                <p className="text-sm font-semibold text-gray-600">Available Balance</p>
-                <p className="text-lg text-gray-800">${scannedData.availableBalance}</p>
-              
-
-              
-                <p className="text-sm font-semibold text-gray-600">Coupon Code</p>
-                <p className="text-lg text-gray-800">{scannedData.couponCode}</p>
             
+              <div className="space-y-2">
+              <p className="text-lg text-gray-800">Customer ID = {scannedData.customerId}</p>
+              <p className="text-lg text-gray-800">Name = {scannedData.name}</p>
+              <p className="text-lg text-gray-800">Phone = {scannedData.phone}</p>
+              <p className="text-lg text-gray-800">Available Balance = ${scannedData.availableBalance}</p>
+              <p className="text-lg text-gray-800">Coupon Code = {scannedData.couponCode}</p>
+              <p className="text-lg text-gray-800">Coupon Amount = ${scannedData.couponAmount}</p>
+              <p className="text-lg text-gray-800">Coupon Usage Limit = {scannedData.couponUsageLimit}</p>
+              <p className="text-lg text-gray-800">Referral Code = {scannedData.referralCode}</p>
 
-              
-                <p className="text-sm font-semibold text-gray-600">Coupon Amount</p>
-                <p className="text-lg text-gray-800">${scannedData.couponAmount}</p>
-              
-
-              
-                <p className="text-sm font-semibold text-gray-600">Coupon Usage Limit</p>
-                <p className="text-lg text-gray-800">{scannedData.couponUsageLimit}</p>
-              
-
-            
-                <p className="text-sm font-semibold text-gray-600">Referral Code</p>
-                <p className="text-lg text-gray-800">{scannedData.referralCode}</p>
-              </div>
 
               <div className="mt-6">
                 <p className="text-sm font-semibold text-gray-600">Redeem Amount</p>
