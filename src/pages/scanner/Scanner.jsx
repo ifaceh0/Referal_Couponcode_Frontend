@@ -186,7 +186,6 @@ const Scanner = () => {
       try {
         console.log(data);
         const parsedData = JSON.parse(data.text);
-        console.log(parsedData);
         setScannedData(parsedData);
         setOpen(true);
         setError("");
@@ -207,7 +206,7 @@ const Scanner = () => {
     }
 
     const amount = parseFloat(redeemAmount);
-    const availableBalance = parseFloat(scannedData.availableBalance);
+    const availableBalance = parseFloat(scannedData?.availableBalance || 0);
 
     if (amount > availableBalance) {
       setError("Amount cannot exceed available balance.");
@@ -215,9 +214,19 @@ const Scanner = () => {
     }
 
     console.log("Sending data to backend:", { scannedData, redeemAmount });
+
+    // Close dialog and refresh page
     setOpen(false);
-    setRedeemAmount("");
-    setError("");
+    setTimeout(() => {
+      window.location.reload();
+    }, 500);
+  };
+
+  const handleCloseDialog = () => {
+    setOpen(false);
+    setTimeout(() => {
+      window.location.reload();
+    }, 500);
   };
 
   return (
@@ -258,11 +267,11 @@ const Scanner = () => {
 
       <Dialog
         open={open}
-        onClose={() => setOpen(false)}
+        onClose={handleCloseDialog}
         PaperProps={{
           style: {
             borderRadius: "12px",
-            width: "400px",
+            width: "500px",
             maxWidth: "90%",
           },
         }}
@@ -272,46 +281,72 @@ const Scanner = () => {
         </DialogTitle>
         <DialogContent className="p-6 bg-white">
           {scannedData && (
-            
-              <div className="space-y-2">
-              <p className="text-lg text-gray-800">Customer ID = {scannedData.customerId}</p>
-              <p className="text-lg text-gray-800">Name = {scannedData.name}</p>
-              <p className="text-lg text-gray-800">Phone = {scannedData.phone}</p>
-              <p className="text-lg text-gray-800">Available Balance = ${scannedData.availableBalance}</p>
-              <p className="text-lg text-gray-800">Coupon Code = {scannedData.couponCode}</p>
-              <p className="text-lg text-gray-800">Coupon Amount = ${scannedData.couponAmount}</p>
-              <p className="text-lg text-gray-800">Coupon Usage Limit = {scannedData.couponUsageLimit}</p>
-              <p className="text-lg text-gray-800">Referral Code = {scannedData.referralCode}</p>
-
-
-              <div className="mt-6">
-                <p className="text-sm font-semibold text-gray-600">Redeem Amount</p>
-                <input
-                  type="text"
-                  value={redeemAmount ? `$${redeemAmount}` : `$`}
-                  onChange={(e) => {
-                    const value = e.target.value.substring(1).replace(/\D/g, "");
-                    setRedeemAmount(value);
-                    setError("");
-                  }}
-                  className={`w-full p-3 border ${
-                    error ? "border-red-500" : "border-gray-300"
-                  } rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500`}
-                  placeholder="Enter amount"
-                />
-                {error && (
-                  <p className="text-sm text-red-500 mt-2">{error}</p>
-                )}
-              </div>
-
-              <button
-                onClick={handleRedeemClick}
-                className="w-full bg-gradient-to-r from-blue-600 to-purple-600 text-white font-bold py-3 rounded-lg hover:from-blue-700 hover:to-purple-700 transition-all mt-4"
-              >
-                Redeem
-              </button>
+            <div className="overflow-x-auto">
+              <table className="w-full border-collapse border border-gray-300 text-left">
+                <tbody>
+                  <tr className="border-b border-gray-300">
+                    <td className="py-2 px-4 font-semibold text-gray-700">Customer ID:</td>
+                    <td className="py-2 px-4 text-gray-600">{scannedData.customerId}</td>
+                  </tr>
+                  <tr className="border-b border-gray-300">
+                    <td className="py-2 px-4 font-semibold text-gray-700">Name:</td>
+                    <td className="py-2 px-4 text-gray-600">{scannedData.name}</td>
+                  </tr>
+                  <tr className="border-b border-gray-300">
+                    <td className="py-2 px-4 font-semibold text-gray-700">Phone:</td>
+                    <td className="py-2 px-4 text-gray-600">{scannedData.phone}</td>
+                  </tr>
+                  <tr className="border-b border-gray-300">
+                    <td className="py-2 px-4 font-semibold text-gray-700">Available Balance:</td>
+                    <td className="py-2 px-4 text-gray-600">${scannedData.availableBalance}</td>
+                  </tr>
+                  <tr className="border-b border-gray-300">
+                    <td className="py-2 px-4 font-semibold text-gray-700">Coupon Code:</td>
+                    <td className="py-2 px-4 text-gray-600">{scannedData.couponCode}</td>
+                  </tr>
+                  <tr className="border-b border-gray-300">
+                    <td className="py-2 px-4 font-semibold text-gray-700">Coupon Amount:</td>
+                    <td className="py-2 px-4 text-gray-600">${scannedData.couponAmount}</td>
+                  </tr>
+                  <tr className="border-b border-gray-300">
+                    <td className="py-2 px-4 font-semibold text-gray-700">Coupon Usage Limit:</td>
+                    <td className="py-2 px-4 text-gray-600">{scannedData.couponUsageLimit}</td>
+                  </tr>
+                  <tr className="border-b border-gray-300">
+                    <td className="py-2 px-4 font-semibold text-gray-700">Referral Code:</td>
+                    <td className="py-2 px-4 text-gray-600">{scannedData.referralCode}</td>
+                  </tr>
+                </tbody>
+              </table>
             </div>
           )}
+
+          {/* Redeem Amount Input */}
+          <div className="mt-6">
+            <p className="text-sm font-semibold text-gray-600">Redeem Amount</p>
+            <input
+              type="text"
+              value={redeemAmount ? `$${redeemAmount}` : `$`}
+              onChange={(e) => {
+                const value = e.target.value.substring(1).replace(/\D/g, "");
+                setRedeemAmount(value);
+                setError("");
+              }}
+              className={`w-full p-3 border ${
+                error ? "border-red-500" : "border-gray-300"
+              } rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500`}
+              placeholder="Enter amount"
+            />
+            {error && <p className="text-sm text-red-500 mt-2">{error}</p>}
+          </div>
+
+          {/* Redeem Button */}
+          <button
+            onClick={handleRedeemClick}
+            className="w-full bg-gradient-to-r from-blue-600 to-purple-600 text-white font-bold py-3 rounded-lg hover:from-blue-700 hover:to-purple-700 transition-all mt-4"
+          >
+            Redeem
+          </button>
         </DialogContent>
       </Dialog>
     </div>
