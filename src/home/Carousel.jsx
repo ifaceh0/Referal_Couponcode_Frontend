@@ -65,49 +65,65 @@ export default function Carousel() {
   };
 
   return (
-    <div className="relative">
-      {slides.map((slide, index) => (
-        <div
-          key={index}
-          className={`absolute top-0 left-0 w-full h-full transition-opacity duration-500 ${
-            index === currentSlide ? 'opacity-100' : 'opacity-0'
-          }`}
-        >
-          <LazyLoadImage
-            src={slide.image}
-            alt={slide.title}
-            effect="blur"
-            className="w-full h-full object-cover"
-          />
-          <div className="absolute bottom-0 left-0 right-0 bg-black bg-opacity-50 text-white p-4">
-            <h2 className="text-xl md:text-2xl font-bold">{slide.title}</h2>
-            <p className="text-sm md:text-base">{slide.description}</p>
-          </div>
+    <div className="relative w-full h-screen max-h-[80vh] md:max-h-screen overflow-hidden">
+  {slides.map((slide, index) => (
+    <div
+      key={index}
+      className={`absolute inset-0 w-full h-full transition-opacity duration-500 ease-in-out ${
+        index === currentSlide ? 'opacity-100 z-10' : 'opacity-0 z-0'
+      }`}
+    >
+      <LazyLoadImage
+        src={slide.image}
+        alt={slide.title}
+        effect="blur"
+        className="w-full h-full object-cover"
+        placeholderSrc="/placeholder-image.jpg" // Add a low-res placeholder
+      />
+      <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/80 to-transparent text-white p-4 md:p-8">
+        <div className="container mx-auto">
+          <h2 className="text-xl sm:text-2xl md:text-3xl lg:text-4xl font-bold mb-2">
+            {slide.title}
+          </h2>
+          <p className="text-sm sm:text-base md:text-lg lg:text-xl max-w-2xl">
+            {slide.description}
+          </p>
         </div>
-      ))}
-      <button
-        onClick={goToPrevSlide}
-        className="absolute top-1/2 left-4 transform -translate-y-1/2 bg-white bg-opacity-50 rounded-full p-2 hover:bg-opacity-75 transition-colors"
-      >
-        <ChevronLeft className="h-4 w-4 md:h-6 md:w-6 text-black" />
-      </button>
-      <button
-        onClick={goToNextSlide}
-        className="absolute top-1/2 right-4 transform -translate-y-1/2 bg-white bg-opacity-50 rounded-full p-2 hover:bg-opacity-75 transition-colors"
-      >
-        <ChevronRight className="h-4 w-4 md:h-6 md:w-6 text-black" />
-      </button>
-      <div className="absolute bottom-4 left-1/2 transform -translate-x-1/2 flex space-x-2">
-        {slides.map((_, index) => (
-          <button
-            key={index}
-            onClick={() => goToSlide(index)}
-            className={`w-2 h-2 md:w-3 md:h-3 rounded-full ${
-              index === currentSlide ? 'bg-white' : 'bg-white bg-opacity-50'
-            }`}
-          />
-        ))}
       </div>
     </div>
+  ))}
+  
+  {/* Navigation Arrows */}
+  <button
+    onClick={goToPrevSlide}
+    className="absolute top-1/2 left-2 sm:left-4 transform -translate-y-1/2 bg-black/30 hover:bg-black/50 text-white rounded-full p-2 transition-all duration-300 z-20"
+    aria-label="Previous slide"
+  >
+    <ChevronLeft className="h-5 w-5 sm:h-6 sm:w-6 md:h-8 md:w-8" />
+  </button>
+  <button
+    onClick={goToNextSlide}
+    className="absolute top-1/2 right-2 sm:right-4 transform -translate-y-1/2 bg-black/30 hover:bg-black/50 text-white rounded-full p-2 transition-all duration-300 z-20"
+    aria-label="Next slide"
+  >
+    <ChevronRight className="h-5 w-5 sm:h-6 sm:w-6 md:h-8 md:w-8" />
+  </button>
+
+  {/* Indicators */}
+  <div className="absolute bottom-4 left-1/2 transform -translate-x-1/2 flex space-x-2 z-20">
+    {slides.map((_, index) => (
+      <button
+        key={index}
+        onClick={() => goToSlide(index)}
+        className={`w-3 h-3 sm:w-4 sm:h-4 rounded-full transition-all duration-300 ${
+          index === currentSlide 
+            ? 'bg-white scale-125' 
+            : 'bg-white/50 hover:bg-white/75'
+        }`}
+        aria-label={`Go to slide ${index + 1}`}
+      />
+    ))}
+  </div>
+</div>
   );
 }
