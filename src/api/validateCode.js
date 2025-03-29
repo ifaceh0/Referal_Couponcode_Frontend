@@ -1,8 +1,6 @@
-import baseUrl from "./baseUrl.json";
-
 export const validateCode = async (code) => {
   try {
-    const response = await fetch(`${baseUrl.baseUrl}/api/code/validate`, {
+    const response = await fetch(`${import.meta.env.VITE_BACKEND_URL}/api/code/validate`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",

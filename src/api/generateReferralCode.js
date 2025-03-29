@@ -1,8 +1,7 @@
 // src/api/generateReferralCode.js
-import baseUrl from './baseUrl.json';
 
 export async function generateReferralCode(data) {
-  const url = `${baseUrl.baseUrl}/api/referral-codes/generate`;
+  const url = `${import.meta.env.VITE_BACKEND_URL}/api/referral-codes/generate`;
   const shopkeeperId = 1; // Static value for now
 
   const formData = new FormData();
@@ -27,10 +26,9 @@ export async function generateReferralCode(data) {
 
 
 // // src/api/uploadBulkReferralCodes.js
-// import baseUrl from './baseUrl.json';
 
 export async function uploadBulkReferralCodes(file, expiryDate, referralAmount) {
-  const url = `${baseUrl.baseUrl}/api/referral-codes/bulk-upload`;
+  const url = `${import.meta.env.VITE_BACKEND_URL}/api/referral-codes/bulk-upload`;
   const shopkeeperId = 1; // Static value for now
 
   const formData = new FormData();

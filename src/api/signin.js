@@ -1,9 +1,8 @@
-import baseUrl from "./baseUrl.json";
 import { useNavigate } from "react-router-dom";
 
 // Signup API
 export const signupShopkeeperOld = async (formData) => {
-    const url = `${baseUrl.baseUrl}/api/auth/signup`;
+    const url = `${import.meta.env.VITE_BACKEND_URL}/api/auth/signup`;
     console.log(formData);
 
     const response = await fetch(url, {
@@ -46,7 +45,7 @@ export const signupShopkeeperOld = async (formData) => {
 // };
 export const signupShopkeeper = async (formData) => {
     try {
-        const response = await fetch(`${baseUrl.baseUrl}/api/auth/signup`, {
+        const response = await fetch(`${import.meta.env.VITE_BACKEND_URL}/api/auth/signup`, {
             method: "POST",
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify(formData),
@@ -70,7 +69,7 @@ export const signupShopkeeper = async (formData) => {
 
 // Login API
 export const loginShopkeeper = async (credentials) => {
-    const url = `${baseUrl.baseUrl}/api/auth/login`;
+    const url = `${import.meta.env.VITE_BACKEND_URL}/api/auth/login`;
 
     const response = await fetch(url, {
         method: "POST",
@@ -106,7 +105,7 @@ export const logoutShopkeeper = async () => {
     localStorage.removeItem("shopkeeper");
     localStorage.removeItem("token");
 
-    const url = `${baseUrl.baseUrl}/logout`;
+    const url = `${import.meta.env.VITE_BACKEND_URL}/logout`;
 
     const response = await fetch(url, {
         method: "POST",

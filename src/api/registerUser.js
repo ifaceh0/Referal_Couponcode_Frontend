@@ -1,8 +1,6 @@
-import baseUrl from "./baseUrl.json";
-
 export const registerUser = async (userData, shopkeeperId) => {
     try {
-        const response = await fetch(`${baseUrl.baseUrl}/api/shopkeeper/register-user?shopkeeperId=${shopkeeperId}`, {
+        const response = await fetch(`${import.meta.env.VITE_BACKEND_URL}/api/shopkeeper/register-user?shopkeeperId=${shopkeeperId}`, {
             method: "POST",
             headers: {
                 "Content-Type": "application/json",
@@ -60,7 +58,7 @@ export const uploadBulkReferralCodes = async (file, expiryDate, referralAmount, 
 
     try {
         const response = await fetch(
-            `${baseUrl.baseUrl}/api/shopkeeper/upload-bulk-referral-codes`,
+            `${import.meta.env.VITE_BACKEND_URL}/api/shopkeeper/upload-bulk-referral-codes`,
             {
                 method: "POST",
                 body: formData,
@@ -88,7 +86,7 @@ export const uploadBulkCouponCodes = async (file, expiryDate, referralAmount, us
 
     try {
         const response = await fetch(
-            `${baseUrl.baseUrl}/api/shopkeeper/upload-bulk-referral-codes`,
+            `${import.meta.env.VITE_BACKEND_URL}/api/shopkeeper/upload-bulk-referral-codes`,
             {
                 method: "POST",
                 body: formData,
@@ -107,7 +105,7 @@ export const uploadBulkCouponCodes = async (file, expiryDate, referralAmount, us
 
 export const getAllReferralCode = async () => {
     try {
-        const response = await fetch(`${baseUrl}/api/shopkeeper/getAllReferralCode`, {
+        const response = await fetch(`${import.meta.env.VITE_BACKEND_URL}/api/shopkeeper/getAllReferralCode`, {
             method: "GET",
             headers: {
                 "Content-Type": "application/json",
@@ -130,7 +128,7 @@ export const getAllReferralCode = async () => {
 
 export const getAllCouponCode = async () => {
     try {
-        const response = await fetch(`${baseUrl}/api/shopkeeper/getAllCouponCode`, {
+        const response = await fetch(`${import.meta.env.VITE_BACKEND_URL}/api/shopkeeper/getAllCouponCode`, {
             method: "GET",
             headers: {
                 "Content-Type": "application/json",
@@ -153,7 +151,7 @@ export const getAllCouponCode = async () => {
 
 export const getAllReferralCodeByShopkeeper = async (shopkeeperId) => {
     try {
-        const response = await fetch(`${baseUrl.baseUrl}/api/shopkeeper/getAllReferralCodeByShopkeeper/${shopkeeperId}`, {
+        const response = await fetch(`${import.meta.env.VITE_BACKEND_URL}/api/shopkeeper/getAllReferralCodeByShopkeeper/${shopkeeperId}`, {
             method: "GET",
             headers: {
                 "Content-Type": "application/json",
@@ -177,7 +175,7 @@ export const getAllReferralCodeByShopkeeper = async (shopkeeperId) => {
 
 export const getAllCouponCodeByShopkeeper = async (shopkeeperId) => {
     try {
-        const response = await fetch(`${baseUrl.baseUrl}/api/shopkeeper/getAllCouponCodeByShopkeeper/${shopkeeperId}`, {
+        const response = await fetch(`${import.meta.env.VITE_BACKEND_URL}/api/shopkeeper/getAllCouponCodeByShopkeeper/${shopkeeperId}`, {
             method: "GET",
             headers: {
                 "Content-Type": "application/json",

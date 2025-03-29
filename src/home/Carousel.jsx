@@ -65,7 +65,7 @@ export default function Carousel() {
   };
 
   return (
-    <div className="relative h-[50vh] md:h-[60vh] lg:h-[80vh] overflow-hidden">
+    <div className="relative">
       {slides.map((slide, index) => (
         <div
           key={index}

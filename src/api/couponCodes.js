@@ -1,8 +1,6 @@
-import baseUrl from './baseUrl.json';
-
 // Generate a coupon code
 export const generateCouponCode = async (formData) => {
-  const url = `${baseUrl.baseUrl}/api/shopkeepers/coupon-codes/generate`;
+  const url = `${import.meta.env.VITE_BACKEND_URL}/api/shopkeepers/coupon-codes/generate`;
   
   const payload = {
     ...formData,
@@ -45,7 +43,7 @@ export const generateCouponCode = async (formData) => {
 
 // Upload bulk coupon codes
 export const uploadBulkCouponCodes = async (file, expiryDate, couponAmount, usageLimit) => {
-  const url = `${baseUrl.baseUrl}/api/shopkeepers/coupon-codes/bulk-upload`;
+  const url = `${import.meta.env.VITE_BACKEND_URL}/api/shopkeepers/coupon-codes/bulk-upload`;
 
   const formData = new FormData();
   formData.append('file', file);

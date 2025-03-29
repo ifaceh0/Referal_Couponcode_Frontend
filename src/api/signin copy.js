@@ -1,8 +1,6 @@
-import baseUrl from "./baseUrl.json";
-
 // Signup API
 export const signupShopkeeper = async (formData) => {
-    const url = `${baseUrl.baseUrl}/api/shopkeepers/signup`;
+    const url = `${import.meta.env.VITE_BACKEND_URL}/api/shopkeepers/signup`;
     console.log(formData);
 
     const response = await fetch(url, {
@@ -25,7 +23,7 @@ export const signupShopkeeper = async (formData) => {
 
 // Login API
 export const loginShopkeeper = async (credentials) => {
-    const url = `${baseUrl.baseUrl}/api/shopkeepers/login`;
+    const url = `${import.meta.env.VITE_BACKEND_URL}/api/shopkeepers/login`;
     console.log(credentials);
 
     const response = await fetch(url, {
@@ -54,7 +52,7 @@ export const logoutShopkeeper1 = () => {
 
 
 export const logoutShopkeeper = async () => {
-    const url = `${baseUrl.baseUrl}/api/shopkeepers/logout`;
+    const url = `${import.meta.env.VITE_BACKEND_URL}/api/shopkeepers/logout`;
 
     const response = await fetch(url, {
         method: "POST",

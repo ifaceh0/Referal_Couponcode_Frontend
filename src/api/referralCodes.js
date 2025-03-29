@@ -1,5 +1,3 @@
-import baseUrl from './baseUrl.json';
-
 // Generate a referral code
 // export const generateReferralCode = async (formData) => {
 //   const url = `${baseUrl.baseUrl}/api/referral-codes/generate`;
@@ -30,7 +28,7 @@ import baseUrl from './baseUrl.json';
 //   return response.json();
 // };
 export const generateReferralCodeCookie = async (formData) => {
-  const url = `${baseUrl.baseUrl}/api/shopkeepers/referral-codes/generate`;
+  const url = `${import.meta.env.VITE_BACKEND_URL}/api/shopkeepers/referral-codes/generate`;
 
   const payload = {
     ...formData,
@@ -58,7 +56,7 @@ export const generateReferralCodeCookie = async (formData) => {
 };
 
 export const generateReferralCode = async (formData) => {
-  const url = `${baseUrl.baseUrl}/api/shopkeepers/referral-codes/generate`;
+  const url = `${import.meta.env.VITE_BACKEND_URL}/api/shopkeepers/referral-codes/generate`;
 
   // Retrieve token and shopkeeper data from localStorage
   // const token = localStorage.getItem("token");
@@ -98,7 +96,7 @@ export const generateReferralCode = async (formData) => {
 
 // Upload bulk referral codes
 export const uploadBulkReferralCodes = async (file, expiryDate, referralAmount) => {
-  const url = `${baseUrl.baseUrl}/api/shopkeepers/referral-codes/bulk-upload`;
+  const url = `${import.meta.env.VITE_BACKEND_URL}/api/shopkeepers/referral-codes/bulk-upload`;
 
   const formData = new FormData();
   formData.append('file', file);

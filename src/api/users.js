@@ -1,8 +1,6 @@
-import baseUrl from "./baseUrl.json";
-
 // Get all users
 export const getAllUsers = async () => {
-  const url = `${baseUrl.baseUrl}/api/users`;
+  const url = `${import.meta.env.VITE_BACKEND_URL}/api/users`;
 
   const response = await fetch(url, {
     method: "GET",
