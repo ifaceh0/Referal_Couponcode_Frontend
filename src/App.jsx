@@ -5,7 +5,7 @@ import {
   Route,
   Outlet,
 } from "react-router-dom";
-import React from "react";
+
 import LoginPage from "./pages/userPage/LoginPage";
 import ClientPage from "./pages/userPage/ClientPage";
 import NotFoundPage from "./pages/NotFoundPage/NotFoundPage";
@@ -35,6 +35,8 @@ import GraphDashboard from "./components/Graphs/graphs";
 import ToastTest from "./pages/shopkeeper/signin/s";
 import SignUpToggle from "./pages/shopkeeper/signin/SignUpToggle";
 import Scanner from "./pages/scanner/Scanner";
+import ProductShowcase from "./home/ProductShowcase";
+import FeatureDetailPage from "./home/FeatureDetailPage";
 //import UserSignUp from "./pages/shopkeeper/signin/UserSignUp";
 
 const App = () => {
@@ -55,6 +57,8 @@ const App = () => {
               <Route path="/signin" element={<ShopkeeperSignIn />} />
               <Route path="/signup/:role" element={<SignUpToggle/>} />
               <Route path="/t" element={<ToastTest />} />
+              <Route path="/features" element={<ProductShowcase/>} />
+              <Route path="/features/:id" element={<FeatureDetailPage/>} />
             </Route>
           <Route
             path="/:slug"

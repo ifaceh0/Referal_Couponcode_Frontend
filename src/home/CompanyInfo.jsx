@@ -1,5 +1,5 @@
-import React from 'react';
-import { Link } from 'react-router-dom';
+
+// import { Link } from "react-router-dom";
 
 export default function CompanyInfo() {
   return (
@@ -9,17 +9,22 @@ export default function CompanyInfo() {
           Welcome to ReferralPro Solutions
         </h2>
         <p className="mt-4 text-xl text-gray-500 max-w-3xl">
-          We specialize in delivering cutting-edge referral software that empowers businesses to grow organically through word-of-mouth. 
-          From seamless integrations to actionable analytics, our platform is designed to help you maximize your referral potential.
+          We specialize in delivering cutting-edge <b className="text-black">referral and coupon code
+          solutions </b>that help businesses grow organically through word-of-mouth
+          and strategic promotions. Our platform offers seamless integrations,
+          actionable analytics, and automated workflows to maximize your
+         <b className="text-black"> referral potential and coupon-based conversions.</b> Whether you&#39;re
+          rewarding loyal customers or driving new sales, we make it easy to
+          launch and manage effective programs.
         </p>
-        <div className="mt-8">
+        {/* <div className="mt-8">
           <Link
             to="/about"
             className="inline-flex items-center px-6 py-3 border border-transparent text-base font-medium rounded-md shadow-sm text-white bg-indigo-600 hover:bg-indigo-700"
           >
             Learn More
           </Link>
-        </div>
+        </div> */}
       </div>
     </section>
   );
