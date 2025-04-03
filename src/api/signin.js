@@ -1,8 +1,9 @@
 import { useNavigate } from "react-router-dom";
+import { VITE_BACKEND_URL } from "../../src/apiConfig";
 
 // Signup API
 export const signupShopkeeperOld = async (formData) => {
-    const url = `${import.meta.env.VITE_BACKEND_URL}/api/auth/signup`;
+    const url = `${VITE_BACKEND_URL}/api/auth/signup`;
     console.log(formData);
 
     const response = await fetch(url, {
@@ -45,7 +46,7 @@ export const signupShopkeeperOld = async (formData) => {
 // };
 export const signupShopkeeper = async (formData) => {
     try {
-        const response = await fetch(`${import.meta.env.VITE_BACKEND_URL}/api/auth/signup`, {
+        const response = await fetch(`${VITE_BACKEND_URL}/api/auth/signup`, {
             method: "POST",
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify(formData),
@@ -69,7 +70,7 @@ export const signupShopkeeper = async (formData) => {
 
 // Login API
 export const loginShopkeeper = async (credentials) => {
-    const url = `${import.meta.env.VITE_BACKEND_URL}/api/auth/login`;
+    const url = `${VITE_BACKEND_URL}/api/auth/login`;
 
     const response = await fetch(url, {
         method: "POST",
@@ -105,7 +106,7 @@ export const logoutShopkeeper = async () => {
     localStorage.removeItem("shopkeeper");
     localStorage.removeItem("token");
 
-    const url = `${import.meta.env.VITE_BACKEND_URL}/logout`;
+    const url = `${VITE_BACKEND_URL}/logout`;
 
     const response = await fetch(url, {
         method: "POST",
