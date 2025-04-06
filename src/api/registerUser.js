@@ -1,9 +1,11 @@
 export const registerUser = async (userData, shopkeeperId) => {
     try {
+        const token = localStorage.getItem("token");
         const response = await fetch(`${import.meta.env.VITE_BACKEND_URL}/api/shopkeeper/register-user?shopkeeperId=${shopkeeperId}`, {
             method: "POST",
             headers: {
                 "Content-Type": "application/json",
+                "Authorization": `Bearer ${token}`,
             },
             body: JSON.stringify(userData),
             //   withCredntials: true,
@@ -105,10 +107,12 @@ export const uploadBulkCouponCodes = async (file, expiryDate, referralAmount, us
 
 export const getAllReferralCode = async () => {
     try {
+        const token = localStorage.getItem("token");
         const response = await fetch(`${import.meta.env.VITE_BACKEND_URL}/api/shopkeeper/getAllReferralCode`, {
             method: "GET",
             headers: {
                 "Content-Type": "application/json",
+                "Authorization": `Bearer ${token}`,
             },
             withCredentials: true,
             credentials: "include",
@@ -128,10 +132,12 @@ export const getAllReferralCode = async () => {
 
 export const getAllCouponCode = async () => {
     try {
+        const token = localStorage.getItem("token");
         const response = await fetch(`${import.meta.env.VITE_BACKEND_URL}/api/shopkeeper/getAllCouponCode`, {
             method: "GET",
             headers: {
                 "Content-Type": "application/json",
+                "Authorization": `Bearer ${token}`,
             },
             withCredentials: true,
             credentials: "include",
@@ -151,10 +157,12 @@ export const getAllCouponCode = async () => {
 
 export const getAllReferralCodeByShopkeeper = async (shopkeeperId) => {
     try {
+        const token = localStorage.getItem("token");
         const response = await fetch(`${import.meta.env.VITE_BACKEND_URL}/api/shopkeeper/getAllReferralCodeByShopkeeper/${shopkeeperId}`, {
             method: "GET",
             headers: {
                 "Content-Type": "application/json",
+                "Authorization": `Bearer ${token}`,
             },
             credentials: "include", // `withCredentials` is not needed in Fetch API
         });
@@ -175,10 +183,12 @@ export const getAllReferralCodeByShopkeeper = async (shopkeeperId) => {
 
 export const getAllCouponCodeByShopkeeper = async (shopkeeperId) => {
     try {
+        const token = localStorage.getItem("token");
         const response = await fetch(`${import.meta.env.VITE_BACKEND_URL}/api/shopkeeper/getAllCouponCodeByShopkeeper/${shopkeeperId}`, {
             method: "GET",
             headers: {
                 "Content-Type": "application/json",
+                "Authorization": `Bearer ${token}`,
             },
             credentials: "include", // `withCredentials` is not needed in Fetch API
         });
