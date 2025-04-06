@@ -77,6 +77,7 @@ export const uploadBulkReferralCodes = async (file, expiryDate, referralAmount, 
 };
 
 export const uploadBulkCouponCodes = async (file, expiryDate, referralAmount, usageLimit, shopkeeperId, type) => {
+    const token = localStorage.getItem("token");
     const formData = new FormData();
     formData.append("file", file);
     formData.append("expiryDate", expiryDate);
@@ -93,6 +94,9 @@ export const uploadBulkCouponCodes = async (file, expiryDate, referralAmount, us
                 method: "POST",
                 body: formData,
                 credentials: "include", // If authentication is needed
+                headers: {
+                    Authorization: `Bearer ${token}`,
+                },
             }
         );
 
