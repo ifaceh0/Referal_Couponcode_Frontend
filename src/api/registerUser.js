@@ -1,4 +1,4 @@
-export const registerUser = async (userData, shopkeeperId) => {
+export const registerUser = async (userData) => {
     try {
         const token = localStorage.getItem("token");
          const shopkeeperId = localStorage.getItem("shopkeeperId");
@@ -166,7 +166,7 @@ export const getAllCouponCode = async () => {
     }
 };
 
-export const getAllReferralCodeByShopkeeper = async (shopkeeperId) => {
+export const getAllReferralCodeByShopkeeper = async () => {
     try {
         const token = localStorage.getItem("token");
         const shopkeeperId = localStorage.getItem("shopkeeperId");
@@ -193,7 +193,7 @@ export const getAllReferralCodeByShopkeeper = async (shopkeeperId) => {
     }
 };
 
-export const getAllCouponCodeByShopkeeper = async (shopkeeperId) => {
+export const getAllCouponCodeByShopkeeper = async () => {
     try {
         const token = localStorage.getItem("token");
         const shopkeeperId = localStorage.getItem("shopkeeperId");
