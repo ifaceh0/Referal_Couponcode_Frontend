@@ -96,6 +96,7 @@ export const loginShopkeeper = async (credentials) => {
     localStorage.setItem("shopkeeper", JSON.stringify(data.shopkeeper));
     localStorage.setItem("data", JSON.stringify(data));
     localStorage.setItem("token", data.token);
+    localStorage.setItem("shopkeeperId", data.shopkeeperId);
 
     return data;
 };

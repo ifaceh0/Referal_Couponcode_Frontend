@@ -26,8 +26,8 @@ const ReferralManagement = () => {
   const [bulkReferrerAmount, setBulkReferrerAmount] = useState("");
 
   const [type, setType] = useState("R");
-  const shopkeeperId = 1; // Replace with actual shopkeeper ID
-
+  // const shopkeeperId = 1; // Replace with actual shopkeeper ID
+  const shopkeeperId = localStorage.getItem("shopkeeperId");
   useEffect(() => {
     const fetchCodes = async () => {
       setIsLoading(true);

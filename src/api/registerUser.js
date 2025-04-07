@@ -1,6 +1,7 @@
 export const registerUser = async (userData, shopkeeperId) => {
     try {
         const token = localStorage.getItem("token");
+         const shopkeeperId = localStorage.getItem("shopkeeperId");
         const response = await fetch(`${import.meta.env.VITE_BACKEND_URL}/api/shopkeeper/register-user?shopkeeperId=${shopkeeperId}`, {
             method: "POST",
             headers: {
@@ -48,8 +49,9 @@ export const registerUser = async (userData, shopkeeperId) => {
 //   }
 // };
 
-export const uploadBulkReferralCodes = async (file, expiryDate, referralAmount, referrerAmount, usageLimit, shopkeeperId, type) => {
+export const uploadBulkReferralCodes = async (file, expiryDate, referralAmount, referrerAmount,usageLimit, type) => {
     const token = localStorage.getItem("token");
+    const shopkeeperId = localStorage.getItem("shopkeeperId");
     const formData = new FormData();
     formData.append("file", file);
     formData.append("expiryDate", expiryDate);
@@ -57,7 +59,7 @@ export const uploadBulkReferralCodes = async (file, expiryDate, referralAmount, 
     formData.append("referrerAmount", referrerAmount);
     formData.append("usageLimit", usageLimit);
     formData.append("shopkeeperId", shopkeeperId);
-    formData.append("type", type);
+    formData.append("type", "R");
 
     try {
         const response = await fetch(
@@ -80,8 +82,9 @@ export const uploadBulkReferralCodes = async (file, expiryDate, referralAmount, 
     }
 };
 
-export const uploadBulkCouponCodes = async (file, expiryDate, referralAmount, usageLimit, shopkeeperId, type) => {
+export const uploadBulkCouponCodes = async (file, expiryDate, referralAmount, usageLimit, type) => {
     const token = localStorage.getItem("token");
+    const shopkeeperId = localStorage.getItem("shopkeeperId");
     const formData = new FormData();
     formData.append("file", file);
     formData.append("expiryDate", expiryDate);
@@ -89,7 +92,7 @@ export const uploadBulkCouponCodes = async (file, expiryDate, referralAmount, us
     formData.append("referrerAmount", 0);
     formData.append("usageLimit", usageLimit);
     formData.append("shopkeeperId", shopkeeperId);
-    formData.append("type", type);
+    formData.append("type", "C");
 
     try {
         const response = await fetch(
@@ -166,6 +169,7 @@ export const getAllCouponCode = async () => {
 export const getAllReferralCodeByShopkeeper = async (shopkeeperId) => {
     try {
         const token = localStorage.getItem("token");
+        const shopkeeperId = localStorage.getItem("shopkeeperId");
         const response = await fetch(`${import.meta.env.VITE_BACKEND_URL}/api/shopkeeper/getAllReferralCodeByShopkeeper/${shopkeeperId}`, {
             method: "GET",
             headers: {
@@ -192,6 +196,7 @@ export const getAllReferralCodeByShopkeeper = async (shopkeeperId) => {
 export const getAllCouponCodeByShopkeeper = async (shopkeeperId) => {
     try {
         const token = localStorage.getItem("token");
+        const shopkeeperId = localStorage.getItem("shopkeeperId");
         const response = await fetch(`${import.meta.env.VITE_BACKEND_URL}/api/shopkeeper/getAllCouponCodeByShopkeeper/${shopkeeperId}`, {
             method: "GET",
             headers: {
