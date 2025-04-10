@@ -1,10 +1,25 @@
-import React from "react";
+import {React,useEffect,useState} from "react";
 import { Link } from "react-router-dom";
 import { shopkeeperDemoData, colorPalette } from "../../utils/demoData";
 import DashboardGraphs from "../../components/Graphs/ShopkeeperGraphs/DashboardGraphs";
+import { getCurrentUser } from "../../api/signin";
 
 const DashboardHome = () => {
   const { subscription, stats } = shopkeeperDemoData;
+  const [userDetails, setUserDetails] = useState(null);
+   useEffect(() => {
+          const fetchData = async () => {
+              try {
+                  const user = await getCurrentUser();
+                  console.log("Fetched user:", user.id);
+                  setUserDetails(user);
+              } catch (error) {
+                  console.error("Error fetching monthly data:", error);
+              }
+          };
+  
+          fetchData();
+      }, []);
 
   return (
     <div className="min-h-screen p-8 bg-white">
@@ -36,7 +51,12 @@ const DashboardHome = () => {
       </section>
 
       <section>
-        <DashboardGraphs shopkeeperId={1}/>
+        {/* <DashboardGraphs shopkeeperId={userDetails?.id}/> */}
+        {userDetails?.id ? (
+        <DashboardGraphs shopkeeperId={userDetails.id} />
+      ) : (
+        <p>Loading...</p>
+      )}
       </section>
 
       {/* Graphs Area */}

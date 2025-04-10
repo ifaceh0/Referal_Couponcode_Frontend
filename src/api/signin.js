@@ -1,9 +1,8 @@
 import { useNavigate } from "react-router-dom";
-import { VITE_BACKEND_URL } from "../../src/apiConfig";
 
 // Signup API
 export const signupShopkeeperOld = async (formData) => {
-    const url = `${VITE_BACKEND_URL}/api/auth/signup`;
+    const url = `${import.meta.env.VITE_BACKEND_URL}/api/auth/signup`;
     console.log(formData);
 
     const response = await fetch(url, {
@@ -46,7 +45,7 @@ export const signupShopkeeperOld = async (formData) => {
 // };
 export const signupShopkeeper = async (formData) => {
     try {
-        const response = await fetch(`${VITE_BACKEND_URL}/api/auth/signup`, {
+        const response = await fetch(`${import.meta.env.VITE_BACKEND_URL}/api/auth/signup`, {
             method: "POST",
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify(formData),
@@ -65,12 +64,39 @@ export const signupShopkeeper = async (formData) => {
     }
 };
 
+export const getCurrentUser = async () => {
+    try {
+        const token = localStorage.getItem("token");
+        const response = await fetch(`${import.meta.env.VITE_BACKEND_URL}/api/auth/current-user`, {
+            method: "GET",
+            headers: {
+                "Content-Type": "application/json",
+                "Authorization": `Bearer ${token}`,
+            },
+            credentials: "include", // `withCredentials` is not needed in Fetch API
+        });
+
+        if (!response.ok) {
+            throw new Error(`Error: ${response.status}`);
+        }
+
+        const data = await response.json(); // Store parsed JSON
+          console.log("Response JSON:", data);
+          localStorage.setItem("shopkeeperId", data.id);
+
+        return data;
+    } catch (error) {
+        console.error("Failed to fetch referral codes:", error);
+        return [];
+    }
+};
+
 
 // import Cookies from "js-cookie"; // Install js-cookie package using `npm install js-cookie`
 
 // Login API
 export const loginShopkeeper = async (credentials) => {
-    const url = `${VITE_BACKEND_URL}/api/auth/login`;
+    const url = `${import.meta.env.VITE_BACKEND_URL}/api/auth/login`;
 
     const response = await fetch(url, {
         method: "POST",
@@ -88,7 +114,7 @@ export const loginShopkeeper = async (credentials) => {
     }
 
     const data = await response.json();
-
+    console.log(data)
     // Store token in cookie (e.g., expires in 7 days)
     // Cookies.set("token", data.token, { expires: 7 });
 
@@ -96,7 +122,7 @@ export const loginShopkeeper = async (credentials) => {
     localStorage.setItem("shopkeeper", JSON.stringify(data.shopkeeper));
     localStorage.setItem("data", JSON.stringify(data));
     localStorage.setItem("token", data.token);
-    localStorage.setItem("shopkeeperId", data.shopkeeperId);
+    
 
     return data;
 };
@@ -106,7 +132,7 @@ export const logoutShopkeeper = async () => {
     // Remove shopkeeper details and token from localStorage
     localStorage.removeItem("shopkeeper");
     localStorage.removeItem("token");
-
+    localStorage.removeItem("shopkeeperId")
     const url = `${VITE_BACKEND_URL}/logout`;
 
     const response = await fetch(url, {

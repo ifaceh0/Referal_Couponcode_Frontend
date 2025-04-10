@@ -3,7 +3,6 @@
 export async function generateReferralCode(data) {
   const url = `${import.meta.env.VITE_BACKEND_URL}/api/referral-codes/generate`;
   // const shopkeeperId = 1; // Static value for now
-  const shopkeeperId = localStorage.getItem("shopkeeperId");
 
   const formData = new FormData();
   formData.append('name', data.name);
