@@ -212,10 +212,15 @@ export const generateCouponCode = async (formData) => {
   const url = `${import.meta.env.VITE_BACKEND_URL}/api/shopkeepers/coupon-codes/generate`;
 
   const token = localStorage.getItem("token");
-  const shopkeeperId = 1; 
+  const userData = JSON.parse(localStorage.getItem("userData"));
+  const shopkeeperId = userData?.shopkeeperId; // Get shopkeeperId from user data
 
   if (!token) {
     throw new Error("Authentication token not found");
+  }
+
+  if (!shopkeeperId) {
+    throw new Error("Shopkeeper ID not found in user data");
   }
 
   const payload = {
@@ -247,10 +252,15 @@ export const uploadBulkCouponCodes = async (file, expiryDate, couponAmount, usag
   const url = `${import.meta.env.VITE_BACKEND_URL}/api/shopkeepers/coupon-codes/bulk-upload`;
 
   const token = localStorage.getItem("token");
-  const shopkeeperId = 1; 
+  const userData = JSON.parse(localStorage.getItem("userData"));
+  const shopkeeperId = userData?.shopkeeperId; // Get shopkeeperId from user data
 
   if (!token) {
     throw new Error("Authentication token not found");
+  }
+
+  if (!shopkeeperId) {
+    throw new Error("Shopkeeper ID not found in user data");
   }
 
   const formData = new FormData();
