@@ -290,7 +290,7 @@ const Scanner = () => {
         PaperProps={{
           style: {
             borderRadius: "12px",
-            width: "600px", // Increased width to accommodate two columns
+            width: "600px",
             maxWidth: "90%",
           },
         }}
@@ -300,9 +300,23 @@ const Scanner = () => {
         </DialogTitle>
         <DialogContent className="p-6 bg-white">
           {scannedData && (
-            <div className="flex">
-              {/* Left side - Customer Details */}
-              <div className="w-1/2 pr-4">
+            <div className="flex flex-col md:flex-row">
+              {/* Right side - Available Balance (shown first on mobile) */}
+              <div className="w-full md:w-1/2 md:pl-4 md:order-2 mb-6 md:mb-0 flex flex-col items-center justify-center md:border-l md:border-gray-200">
+                <div className="text-center">
+                  <p className="text-lg font-semibold text-gray-700 mb-2">Available Balance</p>
+                  <div className="text-4xl font-bold text-blue-600 mb-4">
+                    ${scannedData.availableBalance}
+                  </div>
+                  <div className="bg-blue-50 p-4 rounded-lg">
+                    <p className="text-sm text-gray-600 mb-1">Coupon Amount: ${scannedData.couponAmount}</p>
+                    <p className="text-sm text-gray-600">Usage Limit: {scannedData.couponUsageLimit}</p>
+                  </div>
+                </div>
+              </div>
+
+              {/* Left side - Customer Details (shown second on mobile) */}
+              <div className="w-full md:w-1/2 md:pr-4 md:order-1">
                 <table className="w-full border-collapse border border-gray-300 text-left">
                   <tbody>
                     <tr className="border-b border-gray-300">
@@ -327,20 +341,6 @@ const Scanner = () => {
                     </tr>
                   </tbody>
                 </table>
-              </div>
-
-              {/* Right side - Available Balance */}
-              <div className="w-1/2 pl-4 flex flex-col items-center justify-center border-l border-gray-200">
-                <div className="text-center">
-                  <p className="text-lg font-semibold text-gray-700 mb-2">Available Balance</p>
-                  <div className="text-4xl font-bold text-blue-600 mb-4">
-                    ${scannedData.availableBalance}
-                  </div>
-                  <div className="bg-blue-50 p-4 rounded-lg">
-                    <p className="text-sm text-gray-600 mb-1">Coupon Amount: ${scannedData.couponAmount}</p>
-                    <p className="text-sm text-gray-600">Usage Limit: {scannedData.couponUsageLimit}</p>
-                  </div>
-                </div>
               </div>
             </div>
           )}
