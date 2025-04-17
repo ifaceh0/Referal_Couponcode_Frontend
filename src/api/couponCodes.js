@@ -131,15 +131,91 @@
 // //   };
   
 
+// export const generateCouponCode = async (formData) => {
+//   const url = `${import.meta.env.VITE_BACKEND_URL}/api/shopkeepers/coupon-codes/generate`;
+  
+//   // Get shopkeeper ID and token from localStorage
+//   const shopkeeperId = localStorage.getItem("shopkeeperId");
+//   const token = localStorage.getItem("token"); // Assuming you store the token with key "token"
+
+//   if (!shopkeeperId || !token) {
+//     throw new Error("Shopkeeper ID or authentication token not found");
+//   }
+
+//   const payload = {
+//     ...formData,
+//     shopkeeper: {
+//       shopkeeperId: shopkeeperId
+//     }
+//   };
+
+//   const response = await fetch(url, {
+//     method: 'POST',
+//     headers: {
+//       'Content-Type': 'application/json',
+//       'Authorization': `Bearer ${token}` // Include the token in the Authorization header
+//     },
+//     credentials: 'include',
+//     body: JSON.stringify(payload),
+//   });
+
+//   if (!response.ok) {
+//     const error = await response.json();
+//     throw new Error(error.message || 'Failed to generate coupon code');
+//   }
+
+//   return response.json();
+// };
+
+// export const uploadBulkCouponCodes = async (file, expiryDate, couponAmount, usageLimit) => {
+//   const url = `${import.meta.env.VITE_BACKEND_URL}/api/shopkeepers/coupon-codes/bulk-upload`;
+
+//   // Get shopkeeper ID and token from localStorage
+//   const shopkeeperId = localStorage.getItem("shopkeeperId");
+//   const token = localStorage.getItem("token");
+
+//   if (!shopkeeperId || !token) {
+//     throw new Error("Shopkeeper ID or authentication token not found");
+//   }
+
+//   const formData = new FormData();
+//   formData.append('file', file);
+//   formData.append('expiryDate', expiryDate);
+//   formData.append('usageLimit', usageLimit);
+//   formData.append('couponAmount', couponAmount);
+
+//   const shopkeeper = {
+//     shopkeeperId: shopkeeperId
+//   };
+
+//   formData.append('shopkeeper', JSON.stringify(shopkeeper));
+
+//   const response = await fetch(url, {
+//     method: 'POST',
+//     headers: {
+//       'Authorization': `Bearer ${token}` // Include the token in the Authorization header
+//     },
+//     credentials: 'include',
+//     body: formData,
+//   });
+
+//   if (!response.ok) {
+//     const error = await response.json();
+//     throw new Error(error.message || 'Failed to upload bulk coupon codes');
+//   }
+
+//   return response.json();
+// };
+  
+
 export const generateCouponCode = async (formData) => {
   const url = `${import.meta.env.VITE_BACKEND_URL}/api/shopkeepers/coupon-codes/generate`;
-  
-  // Get shopkeeper ID and token from localStorage
-  const shopkeeperId = localStorage.getItem("shopkeeperId");
-  const token = localStorage.getItem("token"); // Assuming you store the token with key "token"
 
-  if (!shopkeeperId || !token) {
-    throw new Error("Shopkeeper ID or authentication token not found");
+  const token = localStorage.getItem("token");
+  const shopkeeperId = 1; 
+
+  if (!token) {
+    throw new Error("Authentication token not found");
   }
 
   const payload = {
@@ -153,7 +229,7 @@ export const generateCouponCode = async (formData) => {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
-      'Authorization': `Bearer ${token}` // Include the token in the Authorization header
+      'Authorization': `Bearer ${token}`
     },
     credentials: 'include',
     body: JSON.stringify(payload),
@@ -170,12 +246,11 @@ export const generateCouponCode = async (formData) => {
 export const uploadBulkCouponCodes = async (file, expiryDate, couponAmount, usageLimit) => {
   const url = `${import.meta.env.VITE_BACKEND_URL}/api/shopkeepers/coupon-codes/bulk-upload`;
 
-  // Get shopkeeper ID and token from localStorage
-  const shopkeeperId = localStorage.getItem("shopkeeperId");
   const token = localStorage.getItem("token");
+  const shopkeeperId = 1; 
 
-  if (!shopkeeperId || !token) {
-    throw new Error("Shopkeeper ID or authentication token not found");
+  if (!token) {
+    throw new Error("Authentication token not found");
   }
 
   const formData = new FormData();
@@ -184,16 +259,13 @@ export const uploadBulkCouponCodes = async (file, expiryDate, couponAmount, usag
   formData.append('usageLimit', usageLimit);
   formData.append('couponAmount', couponAmount);
 
-  const shopkeeper = {
-    shopkeeperId: shopkeeperId
-  };
-
+  const shopkeeper = { shopkeeperId: shopkeeperId };
   formData.append('shopkeeper', JSON.stringify(shopkeeper));
 
   const response = await fetch(url, {
     method: 'POST',
     headers: {
-      'Authorization': `Bearer ${token}` // Include the token in the Authorization header
+      'Authorization': `Bearer ${token}`
     },
     credentials: 'include',
     body: formData,
@@ -206,4 +278,3 @@ export const uploadBulkCouponCodes = async (file, expiryDate, couponAmount, usag
 
   return response.json();
 };
-  
