@@ -212,7 +212,7 @@ export const generateCouponCode = async (formData) => {
   const url = `${import.meta.env.VITE_BACKEND_URL}/api/shopkeepers/coupon-codes/generate`;
 
   const token = localStorage.getItem("token");
-  const userData = JSON.parse(localStorage.getItem("userData"));
+  // const userData = JSON.parse(localStorage.getItem("userData"));
   const shopkeeperId = userData?.shopkeeperId; // Get shopkeeperId from user data
 
   if (!token) {
