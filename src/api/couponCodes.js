@@ -252,7 +252,7 @@ export const uploadBulkCouponCodes = async (file, expiryDate, couponAmount, usag
   const url = `${import.meta.env.VITE_BACKEND_URL}/api/shopkeepers/coupon-codes/bulk-upload`;
 
   const token = localStorage.getItem("token");
-  const userData = JSON.parse(localStorage.getItem("userData"));
+  // const userData = JSON.parse(localStorage.getItem("userData"));
   const shopkeeperId = userData?.shopkeeperId; // Get shopkeeperId from user data
 
   if (!token) {
