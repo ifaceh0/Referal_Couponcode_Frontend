@@ -179,174 +179,63 @@
 //   };
   
 
-// Generate referral code using HttpOnly cookie authentication
-// export const generateReferralCodeCookie = async (formData) => {
-//   const url = `${import.meta.env.VITE_BACKEND_URL}/api/shopkeepers/referral-codes/generate`;
-
-//   const response = await fetch(url, {
-//     method: 'POST',
-//     headers: {
-//       'Content-Type': 'application/json',
-//     },
-//     credentials: 'include', // Send HttpOnly session cookies
-//     body: JSON.stringify(formData),
-//   });
-
-//   if (!response.ok) {
-//     const error = await response.json();
-//     throw new Error(error.message || 'Failed to generate referral code');
-//   }
-
-//   return response.json();
-// };
-
-// // Generate referral code using Bearer token
-// export const generateReferralCode = async (formData) => {
-//   const url = `${import.meta.env.VITE_BACKEND_URL}/api/shopkeepers/referral-codes/generate`;
-
-//   const token = localStorage.getItem("token");
-
-//   if (!token) {
-//     throw new Error("Authorization token not found. Please log in again.");
-//   }
-
-//   const response = await fetch(url, {
-//     method: "POST",
-//     headers: {
-//       "Content-Type": "application/json",
-//       "Authorization": `Bearer ${token}`,
-//     },
-//     credentials: 'include',
-//     body: JSON.stringify(formData),
-//   });
-
-//   if (!response.ok) {
-//     const error = await response.json();
-//     throw new Error(error.message || "Failed to generate referral code");
-//   }
-
-//   return response.json();
-// };
-
-// // Upload bulk referral codes
-// export const uploadBulkReferralCodes = async (
-//   file,
-//   expiryDate,
-//   referralAmount,
-//   referrerAmount,
-//   usageLimit,
-//   type
-// ) => {
-//   const url = `${import.meta.env.VITE_BACKEND_URL}/api/shopkeepers/referral-codes/bulk-upload`;
-
-//   const formData = new FormData();
-//   formData.append('file', file);
-//   formData.append('expiryDate', expiryDate);
-//   formData.append('referralAmount', referralAmount);
-//   formData.append('referrerAmount', referrerAmount);
-//   formData.append('usageLimit', usageLimit);
-//   formData.append('type', type);
-
-//   const token = localStorage.getItem("token");
-
-//   const response = await fetch(url, {
-//     method: 'POST',
-//     headers: token ? { Authorization: `Bearer ${token}` } : undefined,
-//     credentials: 'include',
-//     body: formData,
-//   });
-
-//   if (!response.ok) {
-//     const error = await response.json();
-//     throw new Error(error.message || 'Failed to upload bulk referral codes');
-//   }
-
-//   return response.json();
-// };
-
-// // Get all referral codes by shopkeeper (authenticated via token or cookie)
-// export const getAllReferralCodesByShopkeeper = async () => {
-//   const url = `${import.meta.env.VITE_BACKEND_URL}/api/shopkeepers/referral-codes`;
-
-//   const token = localStorage.getItem("token");
-
-//   const response = await fetch(url, {
-//     method: 'GET',
-//     headers: token ? { Authorization: `Bearer ${token}` } : undefined,
-//     credentials: 'include',
-//   });
-
-//   if (!response.ok) {
-//     const error = await response.json();
-//     throw new Error(error.message || 'Failed to fetch referral codes');
-//   }
-
-//   return response.json();
-// };
-
-
-// Cookie-based authentication version (for session-based auth)
+//Generate referral code using HttpOnly cookie authentication
 export const generateReferralCodeCookie = async (formData) => {
   const url = `${import.meta.env.VITE_BACKEND_URL}/api/shopkeepers/referral-codes/generate`;
 
-  try {
-    const response = await fetch(url, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      credentials: 'include', // Sends HttpOnly cookies automatically
-      body: JSON.stringify(formData),
-    });
+  const response = await fetch(url, {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    credentials: 'include', // Send HttpOnly session cookies
+    body: JSON.stringify(formData),
+  });
 
-    if (!response.ok) {
-      const errorData = await response.json();
-      throw new Error(errorData.message || 'Failed to generate referral code');
-    }
-
-    return await response.json();
-  } catch (error) {
-    console.error('Referral code generation failed:', error);
-    throw new Error(error.message || 'Network error during referral code generation');
+  if (!response.ok) {
+    const error = await response.json();
+    throw new Error(error.message || 'Failed to generate referral code');
   }
+
+  return response.json();
 };
 
-// Token-based authentication version
+// Generate referral code using Bearer token
 export const generateReferralCode = async (formData) => {
   const url = `${import.meta.env.VITE_BACKEND_URL}/api/shopkeepers/referral-codes/generate`;
+
   const token = localStorage.getItem("token");
 
   if (!token) {
     throw new Error("Authorization token not found. Please log in again.");
   }
 
-  try {
-    const response = await fetch(url, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        "Authorization": `Bearer ${token}`,
-      },
-      credentials: 'include',
-      body: JSON.stringify(formData),
-    });
+  const response = await fetch(url, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+      "Authorization": `Bearer ${token}`,
+    },
+    credentials: 'include',
+    body: JSON.stringify(formData),
+  });
 
-    if (!response.ok) {
-      const errorData = await response.json();
-      throw new Error(errorData.message || "Failed to generate referral code");
-    }
-
-    return await response.json();
-  } catch (error) {
-    console.error('Referral code generation failed:', error);
-    throw new Error(error.message || 'Network error during referral code generation');
+  if (!response.ok) {
+    const error = await response.json();
+    throw new Error(error.message || "Failed to generate referral code");
   }
+
+  return response.json();
 };
 
-// Bulk upload with flexible auth (token or cookie)
+// Upload bulk referral codes
 export const uploadBulkReferralCodes = async (
   file,
-  { expiryDate, referralAmount, referrerAmount, usageLimit, type }
+  expiryDate,
+  referralAmount,
+  referrerAmount,
+  usageLimit,
+  type
 ) => {
   const url = `${import.meta.env.VITE_BACKEND_URL}/api/shopkeepers/referral-codes/bulk-upload`;
 
@@ -359,49 +248,39 @@ export const uploadBulkReferralCodes = async (
   formData.append('type', type);
 
   const token = localStorage.getItem("token");
-  const headers = token ? { Authorization: `Bearer ${token}` } : {};
 
-  try {
-    const response = await fetch(url, {
-      method: 'POST',
-      headers,
-      credentials: 'include',
-      body: formData,
-    });
+  const response = await fetch(url, {
+    method: 'POST',
+    headers: token ? { Authorization: `Bearer ${token}` } : undefined,
+    credentials: 'include',
+    body: formData,
+  });
 
-    if (!response.ok) {
-      const errorData = await response.json();
-      throw new Error(errorData.message || 'Bulk upload failed');
-    }
-
-    return await response.json();
-  } catch (error) {
-    console.error('Bulk referral code upload failed:', error);
-    throw new Error(error.message || 'Network error during bulk upload');
+  if (!response.ok) {
+    const error = await response.json();
+    throw new Error(error.message || 'Failed to upload bulk referral codes');
   }
+
+  return response.json();
 };
 
-// Get all referral codes with flexible auth
+// Get all referral codes by shopkeeper (authenticated via token or cookie)
 export const getAllReferralCodesByShopkeeper = async () => {
   const url = `${import.meta.env.VITE_BACKEND_URL}/api/shopkeepers/referral-codes`;
+
   const token = localStorage.getItem("token");
-  const headers = token ? { Authorization: `Bearer ${token}` } : {};
 
-  try {
-    const response = await fetch(url, {
-      method: 'GET',
-      headers,
-      credentials: 'include',
-    });
+  const response = await fetch(url, {
+    method: 'GET',
+    headers: token ? { Authorization: `Bearer ${token}` } : undefined,
+    credentials: 'include',
+  });
 
-    if (!response.ok) {
-      const errorData = await response.json();
-      throw new Error(errorData.message || 'Failed to fetch referral codes');
-    }
-
-    return await response.json();
-  } catch (error) {
-    console.error('Fetching referral codes failed:', error);
-    throw new Error(error.message || 'Network error while fetching referral codes');
+  if (!response.ok) {
+    const error = await response.json();
+    throw new Error(error.message || 'Failed to fetch referral codes');
   }
+
+  return response.json();
 };
+
