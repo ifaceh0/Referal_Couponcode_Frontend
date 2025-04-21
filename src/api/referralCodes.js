@@ -27,113 +27,113 @@
 
 //   return response.json();
 // };
-export const generateReferralCodeCookie = async (formData) => {
-  const url = `${import.meta.env.VITE_BACKEND_URL}/api/shopkeepers/referral-codes/generate`;
+// export const generateReferralCodeCookie = async (formData) => {
+//   const url = `${import.meta.env.VITE_BACKEND_URL}/api/shopkeepers/referral-codes/generate`;
 
-  const payload = {
-    ...formData,
-    shopkeeper: {
-      shopkeeperId: 1,  // You can retrieve the shopkeeper ID as needed
-    },
-  };
+//   const payload = {
+//     ...formData,
+//     shopkeeper: {
+//       shopkeeperId: 1,  // You can retrieve the shopkeeper ID as needed
+//     },
+//   };
 
-  const response = await fetch(url, {
-    method: 'POST',
-    headers: {
-      'Content-Type': 'application/json',
-    },
-    credentials: true,
-    body: JSON.stringify(payload),
-    // credentials: 'include',  // Send the HttpOnly token cookie with the request
-  });
+//   const response = await fetch(url, {
+//     method: 'POST',
+//     headers: {
+//       'Content-Type': 'application/json',
+//     },
+//     credentials: true,
+//     body: JSON.stringify(payload),
+//     // credentials: 'include',  // Send the HttpOnly token cookie with the request
+//   });
 
-  if (!response.ok) {
-    const error = await response.json();
-    throw new Error(error.message || 'Failed to generate referral code');
-  }
+//   if (!response.ok) {
+//     const error = await response.json();
+//     throw new Error(error.message || 'Failed to generate referral code');
+//   }
 
-  return response.json();
-};
+//   return response.json();
+// };
 
-export const generateReferralCode = async (formData) => {
-  const url = `${import.meta.env.VITE_BACKEND_URL}/api/shopkeepers/referral-codes/generate`;
+// export const generateReferralCode = async (formData) => {
+//   const url = `${import.meta.env.VITE_BACKEND_URL}/api/shopkeepers/referral-codes/generate`;
 
-  // Retrieve token and shopkeeper data from localStorage
-  // const token = localStorage.getItem("token");
-  // const shopkeeper = JSON.parse(localStorage.getItem("shopkeeper"));
+//   // Retrieve token and shopkeeper data from localStorage
+//   // const token = localStorage.getItem("token");
+//   // const shopkeeper = JSON.parse(localStorage.getItem("shopkeeper"));
 
-  // if (!token || !shopkeeper) {
-  //   throw new Error("Authorization details not found. Please log in again.");
-  // }
+//   // if (!token || !shopkeeper) {
+//   //   throw new Error("Authorization details not found. Please log in again.");
+//   // }
 
-  const payload = {
-    ...formData,
-    shopkeeper: {
-      shopkeeperId: 5, // Get shopkeeperId from localStorage
-      // shopkeeperId: shopkeeper.id, // Get shopkeeperId from localStorage
-    },
-  };
+//   const payload = {
+//     ...formData,
+//     shopkeeper: {
+//       shopkeeperId: 5, // Get shopkeeperId from localStorage
+//       // shopkeeperId: shopkeeper.id, // Get shopkeeperId from localStorage
+//     },
+//   };
 
-  const response = await fetch(url, {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-      // Authorization: `Bearer ${token}`, // Include token in Authorization header
-    },
-    // withCredntials: true,
-    credentials: 'include',
-    body: JSON.stringify(payload),
-  });
+//   const response = await fetch(url, {
+//     method: "POST",
+//     headers: {
+//       "Content-Type": "application/json",
+//       // Authorization: `Bearer ${token}`, // Include token in Authorization header
+//     },
+//     // withCredntials: true,
+//     credentials: 'include',
+//     body: JSON.stringify(payload),
+//   });
 
-  if (!response.ok) {
-    const error = await response.json();
-    throw new Error(error.message || "Failed to generate referral code");
-  }
-  return response.json();
-};
+//   if (!response.ok) {
+//     const error = await response.json();
+//     throw new Error(error.message || "Failed to generate referral code");
+//   }
+//   return response.json();
+// };
 
 
 
-// Upload bulk referral codes
-export const uploadBulkReferralCodes = async (file, expiryDate, referralAmount) => {
-  const url = `${import.meta.env.VITE_BACKEND_URL}/api/shopkeepers/referral-codes/bulk-upload`;
+// // Upload bulk referral codes
+// export const uploadBulkReferralCodes = async (file, expiryDate, referralAmount) => {
+//   const url = `${import.meta.env.VITE_BACKEND_URL}/api/shopkeepers/referral-codes/bulk-upload`;
 
-  const formData = new FormData();
-  formData.append('file', file);
-  formData.append('expiryDate', expiryDate);
-  formData.append('referralAmount', referralAmount);
+//   const formData = new FormData();
+//   formData.append('file', file);
+//   formData.append('expiryDate', expiryDate);
+//   formData.append('referralAmount', referralAmount);
 
-  const shopkeeper = {
-    shopkeeperId: 1, // Replace with actual ID or fetch dynamically if needed
-    name: "Awesome Shop",
-    email: "contact@example.com",
-    phone: "+1234567890",
-    logo: "https://example.com/logo.png",
-    companyName: "Awesome Shop",
-    companyAddress: "123 Market Street, City, Country",
-    companyEmail: "contact@example.com",
-    companyPhone: "+1234567890",
-    referralLink: "https://example.com/referral/ABC123",
-    subscription: null,
-    settings: null,
-    generatedCodes: [],
-  };
+//   const shopkeeper = {
+//     shopkeeperId: 1, // Replace with actual ID or fetch dynamically if needed
+//     name: "Awesome Shop",
+//     email: "contact@example.com",
+//     phone: "+1234567890",
+//     logo: "https://example.com/logo.png",
+//     companyName: "Awesome Shop",
+//     companyAddress: "123 Market Street, City, Country",
+//     companyEmail: "contact@example.com",
+//     companyPhone: "+1234567890",
+//     referralLink: "https://example.com/referral/ABC123",
+//     subscription: null,
+//     settings: null,
+//     generatedCodes: [],
+//   };
 
-  formData.append('shopkeeper', JSON.stringify(shopkeeper));
+//   formData.append('shopkeeper', JSON.stringify(shopkeeper));
 
-  const response = await fetch(url, {
-    method: 'POST',
-    credentials: true,
-    body: formData,
-  });
+//   const response = await fetch(url, {
+//     method: 'POST',
+//     credentials: true,
+//     body: formData,
+//   });
 
-  if (!response.ok) {
-    const error = await response.json();
-    throw new Error(error.message || 'Failed to upload bulk referral codes');
-  }
+//   if (!response.ok) {
+//     const error = await response.json();
+//     throw new Error(error.message || 'Failed to upload bulk referral codes');
+//   }
 
-  return response.json();
-};
+//   return response.json();
+// };
 
 // Additional referral code-related API functions can be added here.
 
@@ -178,3 +178,108 @@ export const uploadBulkReferralCodes = async (file, expiryDate, referralAmount) 
 //     return response.ok;
 //   };
   
+
+// Generate referral code using HttpOnly cookie authentication
+export const generateReferralCodeCookie = async (formData) => {
+  const url = `${import.meta.env.VITE_BACKEND_URL}/api/shopkeepers/referral-codes/generate`;
+
+  const response = await fetch(url, {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    credentials: 'include', // Send HttpOnly session cookies
+    body: JSON.stringify(formData),
+  });
+
+  if (!response.ok) {
+    const error = await response.json();
+    throw new Error(error.message || 'Failed to generate referral code');
+  }
+
+  return response.json();
+};
+
+// Generate referral code using Bearer token
+export const generateReferralCode = async (formData) => {
+  const url = `${import.meta.env.VITE_BACKEND_URL}/api/shopkeepers/referral-codes/generate`;
+
+  const token = localStorage.getItem("token");
+
+  if (!token) {
+    throw new Error("Authorization token not found. Please log in again.");
+  }
+
+  const response = await fetch(url, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+      "Authorization": `Bearer ${token}`,
+    },
+    credentials: 'include',
+    body: JSON.stringify(formData),
+  });
+
+  if (!response.ok) {
+    const error = await response.json();
+    throw new Error(error.message || "Failed to generate referral code");
+  }
+
+  return response.json();
+};
+
+// Upload bulk referral codes
+export const uploadBulkReferralCodes = async (
+  file,
+  expiryDate,
+  referralAmount,
+  referrerAmount,
+  usageLimit,
+  type
+) => {
+  const url = `${import.meta.env.VITE_BACKEND_URL}/api/shopkeepers/referral-codes/bulk-upload`;
+
+  const formData = new FormData();
+  formData.append('file', file);
+  formData.append('expiryDate', expiryDate);
+  formData.append('referralAmount', referralAmount);
+  formData.append('referrerAmount', referrerAmount);
+  formData.append('usageLimit', usageLimit);
+  formData.append('type', type);
+
+  const token = localStorage.getItem("token");
+
+  const response = await fetch(url, {
+    method: 'POST',
+    headers: token ? { Authorization: `Bearer ${token}` } : undefined,
+    credentials: 'include',
+    body: formData,
+  });
+
+  if (!response.ok) {
+    const error = await response.json();
+    throw new Error(error.message || 'Failed to upload bulk referral codes');
+  }
+
+  return response.json();
+};
+
+// Get all referral codes by shopkeeper (authenticated via token or cookie)
+export const getAllReferralCodesByShopkeeper = async () => {
+  const url = `${import.meta.env.VITE_BACKEND_URL}/api/shopkeepers/referral-codes`;
+
+  const token = localStorage.getItem("token");
+
+  const response = await fetch(url, {
+    method: 'GET',
+    headers: token ? { Authorization: `Bearer ${token}` } : undefined,
+    credentials: 'include',
+  });
+
+  if (!response.ok) {
+    const error = await response.json();
+    throw new Error(error.message || 'Failed to fetch referral codes');
+  }
+
+  return response.json();
+};
