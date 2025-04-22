@@ -165,10 +165,12 @@ export const getAllCouponCode = async () => {
     }
 };
 
-export const getAllReferralCodeByShopkeeper = async (shopkeeperId) => {
+// export const getAllReferralCodeByShopkeeper = async (shopkeeperId) => {
+    export const getAllReferralCodeByShopkeeper = async () => { 
     try {
         const token = localStorage.getItem("token");
-        const response = await fetch(`${import.meta.env.VITE_BACKEND_URL}/api/shopkeeper/getAllReferralCodeByShopkeeper/${shopkeeperId}`, {
+        // const response = await fetch(`${import.meta.env.VITE_BACKEND_URL}/api/shopkeeper/getAllReferralCodeByShopkeeper/${shopkeeperId}`, {
+            const response = await fetch(`${import.meta.env.VITE_BACKEND_URL}/api/shopkeeper/getAllReferralCodeByShopkeeper`, {
             method: "GET",
             headers: {
                 "Content-Type": "application/json",
