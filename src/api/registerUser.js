@@ -1,221 +1,221 @@
-// export const registerUser = async (userData,shopkeeperId) => {
-//     try {
-//         const token = localStorage.getItem("token");
-//         //  const shopkeeperId = localStorage.getItem("shopkeeperId");
-//         const response = await fetch(`${import.meta.env.VITE_BACKEND_URL}/api/shopkeeper/register-user?shopkeeperId=${shopkeeperId}`, {
-//             method: "POST",
-//             headers: {
-//                 "Content-Type": "application/json",
-//                 "Authorization": `Bearer ${token}`,
-//             },
-//             body: JSON.stringify(userData),
-//             //   withCredntials: true,
-//             credentials: 'include',
-//         });
+export const registerUser = async (userData,shopkeeperId) => {
+    try {
+        const token = localStorage.getItem("token");
+        //  const shopkeeperId = localStorage.getItem("shopkeeperId");
+        const response = await fetch(`${import.meta.env.VITE_BACKEND_URL}/api/shopkeeper/register-user?shopkeeperId=${shopkeeperId}`, {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+                "Authorization": `Bearer ${token}`,
+            },
+            body: JSON.stringify(userData),
+            //   withCredntials: true,
+            credentials: 'include',
+        });
 
-//         const result = await response.text(); // Since the backend returns a plain text response
+        const result = await response.text(); // Since the backend returns a plain text response
 
-//         return result; // Returns success or error message
-//     } catch (error) {
-//         console.error("Error registering user:", error);
-//         return "Failed to register user. Please try again.";
-//     }
+        return result; // Returns success or error message
+    } catch (error) {
+        console.error("Error registering user:", error);
+        return "Failed to register user. Please try again.";
+    }
+};
+
+// export const uploadBulkReferralCodes = async (file, expiryDate, referralAmount, shopkeeperId, type) => {
+//   const formData = new FormData();
+//   formData.append("file", file);
+//   formData.append("expiryDate", expiryDate);
+//   formData.append("referralAmount", referralAmount);
+//   formData.append("type", type);
+// //   formData.append("referrerAmount", referrerAmount);
+
+//   try {
+//     const response = await fetch(
+//       `${baseUrl.baseUrl}/api/shopkeeper/upload-bulk-referral-codes?shopkeeperId=${shopkeeperId}`,
+//       {
+//         method: "POST",
+//         body: formData,
+//         // withCredentials: true,
+//         credentials: "include",
+//       }
+//     );
+
+//     const result = await response.json();
+//     return result; // Expected to return { message: "...", generatedCodes: [...] }
+//   } catch (error) {
+//     console.error("Error uploading bulk referral codes:", error);
+//     return { message: "Failed to upload referral codes.", generatedCodes: [] };
+//   }
 // };
 
-// // export const uploadBulkReferralCodes = async (file, expiryDate, referralAmount, shopkeeperId, type) => {
-// //   const formData = new FormData();
-// //   formData.append("file", file);
-// //   formData.append("expiryDate", expiryDate);
-// //   formData.append("referralAmount", referralAmount);
-// //   formData.append("type", type);
-// // //   formData.append("referrerAmount", referrerAmount);
+export const uploadBulkReferralCodes = async (file, expiryDate, referralAmount, referrerAmount,usageLimit,shopkeeperId, type) => {
+    const token = localStorage.getItem("token");
+    const formData = new FormData();
+    formData.append("file", file);
+    formData.append("expiryDate", expiryDate);
+    formData.append("referralAmount", referralAmount);
+    formData.append("referrerAmount", referrerAmount);
+    formData.append("usageLimit", usageLimit);
+    formData.append("shopkeeperId", shopkeeperId);
+    formData.append("type", type);
 
-// //   try {
-// //     const response = await fetch(
-// //       `${baseUrl.baseUrl}/api/shopkeeper/upload-bulk-referral-codes?shopkeeperId=${shopkeeperId}`,
-// //       {
-// //         method: "POST",
-// //         body: formData,
-// //         // withCredentials: true,
-// //         credentials: "include",
-// //       }
-// //     );
+    try {
+        const response = await fetch(
+            `${import.meta.env.VITE_BACKEND_URL}/api/shopkeeper/upload-bulk-referral-codes`,
+            {
+                method: "POST",
+                body: formData,
+                credentials: "include", // If authentication is needed
+                headers: {
+                    Authorization: `Bearer ${token}`,
+                },
+            }
+        );
 
-// //     const result = await response.json();
-// //     return result; // Expected to return { message: "...", generatedCodes: [...] }
-// //   } catch (error) {
-// //     console.error("Error uploading bulk referral codes:", error);
-// //     return { message: "Failed to upload referral codes.", generatedCodes: [] };
-// //   }
-// // };
+        const result = await response.json();
+        return result; // Expected response { message: "...", generatedCodes: [...] }
+    } catch (error) {
+        console.error("Error uploading bulk referral codes:", error);
+        return { message: "Failed to upload referral codes.", generatedCodes: [] };
+    }
+};
 
-// export const uploadBulkReferralCodes = async (file, expiryDate, referralAmount, referrerAmount,usageLimit,shopkeeperId, type) => {
-//     const token = localStorage.getItem("token");
-//     const formData = new FormData();
-//     formData.append("file", file);
-//     formData.append("expiryDate", expiryDate);
-//     formData.append("referralAmount", referralAmount);
-//     formData.append("referrerAmount", referrerAmount);
-//     formData.append("usageLimit", usageLimit);
-//     formData.append("shopkeeperId", shopkeeperId);
-//     formData.append("type", type);
+export const uploadBulkCouponCodes = async (file, expiryDate, referralAmount, usageLimit,shopkeeperId, type) => {
+    const token = localStorage.getItem("token");
+    // const shopkeeperId = localStorage.getItem("shopkeeperId");
+    const formData = new FormData();
+    formData.append("file", file);
+    formData.append("expiryDate", expiryDate);
+    formData.append("referralAmount", referralAmount);
+    formData.append("referrerAmount", 0);
+    formData.append("usageLimit", usageLimit);
+    formData.append("shopkeeperId", shopkeeperId);
+    formData.append("type", type);
 
-//     try {
-//         const response = await fetch(
-//             `${import.meta.env.VITE_BACKEND_URL}/api/shopkeeper/upload-bulk-referral-codes`,
-//             {
-//                 method: "POST",
-//                 body: formData,
-//                 credentials: "include", // If authentication is needed
-//                 headers: {
-//                     Authorization: `Bearer ${token}`,
-//                 },
-//             }
-//         );
+    try {
+        const response = await fetch(
+            `${import.meta.env.VITE_BACKEND_URL}/api/shopkeeper/upload-bulk-referral-codes`,
+            {
+                method: "POST",
+                body: formData,
+                credentials: "include", // If authentication is needed
+                headers: {
+                    Authorization: `Bearer ${token}`,
+                },
+            }
+        );
 
-//         const result = await response.json();
-//         return result; // Expected response { message: "...", generatedCodes: [...] }
-//     } catch (error) {
-//         console.error("Error uploading bulk referral codes:", error);
-//         return { message: "Failed to upload referral codes.", generatedCodes: [] };
-//     }
-// };
-
-// export const uploadBulkCouponCodes = async (file, expiryDate, referralAmount, usageLimit,shopkeeperId, type) => {
-//     const token = localStorage.getItem("token");
-//     // const shopkeeperId = localStorage.getItem("shopkeeperId");
-//     const formData = new FormData();
-//     formData.append("file", file);
-//     formData.append("expiryDate", expiryDate);
-//     formData.append("referralAmount", referralAmount);
-//     formData.append("referrerAmount", 0);
-//     formData.append("usageLimit", usageLimit);
-//     formData.append("shopkeeperId", shopkeeperId);
-//     formData.append("type", type);
-
-//     try {
-//         const response = await fetch(
-//             `${import.meta.env.VITE_BACKEND_URL}/api/shopkeeper/upload-bulk-referral-codes`,
-//             {
-//                 method: "POST",
-//                 body: formData,
-//                 credentials: "include", // If authentication is needed
-//                 headers: {
-//                     Authorization: `Bearer ${token}`,
-//                 },
-//             }
-//         );
-
-//         const result = await response.json();
-//         return result; // Expected response { message: "...", generatedCodes: [...] }
-//     } catch (error) {
-//         console.error("Error uploading bulk coupon codes:", error);
-//         return { message: "Failed to upload coupon codes.", generatedCodes: [] };
-//     }
-// };
+        const result = await response.json();
+        return result; // Expected response { message: "...", generatedCodes: [...] }
+    } catch (error) {
+        console.error("Error uploading bulk coupon codes:", error);
+        return { message: "Failed to upload coupon codes.", generatedCodes: [] };
+    }
+};
 
 
-// export const getAllReferralCode = async () => {
-//     try {
-//         const token = localStorage.getItem("token");
-//         const response = await fetch(`${import.meta.env.VITE_BACKEND_URL}/api/shopkeeper/getAllReferralCode`, {
-//             method: "GET",
-//             headers: {
-//                 "Content-Type": "application/json",
-//                 "Authorization": `Bearer ${token}`,
-//             },
-//             withCredentials: true,
-//             credentials: "include",
-//         });
+export const getAllReferralCode = async () => {
+    try {
+        const token = localStorage.getItem("token");
+        const response = await fetch(`${import.meta.env.VITE_BACKEND_URL}/api/shopkeeper/getAllReferralCode`, {
+            method: "GET",
+            headers: {
+                "Content-Type": "application/json",
+                "Authorization": `Bearer ${token}`,
+            },
+            withCredentials: true,
+            credentials: "include",
+        });
 
-//         if (!response.ok) {
-//             throw new Error(`Error: ${response.status}`);
-//         }
-//         console.log("response: ", response);
+        if (!response.ok) {
+            throw new Error(`Error: ${response.status}`);
+        }
+        console.log("response: ", response);
 
-//         return await response.json();
-//     } catch (error) {
-//         console.error("Failed to fetch referral codes:", error);
-//         return [];
-//     }
-// };
+        return await response.json();
+    } catch (error) {
+        console.error("Failed to fetch referral codes:", error);
+        return [];
+    }
+};
 
-// export const getAllCouponCode = async () => {
-//     try {
-//         const token = localStorage.getItem("token");
-//         const response = await fetch(`${import.meta.env.VITE_BACKEND_URL}/api/shopkeeper/getAllCouponCode`, {
-//             method: "GET",
-//             headers: {
-//                 "Content-Type": "application/json",
-//                 "Authorization": `Bearer ${token}`,
-//             },
-//             withCredentials: true,
-//             credentials: "include",
-//         });
+export const getAllCouponCode = async () => {
+    try {
+        const token = localStorage.getItem("token");
+        const response = await fetch(`${import.meta.env.VITE_BACKEND_URL}/api/shopkeeper/getAllCouponCode`, {
+            method: "GET",
+            headers: {
+                "Content-Type": "application/json",
+                "Authorization": `Bearer ${token}`,
+            },
+            withCredentials: true,
+            credentials: "include",
+        });
 
-//         if (!response.ok) {
-//             throw new Error(`Error: ${response.status}`);
-//         }
-//         console.log("response: ", response);
+        if (!response.ok) {
+            throw new Error(`Error: ${response.status}`);
+        }
+        console.log("response: ", response);
 
-//         return await response.json();
-//     } catch (error) {
-//         console.error("Failed to fetch coupon codes:", error);
-//         return [];
-//     }
-// };
+        return await response.json();
+    } catch (error) {
+        console.error("Failed to fetch coupon codes:", error);
+        return [];
+    }
+};
 
-// export const getAllReferralCodeByShopkeeper = async (shopkeeperId) => {
-//     try {
-//         const token = localStorage.getItem("token");
-//         const response = await fetch(`${import.meta.env.VITE_BACKEND_URL}/api/shopkeeper/getAllReferralCodeByShopkeeper/${shopkeeperId}`, {
-//             method: "GET",
-//             headers: {
-//                 "Content-Type": "application/json",
-//                 "Authorization": `Bearer ${token}`,
-//             },
-//             credentials: "include", // `withCredentials` is not needed in Fetch API
-//         });
+export const getAllReferralCodeByShopkeeper = async (shopkeeperId) => {
+    try {
+        const token = localStorage.getItem("token");
+        const response = await fetch(`${import.meta.env.VITE_BACKEND_URL}/api/shopkeeper/getAllReferralCodeByShopkeeper/${shopkeeperId}`, {
+            method: "GET",
+            headers: {
+                "Content-Type": "application/json",
+                "Authorization": `Bearer ${token}`,
+            },
+            credentials: "include", // `withCredentials` is not needed in Fetch API
+        });
 
-//         if (!response.ok) {
-//             throw new Error(`Error: ${response.status}`);
-//         }
+        if (!response.ok) {
+            throw new Error(`Error: ${response.status}`);
+        }
 
-//         const data = await response.json(); // Store parsed JSON
-//         //   console.log("Response JSON:", data);
+        const data = await response.json(); // Store parsed JSON
+        //   console.log("Response JSON:", data);
 
-//         return data;
-//     } catch (error) {
-//         console.error("Failed to fetch referral codes:", error);
-//         return [];
-//     }
-// };
+        return data;
+    } catch (error) {
+        console.error("Failed to fetch referral codes:", error);
+        return [];
+    }
+};
 
-// export const getAllCouponCodeByShopkeeper = async (shopkeeperId) => {
-//     try {
-//         const token = localStorage.getItem("token");
-//         const response = await fetch(`${import.meta.env.VITE_BACKEND_URL}/api/shopkeeper/getAllCouponCodeByShopkeeper/${shopkeeperId}`, {
-//             method: "GET",
-//             headers: {
-//                 "Content-Type": "application/json",
-//                 "Authorization": `Bearer ${token}`,
-//             },
-//             credentials: "include", // `withCredentials` is not needed in Fetch API
-//         });
+export const getAllCouponCodeByShopkeeper = async (shopkeeperId) => {
+    try {
+        const token = localStorage.getItem("token");
+        const response = await fetch(`${import.meta.env.VITE_BACKEND_URL}/api/shopkeeper/getAllCouponCodeByShopkeeper/${shopkeeperId}`, {
+            method: "GET",
+            headers: {
+                "Content-Type": "application/json",
+                "Authorization": `Bearer ${token}`,
+            },
+            credentials: "include", // `withCredentials` is not needed in Fetch API
+        });
 
-//         if (!response.ok) {
-//             throw new Error(`Error: ${response.status}`);
-//         }
+        if (!response.ok) {
+            throw new Error(`Error: ${response.status}`);
+        }
 
-//         const data = await response.json(); // Store parsed JSON
-//         //   console.log("Response JSON:", data);
+        const data = await response.json(); // Store parsed JSON
+        //   console.log("Response JSON:", data);
 
-//         return data;
-//     } catch (error) {
-//         console.error("Failed to fetch coupon codes:", error);
-//         return [];
-//     }
-// };
+        return data;
+    } catch (error) {
+        console.error("Failed to fetch coupon codes:", error);
+        return [];
+    }
+};
 
 // OUTPUT OF GET REFERRAL CODE
 //   {
@@ -255,138 +255,3 @@
 //     "createdDate": "2025-02-13T10:36:12.883777",
 //     "updatedDate": null
 // }
-
-export const registerUser = async (userData) => {
-    try {
-        const token = localStorage.getItem("token");
-
-        const response = await fetch(`${import.meta.env.VITE_BACKEND_URL}/api/shopkeeper/register-user`, {
-            method: "POST",
-            headers: {
-                "Content-Type": "application/json",
-                "Authorization": `Bearer ${token}`,
-            },
-            body: JSON.stringify(userData),
-            credentials: "include",
-        });
-
-        const result = await response.text(); // backend returns plain text
-        return result;
-    } catch (error) {
-        console.error("Error registering user:", error);
-        return "Failed to register user. Please try again.";
-    }
-};
-
-export const uploadBulkReferralCodes = async (
-    file,
-    expiryDate,
-    referralAmount,
-    referrerAmount,
-    usageLimit,
-    type
-) => {
-    const token = localStorage.getItem("token");
-    const formData = new FormData();
-    formData.append("file", file);
-    formData.append("expiryDate", expiryDate);
-    formData.append("referralAmount", referralAmount);
-    formData.append("referrerAmount", referrerAmount);
-    formData.append("usageLimit", usageLimit);
-    formData.append("type", type);
-
-    try {
-        const response = await fetch(
-            `${import.meta.env.VITE_BACKEND_URL}/api/shopkeeper/upload-bulk-referral-codes`,
-            {
-                method: "POST",
-                body: formData,
-                credentials: "include",
-                headers: {
-                    Authorization: `Bearer ${token}`,
-                },
-            }
-        );
-
-        return await response.json();
-    } catch (error) {
-        console.error("Error uploading bulk referral codes:", error);
-        return { message: "Failed to upload referral codes.", generatedCodes: [] };
-    }
-};
-
-export const uploadBulkCouponCodes = async (
-    file,
-    expiryDate,
-    referralAmount,
-    usageLimit,
-    type
-) => {
-    const token = localStorage.getItem("token");
-    const formData = new FormData();
-    formData.append("file", file);
-    formData.append("expiryDate", expiryDate);
-    formData.append("referralAmount", referralAmount);
-    formData.append("referrerAmount", "0"); // fixed to 0
-    formData.append("usageLimit", usageLimit);
-    formData.append("type", type);
-
-    try {
-        const response = await fetch(
-            `${import.meta.env.VITE_BACKEND_URL}/api/shopkeeper/upload-bulk-referral-codes`,
-            {
-                method: "POST",
-                body: formData,
-                credentials: "include",
-                headers: {
-                    Authorization: `Bearer ${token}`,
-                },
-            }
-        );
-
-        return await response.json();
-    } catch (error) {
-        console.error("Error uploading bulk coupon codes:", error);
-        return { message: "Failed to upload coupon codes.", generatedCodes: [] };
-    }
-};
-
-export const getAllReferralCode = async () => {
-    try {
-        const token = localStorage.getItem("token");
-        const response = await fetch(`${import.meta.env.VITE_BACKEND_URL}/api/shopkeeper/getAllReferralCode`, {
-            method: "GET",
-            headers: {
-                "Content-Type": "application/json",
-                "Authorization": `Bearer ${token}`,
-            },
-            credentials: "include",
-        });
-
-        if (!response.ok) throw new Error(`Error: ${response.status}`);
-        return await response.json();
-    } catch (error) {
-        console.error("Failed to fetch referral codes:", error);
-        return [];
-    }
-};
-
-export const getAllCouponCode = async () => {
-    try {
-        const token = localStorage.getItem("token");
-        const response = await fetch(`${import.meta.env.VITE_BACKEND_URL}/api/shopkeeper/getAllCouponCode`, {
-            method: "GET",
-            headers: {
-                "Content-Type": "application/json",
-                "Authorization": `Bearer ${token}`,
-            },
-            credentials: "include",
-        });
-
-        if (!response.ok) throw new Error(`Error: ${response.status}`);
-        return await response.json();
-    } catch (error) {
-        console.error("Failed to fetch coupon codes:", error);
-        return [];
-    }
-};
