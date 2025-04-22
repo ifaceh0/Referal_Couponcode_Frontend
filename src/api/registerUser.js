@@ -170,7 +170,7 @@ export const getAllCouponCode = async () => {
     try {
         const token = localStorage.getItem("token");
         // const response = await fetch(`${import.meta.env.VITE_BACKEND_URL}/api/shopkeeper/getAllReferralCodeByShopkeeper/${shopkeeperId}`, {
-         const response = await fetch(`${import.meta.env.VITE_BACKEND_URL}/api/shopkeeper/getAllReferralCodeByShopkeeper`, {
+        const response = await fetch(`${import.meta.env.VITE_BACKEND_URL}/api/shopkeeper/getAllReferralCodeByShopkeeper`, {
             method: "GET",
             headers: {
                 "Content-Type": "application/json",
