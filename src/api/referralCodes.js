@@ -265,22 +265,22 @@ export const uploadBulkReferralCodes = async (
 };
 
 // Get all referral codes by shopkeeper (authenticated via token or cookie)
-export const getAllReferralCodesByShopkeeper = async () => {
-  const url = `${import.meta.env.VITE_BACKEND_URL}/api/shopkeepers/referral-codes`;
+// export const getAllReferralCodesByShopkeeper = async () => {
+//   const url = `${import.meta.env.VITE_BACKEND_URL}/api/shopkeepers/referral-codes`;
 
-  const token = localStorage.getItem("token");
+//   const token = localStorage.getItem("token");
 
-  const response = await fetch(url, {
-    method: 'GET',
-    headers: token ? { Authorization: `Bearer ${token}` } : undefined,
-    credentials: 'include',
-  });
+//   const response = await fetch(url, {
+//     method: 'GET',
+//     headers: token ? { Authorization: `Bearer ${token}` } : undefined,
+//     credentials: 'include',
+//   });
 
-  if (!response.ok) {
-    const error = await response.json();
-    throw new Error(error.message || 'Failed to fetch referral codes');
-  }
+//   if (!response.ok) {
+//     const error = await response.json();
+//     throw new Error(error.message || 'Failed to fetch referral codes');
+//   }
 
-  return response.json();
-};
+//   return response.json();
+// };
 
