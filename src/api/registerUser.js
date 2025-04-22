@@ -170,7 +170,7 @@ export const getAllCouponCode = async () => {
     try {
         const token = localStorage.getItem("token");
         // const response = await fetch(`${import.meta.env.VITE_BACKEND_URL}/api/shopkeeper/getAllReferralCodeByShopkeeper/${shopkeeperId}`, {
-            const response = await fetch(`${import.meta.env.VITE_BACKEND_URL}/api/shopkeeper/getAllReferralCodeByShopkeeper`, {
+         const response = await fetch(`${import.meta.env.VITE_BACKEND_URL}/api/shopkeeper/getAllReferralCodeByShopkeeper`, {
             method: "GET",
             headers: {
                 "Content-Type": "application/json",
@@ -197,7 +197,8 @@ export const getAllCouponCode = async () => {
 export const getAllCouponCodeByShopkeeper = async () => {   //remove shopkeeperid and passing token
     try {
         const token = localStorage.getItem("token");
-        const response = await fetch(`${import.meta.env.VITE_BACKEND_URL}/api/shopkeeper/getAllCouponCodeByShopkeeper`, {
+        // const response = await fetch(`${import.meta.env.VITE_BACKEND_URL}/api/shopkeeper/getAllCouponCodeByShopkeeper/${shopkeeperId}`, {
+        const response = await fetch(`${import.meta.env.VITE_BACKEND_URL}/api/shopkeeper/getAllCouponCodeByShopkeeper/${shopkeeperId}`, {
             method: "GET",
             headers: {
                 "Content-Type": "application/json",
