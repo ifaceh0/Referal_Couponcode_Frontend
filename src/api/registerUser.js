@@ -198,7 +198,7 @@ export const getAllCouponCodeByShopkeeper = async () => {   //remove shopkeeperi
     try {
         const token = localStorage.getItem("token");
         // const response = await fetch(`${import.meta.env.VITE_BACKEND_URL}/api/shopkeeper/getAllCouponCodeByShopkeeper/${shopkeeperId}`, {
-        const response = await fetch(`${import.meta.env.VITE_BACKEND_URL}/api/shopkeeper/getAllCouponCodeByShopkeeper/`, {
+        const response = await fetch(`${import.meta.env.VITE_BACKEND_URL}/api/shopkeeper/getAllCouponCodeByShopkeeper`, {
             method: "GET",
             headers: {
                 "Content-Type": "application/json",
