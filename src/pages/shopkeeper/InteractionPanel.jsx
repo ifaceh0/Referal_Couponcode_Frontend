@@ -299,7 +299,8 @@ const InteractionPanel = () => {
   const [email, setEmail] = useState("");
   const [codeDetails, setCodeDetails] = useState(null);
   const [validationMessage, setValidationMessage] = useState("");
-  const [flashMessage, setFlashMessage] = useState("");
+  // const [flashMessage, setFlashMessage] = useState("");
+  const [flashMessage] = useState("");
   const [isCouponCode, setIsCouponCode] = useState(false);
   const [phoneVerified, setPhoneVerified] = useState(false);
   const [emailVerified, setEmailVerified] = useState(false);
