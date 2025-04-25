@@ -209,6 +209,8 @@
   
 
 // Generate a single coupon code
+console.log(localStorage.getItem("token"));
+
 export const generateCouponCode = async (formData) => {
   const url = `${import.meta.env.VITE_BACKEND_URL}/api/shopkeepers/coupon-codes/generate`;
 
