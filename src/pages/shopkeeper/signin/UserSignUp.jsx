@@ -299,7 +299,7 @@ const PhoneInputField = ({ label, name, value, onChange, error }) => (
     <PhoneInput
       country={"us"}
       onlyCountries={["us", "ca"]}
-      isValid={(inputNumber, country) => ["us", "ca"].includes(country?.iso2)}
+      isValid={(_inputNumber, country) => ["us", "ca"].includes(country?.iso2)}
       value={value}
       onChange={(phone) => onChange({ target: { name, value: phone } })}
       inputClass="!w-full !h-12 !p-3 !pl-14 !border !border-gray-300 !rounded-lg !focus:outline-none !focus:ring-2 !focus:ring-purple-500 !transition-all"
@@ -402,9 +402,9 @@ const UserSignUp = () => {
           <div className="bg-white p-6 rounded-lg shadow-lg w-80">
             <h3 className="text-xl font-bold mb-4">
               Enter Referral Code
-              {/* <span className="font-normal text-sm block text-gray-600 mt-1">
+              <span className="font-normal text-sm block text-gray-600 mt-1">
                 (if referred by someone. Otherwise, you can leave the Referral Code Box BLANK.)
-              </span> */}
+              </span>
             </h3>
             <InputField
               label="Referral Code"

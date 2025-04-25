@@ -1,58 +1,21 @@
-// export const registerUser = async (userData,shopkeeperId) => {
-//     try {
-//         const token = localStorage.getItem("token");
-//         //  const shopkeeperId = localStorage.getItem("shopkeeperId");
-//         const response = await fetch(`${import.meta.env.VITE_BACKEND_URL}/api/shopkeeper/register-user?shopkeeperId=${shopkeeperId}`, {
-//             method: "POST",
-//             headers: {
-//                 "Content-Type": "application/json",
-//                 "Authorization": `Bearer ${token}`,
-//             },
-//             body: JSON.stringify(userData),
-//             //   withCredntials: true,
-//             credentials: 'include',
-//         });
-
-//         const result = await response.text(); // Since the backend returns a plain text response
-
-//         return result; // Returns success or error message
-//     } catch (error) {
-//         console.error("Error registering user:", error);
-//         return "Failed to register user. Please try again.";
-//     }
-// };
-
-export const registerUser = async (userData, shopkeeperId) => {
+export const registerUser = async (userData,shopkeeperId) => {
     try {
         const token = localStorage.getItem("token");
+        //  const shopkeeperId = localStorage.getItem("shopkeeperId");
+        const response = await fetch(`${import.meta.env.VITE_BACKEND_URL}/api/shopkeeper/register-user?shopkeeperId=${shopkeeperId}`, {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+                "Authorization": `Bearer ${token}`,
+            },
+            body: JSON.stringify(userData),
+            //   withCredntials: true,
+            credentials: 'include',
+        });
 
-        if (!shopkeeperId) {
-            throw new Error("shopkeeperId is missing");
-        }
+        const result = await response.text(); // Since the backend returns a plain text response
 
-        console.log("Registering user with:", { userData, shopkeeperId });
-
-        const response = await fetch(
-            `${import.meta.env.VITE_BACKEND_URL}/api/shopkeeper/register-user?shopkeeperId=${encodeURIComponent(shopkeeperId)}`,
-            {
-                method: "POST",
-                headers: {
-                    "Content-Type": "application/json",
-                    "Authorization": `Bearer ${token}`,
-                },
-                body: JSON.stringify(userData),
-                credentials: 'include',
-            }
-        );
-
-        const text = await response.text();
-
-        if (!response.ok) {
-            console.error("Backend error:", response.status, text);
-            throw new Error(`Request failed: ${text}`);
-        }
-
-        return text;
+        return result; // Returns success or error message
     } catch (error) {
         console.error("Error registering user:", error);
         return "Failed to register user. Please try again.";
