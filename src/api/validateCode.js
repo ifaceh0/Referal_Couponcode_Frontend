@@ -27,9 +27,13 @@ export const validateCode = async (code) => {
         "Content-Type": "application/json",
         "Authorization": `Bearer ${token}`, // Corrected string interpolation
       },
-      body: JSON.stringify({ code }),
+      body: JSON.stringify( code ),
       credentials: 'include', // Keep if backend uses cookies
     });
+
+    if (!response.ok) {
+      throw new Error(data.message || "Failed to validate code.");
+    }
 
     const data = await response.json();
     return data;
