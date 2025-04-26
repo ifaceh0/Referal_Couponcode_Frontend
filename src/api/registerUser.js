@@ -1,8 +1,10 @@
-export const registerUser = async (userData,shopkeeperId) => {
+// export const registerUser = async (userData,shopkeeperId) => {
+export const registerUser = async (userData) => {
     try {
         const token = localStorage.getItem("token");
         //  const shopkeeperId = localStorage.getItem("shopkeeperId");
-        const response = await fetch(`${import.meta.env.VITE_BACKEND_URL}/api/shopkeeper/register-user?shopkeeperId=${shopkeeperId}`, {
+        // const response = await fetch(`${import.meta.env.VITE_BACKEND_URL}/api/shopkeeper/register-user?shopkeeperId=${shopkeeperId}`, {
+         const response = await fetch(`${import.meta.env.VITE_BACKEND_URL}/api/shopkeeper/register-user`, {
             method: "POST",
             headers: {
                 "Content-Type": "application/json",

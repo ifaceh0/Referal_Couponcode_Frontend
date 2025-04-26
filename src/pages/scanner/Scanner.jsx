@@ -102,7 +102,7 @@
 //         PaperProps={{
 //           style: {
 //             borderRadius: "12px",
-//             width: "500px",
+//             width: "600px",
 //             maxWidth: "90%",
 //           },
 //         }}
@@ -112,43 +112,48 @@
 //         </DialogTitle>
 //         <DialogContent className="p-6 bg-white">
 //           {scannedData && (
-//             <div className="overflow-x-auto">
-//               <table className="w-full border-collapse border border-gray-300 text-left">
-//                 <tbody>
-//                   <tr className="border-b border-gray-300">
-//                     <td className="py-2 px-4 font-semibold text-gray-700">Customer ID:</td>
-//                     <td className="py-2 px-4 text-gray-600">{scannedData.customerId}</td>
-//                   </tr>
-//                   <tr className="border-b border-gray-300">
-//                     <td className="py-2 px-4 font-semibold text-gray-700">Name:</td>
-//                     <td className="py-2 px-4 text-gray-600">{scannedData.name}</td>
-//                   </tr>
-//                   <tr className="border-b border-gray-300">
-//                     <td className="py-2 px-4 font-semibold text-gray-700">Phone:</td>
-//                     <td className="py-2 px-4 text-gray-600">{scannedData.phone}</td>
-//                   </tr>
-//                   <tr className="border-b border-gray-300">
-//                     <td className="py-2 px-4 font-semibold text-gray-700">Available Balance:</td>
-//                     <td className="py-2 px-4 text-gray-600">${scannedData.availableBalance}</td>
-//                   </tr>
-//                   <tr className="border-b border-gray-300">
-//                     <td className="py-2 px-4 font-semibold text-gray-700">Coupon Code:</td>
-//                     <td className="py-2 px-4 text-gray-600">{scannedData.couponCode}</td>
-//                   </tr>
-//                   <tr className="border-b border-gray-300">
-//                     <td className="py-2 px-4 font-semibold text-gray-700">Coupon Amount:</td>
-//                     <td className="py-2 px-4 text-gray-600">${scannedData.couponAmount}</td>
-//                   </tr>
-//                   <tr className="border-b border-gray-300">
-//                     <td className="py-2 px-4 font-semibold text-gray-700">Coupon Usage Limit:</td>
-//                     <td className="py-2 px-4 text-gray-600">{scannedData.couponUsageLimit}</td>
-//                   </tr>
-//                   <tr className="border-b border-gray-300">
-//                     <td className="py-2 px-4 font-semibold text-gray-700">Referral Code:</td>
-//                     <td className="py-2 px-4 text-gray-600">{scannedData.referralCode}</td>
-//                   </tr>
-//                 </tbody>
-//               </table>
+//             <div className="flex flex-col md:flex-row">
+//               {/* Right side - Available Balance (shown first on mobile) */}
+//               <div className="w-full md:w-1/2 md:pl-4 md:order-2 mb-6 md:mb-0 flex flex-col items-center justify-center md:border-l md:border-gray-200">
+//                 <div className="text-center">
+//                   <p className="text-lg font-semibold text-gray-700 mb-2">Available Balance</p>
+//                   <div className="text-4xl font-bold text-blue-600 mb-4">
+//                     ${scannedData.availableBalance}
+//                   </div>
+//                   <div className="bg-blue-50 p-4 rounded-lg">
+//                     <p className="text-sm text-gray-600 mb-1">Coupon Amount: ${scannedData.couponAmount}</p>
+//                     <p className="text-sm text-gray-600">Usage Limit: {scannedData.couponUsageLimit}</p>
+//                   </div>
+//                 </div>
+//               </div>
+
+//               {/* Left side - Customer Details (shown second on mobile) */}
+//               <div className="w-full md:w-1/2 md:pr-4 md:order-1">
+//                 <table className="w-full border-collapse border border-gray-300 text-left">
+//                   <tbody>
+//                     <tr className="border-b border-gray-300">
+//                       <td className="py-2 px-4 font-semibold text-gray-700">Customer ID:</td>
+//                       <td className="py-2 px-4 text-gray-600">{scannedData.customerId}</td>
+//                     </tr>
+//                     <tr className="border-b border-gray-300">
+//                       <td className="py-2 px-4 font-semibold text-gray-700">Name:</td>
+//                       <td className="py-2 px-4 text-gray-600">{scannedData.name}</td>
+//                     </tr>
+//                     <tr className="border-b border-gray-300">
+//                       <td className="py-2 px-4 font-semibold text-gray-700">Phone:</td>
+//                       <td className="py-2 px-4 text-gray-600">{scannedData.phone}</td>
+//                     </tr>
+//                     <tr className="border-b border-gray-300">
+//                       <td className="py-2 px-4 font-semibold text-gray-700">Coupon Code:</td>
+//                       <td className="py-2 px-4 text-gray-600">{scannedData.couponCode}</td>
+//                     </tr>
+//                     <tr className="border-b border-gray-300">
+//                       <td className="py-2 px-4 font-semibold text-gray-700">Referral Code:</td>
+//                       <td className="py-2 px-4 text-gray-600">{scannedData.referralCode}</td>
+//                     </tr>
+//                   </tbody>
+//                 </table>
+//               </div>
 //             </div>
 //           )}
 
@@ -192,12 +197,14 @@ import QrScanner from "react-qr-scanner";
 import { Dialog, DialogTitle, DialogContent } from "@mui/material";
 import { motion } from "framer-motion";
 import { FaArrowLeft } from "react-icons/fa";
+import axios from "axios";
 
 const Scanner = () => {
   const [scannedData, setScannedData] = useState(null);
   const [open, setOpen] = useState(false);
   const [redeemAmount, setRedeemAmount] = useState("");
   const [error, setError] = useState("");
+  const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
 
   const handleScan = (data) => {
@@ -218,7 +225,7 @@ const Scanner = () => {
     console.error("QR Scan Error:", err);
   };
 
-  const handleRedeemClick = () => {
+  const handleRedeemClick = async () => {
     if (!redeemAmount) {
       setError("Please enter an amount.");
       return;
@@ -232,13 +239,37 @@ const Scanner = () => {
       return;
     }
 
-    console.log("Sending data to backend:", { scannedData, redeemAmount });
+    const token = localStorage.getItem("token");
 
-    // Close dialog and refresh page
-    setOpen(false);
-    setTimeout(() => {
-      window.location.reload();
-    }, 500);
+    if (!token) {
+      setError("Authentication token not found.");
+      return;
+    }
+
+    const payload = {
+      customerId: scannedData.customerId,
+      referralCode: scannedData.referralCode,
+      discountAmount: amount,
+    };
+
+    try {
+      setLoading(true);
+      await axios.post(`${import.meta.env.VITE_BACKEND_URL}/api/shopkeeper/redeem-discount`, payload, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+
+      setLoading(false);
+      setOpen(false);
+      setTimeout(() => {
+        window.location.reload();
+      }, 500);
+    } catch (err) {
+      console.error("Redemption failed:", err);
+      setError("Redemption failed. Please try again.");
+      setLoading(false);
+    }
   };
 
   const handleCloseDialog = () => {
@@ -252,7 +283,7 @@ const Scanner = () => {
     <div className="flex flex-col items-center justify-center min-h-screen p-6 bg-gradient-to-r from-blue-50 to-purple-50">
       {/* Back Button */}
       <div className="w-full max-w-4xl mb-4">
-        <button 
+        <button
           onClick={() => navigate(-1)}
           className="flex items-center text-blue-600 hover:text-blue-800 transition mb-4"
         >
@@ -301,7 +332,6 @@ const Scanner = () => {
         <DialogContent className="p-6 bg-white">
           {scannedData && (
             <div className="flex flex-col md:flex-row">
-              {/* Right side - Available Balance (shown first on mobile) */}
               <div className="w-full md:w-1/2 md:pl-4 md:order-2 mb-6 md:mb-0 flex flex-col items-center justify-center md:border-l md:border-gray-200">
                 <div className="text-center">
                   <p className="text-lg font-semibold text-gray-700 mb-2">Available Balance</p>
@@ -315,7 +345,6 @@ const Scanner = () => {
                 </div>
               </div>
 
-              {/* Left side - Customer Details (shown second on mobile) */}
               <div className="w-full md:w-1/2 md:pr-4 md:order-1">
                 <table className="w-full border-collapse border border-gray-300 text-left">
                   <tbody>
@@ -345,7 +374,6 @@ const Scanner = () => {
             </div>
           )}
 
-          {/* Redeem Amount Input */}
           <div className="mt-6">
             <p className="text-sm font-semibold text-gray-600">Redeem Amount</p>
             <input
@@ -364,12 +392,16 @@ const Scanner = () => {
             {error && <p className="text-sm text-red-500 mt-2">{error}</p>}
           </div>
 
-          {/* Redeem Button */}
           <button
             onClick={handleRedeemClick}
-            className="w-full bg-gradient-to-r from-blue-600 to-purple-600 text-white font-bold py-3 rounded-lg hover:from-blue-700 hover:to-purple-700 transition-all mt-4"
+            disabled={loading}
+            className={`w-full font-bold py-3 rounded-lg mt-4 transition-all ${
+              loading
+                ? "bg-gray-400 cursor-not-allowed"
+                : "bg-gradient-to-r from-blue-600 to-purple-600 text-white hover:from-blue-700 hover:to-purple-700"
+            }`}
           >
-            Redeem
+            {loading ? "Processing..." : "Redeem"}
           </button>
         </DialogContent>
       </Dialog>
