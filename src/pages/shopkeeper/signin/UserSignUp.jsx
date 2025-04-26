@@ -127,7 +127,7 @@
 // export default UserSignUp;
 
 import React, { useState } from "react";
-//import { signupUser } from "../../../api/signin";
+import { signupUser } from "../../../api/signin";
 import { useNavigate } from "react-router-dom";
 import { toast, ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
