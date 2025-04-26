@@ -207,16 +207,51 @@ const Scanner = () => {
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
 
-  const handleScan = (data) => {
+  const handleScan = async (data) => {
     if (data) {
       try {
-        console.log(data);
-        const parsedData = JSON.parse(data.text);
-        setScannedData(parsedData);
-        setOpen(true);
-        setError("");
-      } catch (error) {
-        console.error("Invalid JSON data:", error);
+        const parsed = JSON.parse(data.text);
+        const code = parsed?.code || parsed; // handle raw or object-form QR
+
+        if (!code) {
+          setError("Invalid QR code format.");
+          return;
+        }
+
+        const token = localStorage.getItem("token");
+        const response = await axios.post(
+          `${import.meta.env.VITE_BACKEND_URL}/api/code/validate`,
+          { code },
+          {
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
+          }
+        );
+
+        const result = response.data;
+
+        if (result.success) {
+          const user = result.data.user || {};
+          const details = {
+            customerId: user.userId,
+            name: user.name,
+            phone: user.phone,
+            availableBalance: user.availableBalance,
+            referralCode: result.data.code,
+            couponCode: code,
+            couponAmount: result.data.referralAmount,
+            couponUsageLimit: 1, // customize this if needed
+          };
+          setScannedData(details);
+          setOpen(true);
+          setError("");
+        } else {
+          setError("Invalid referral code.");
+        }
+      } catch (err) {
+        console.error("Scan error:", err);
+        setError("Failed to validate code.");
       }
     }
   };
@@ -246,19 +281,30 @@ const Scanner = () => {
       return;
     }
 
+    const referralCode = scannedData?.referralCode?.trim();
+
+    if (!referralCode) {
+      setError("Referral code is missing or invalid.");
+      return;
+    }
+
     const payload = {
       customerId: scannedData.customerId,
-      referralCode: scannedData.referralCode,
+      referralCode,
       discountAmount: amount,
     };
 
     try {
       setLoading(true);
-      await axios.post(`${import.meta.env.VITE_BACKEND_URL}/api/shopkeeper/redeem-discount`, payload, {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      });
+      await axios.post(
+        `${import.meta.env.VITE_BACKEND_URL}/api/shopkeeper/redeem-discount`,
+        payload,
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
 
       setLoading(false);
       setOpen(false);
@@ -266,8 +312,8 @@ const Scanner = () => {
         window.location.reload();
       }, 500);
     } catch (err) {
-      console.error("Redemption failed:", err);
-      setError("Redemption failed. Please try again.");
+      console.error("Redemption failed:", err.response?.data || err.message);
+      setError(err.response?.data || "Redemption failed. Please try again.");
       setLoading(false);
     }
   };
@@ -281,7 +327,6 @@ const Scanner = () => {
 
   return (
     <div className="flex flex-col items-center justify-center min-h-screen p-6 bg-gradient-to-r from-blue-50 to-purple-50">
-      {/* Back Button */}
       <div className="w-full max-w-4xl mb-4">
         <button
           onClick={() => navigate(-1)}
@@ -410,3 +455,4 @@ const Scanner = () => {
 };
 
 export default Scanner;
+
