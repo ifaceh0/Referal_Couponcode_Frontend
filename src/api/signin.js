@@ -181,3 +181,26 @@ export const logoutShopkeeper = async () => {
 
 
 // Additional APIs can be added as needed.
+
+// User Signup API
+export const signupUser = async (formData) => {
+    try {
+        const response = await fetch(`${import.meta.env.VITE_BACKEND_URL}/api/auth/signup`, {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify(formData),
+        });
+
+        const data = await response.json(); // Read response as JSON
+
+        if (!response.ok) {
+            throw new Error(data.message || "Signup failed! Please try again.");
+        }
+
+        return data.message; // Return success message
+    } catch (error) {
+        console.error("Signup API Error:", error);
+        throw error;
+    }
+};
+
