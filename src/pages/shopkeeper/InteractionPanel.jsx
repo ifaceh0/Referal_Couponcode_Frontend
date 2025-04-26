@@ -286,12 +286,13 @@
 // export default InteractionPanel;
 
 
-import React, { useState } from "react";
+import React, { useState ,useEffect} from "react";
 import { useNavigate } from "react-router-dom";
 import { validateCode } from "../../api/validateCode";
 import { toast, ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { FaQrcode, FaArrowLeft, FaPhone, FaEnvelope, FaCheck } from "react-icons/fa";
+import { getCurrentUser } from "../../api/signin";
 
 const InteractionPanel = () => {
   const [code, setCode] = useState("");
@@ -304,6 +305,21 @@ const InteractionPanel = () => {
   const [isCouponCode, setIsCouponCode] = useState(false);
   const [phoneVerified, setPhoneVerified] = useState(false);
   const [emailVerified, setEmailVerified] = useState(false);
+  const [userDetails, setUserDetails] = useState(null);
+         useEffect(() => {
+                const fetchData = async () => {
+                    try {
+                        const user = await getCurrentUser();
+                        console.log("Fetched user:", user.id);
+                        setUserDetails(user);
+                    } catch (error) {
+                        console.error("Error fetching monthly data:", error);
+                    }
+                };
+        
+                fetchData();
+            }, []);
+            const shopkeeperId = userDetails?.id || localStorage.getItem("shopkeeperId") ;
   const navigate = useNavigate();
 
   const handleVerifyPhone = () => {
@@ -337,7 +353,8 @@ const InteractionPanel = () => {
     const response = await toast.promise(validateCode({
       code: code.trim(),
       phoneNumber: phoneNumber.trim(),
-      email: email.trim()
+      email: email.trim(),
+      shopkeeperId:shopkeeperId,
     }), {
       pending: "Validating code...",
       success: "Code validated successfully!",

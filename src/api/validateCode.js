@@ -30,12 +30,11 @@ export const validateCode = async (code) => {
       body: JSON.stringify( code ),
       credentials: 'include', // Keep if backend uses cookies
     });
-
+    const data = await response.json();
     if (!response.ok) {
       throw new Error(data.message || "Failed to validate code.");
     }
-
-    const data = await response.json();
+    
     return data;
   } catch (error) {
     return { success: false, message: "Network error. Please try again." };
