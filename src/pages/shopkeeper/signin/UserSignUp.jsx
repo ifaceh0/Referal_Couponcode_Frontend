@@ -158,7 +158,7 @@ const PhoneInputField = ({ label, name, value, onChange, error }) => (
       onlyCountries={["us", "ca"]}
       isValid={(inputNumber, country) => ["us", "ca"].includes(country?.iso2)}
       value={value}
-      onChange={(phone) => onChange({ target: { name, value: phone } })}
+      onChange={(phoneNumber) => onChange({ target: { name, value: phoneNumber } })}
       inputClass="!w-full !h-12 !p-3 !pl-14 !border !border-gray-300 !rounded-lg !focus:outline-none !focus:ring-2 !focus:ring-purple-500 !transition-all"
       containerClass="w-full"
       buttonClass="!h-12"
@@ -171,7 +171,7 @@ const UserSignUp = () => {
   const [formData, setFormData] = useState({
     name: "",
     email: "",
-    phone: "",
+    phoneNumber: "",
     password: "",
     confirmPassword: "",
   });
@@ -218,8 +218,8 @@ const UserSignUp = () => {
 
     try {
       const { confirmPassword, ...submitData } = formData;
-      submitData.referralCode = referralCode;
-      const responseMessage = await signupUser(submitData);
+      // submitData.referralCode = referralCode;
+      const responseMessage = await signupUser(submitData,referralCode);
 
       toast.update(toastId, {
         render: responseMessage || "Signup successful! Redirecting...",
@@ -227,6 +227,9 @@ const UserSignUp = () => {
         autoClose: 5000,
         isLoading: false,
       });
+      // Reset form
+      setFormData({ name: "", email: "", phoneNumber: "", password: "", confirmPassword: "" });
+      setReferralCode("");
 
       setTimeout(() => navigate("/signin"), 5000);
     } catch (err) {
@@ -247,7 +250,7 @@ const UserSignUp = () => {
           <h2 className="text-3xl font-bold mb-6 text-purple-600 text-center">User Sign Up</h2>
           <InputField label="Name" type="text" name="name" value={formData.name} onChange={handleInputChange} error={errors.name} />
           <InputField label="Email" type="email" name="email" value={formData.email} onChange={handleInputChange} error={errors.email} />
-          <PhoneInputField label="Phone" name="phone" value={formData.phone} onChange={handleInputChange} error={errors.phone} />
+          <PhoneInputField label="Phone" name="phoneNumber" value={formData.phoneNumber} onChange={handleInputChange} error={errors.phoneNumber} />
           <InputField label="Password" type="password" name="password" value={formData.password} onChange={handleInputChange} error={errors.password} />
           <InputField label="Confirm Password" type="password" name="confirmPassword" value={formData.confirmPassword} onChange={handleInputChange} error={errors.confirmPassword} />
           <button onClick={handleSignUpClick} className="bg-green-600 text-white py-2 px-4 rounded-lg w-full mt-4 hover:bg-green-700 transition">Sign Up</button>

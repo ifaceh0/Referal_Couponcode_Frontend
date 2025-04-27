@@ -289,6 +289,7 @@
 import React, { useState ,useEffect} from "react";
 import { useNavigate } from "react-router-dom";
 import { validateCode } from "../../api/validateCode";
+import { useCouponCode } from "../../api/validateCode";
 import { toast, ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { FaQrcode, FaArrowLeft, FaPhone, FaEnvelope, FaCheck } from "react-icons/fa";
@@ -371,10 +372,34 @@ const InteractionPanel = () => {
     }
   };
 
-  const handleUseCouponCode = () => {
-    toast.success("Coupon code used successfully!");
-    setCodeDetails(null);
-    setIsCouponCode(false);
+  const handleUseCouponCode = async () => {
+    if (!code.trim()) {
+      toast.error("Please enter a valid code.");
+      return;
+    }
+
+    const response = await toast.promise(useCouponCode({
+      code: code.trim(),
+      // phoneNumber: phoneNumber.trim(),
+      // email: email.trim(),
+      // shopkeeperId:shopkeeperId,
+    }), {
+      pending: "Validating code...",
+      success: "Coupon code used successfully!",
+      error: "Failed to validate code. Please try again.",
+    });
+
+    if (response.success) {
+      setCodeDetails(null);
+      setIsCouponCode(false);
+      setValidationMessage("");
+    } else {
+      setCodeDetails(null);
+      // setValidationMessage(response.message);
+    }
+    // toast.success("Coupon code used successfully!");
+    // setCodeDetails(null);
+    // setIsCouponCode(false);
   };
 
   return (

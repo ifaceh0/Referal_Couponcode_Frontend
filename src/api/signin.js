@@ -183,15 +183,25 @@ export const logoutShopkeeper = async () => {
 // Additional APIs can be added as needed.
 
 // User Signup API
-export const signupUser = async (formData) => {
+export const signupUser = async (formData,referralCode) => {
     try {
-        const response = await fetch(`${import.meta.env.VITE_BACKEND_URL}/api/auth/signup`, {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify(formData),
+        // const response = await fetch(`${import.meta.env.VITE_BACKEND_URL}/api/auth/user/register`, {
+        //     method: "POST",
+        //     headers: { "Content-Type": "application/json" },
+        //     body: JSON.stringify(formData),
+        // });
+        let url = `${import.meta.env.VITE_BACKEND_URL}/api/auth/user/register`;
+        if (referralCode) {
+        url += `?referralCode=${encodeURIComponent(referralCode)}`; 
+        }
+
+        const response = await fetch(url, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(formData), // Body is your formData
         });
 
-        const data = await response.json(); // Read response as JSON
+        const data = await response.text(); // Read response as JSON
 
         if (!response.ok) {
             throw new Error(data.message || "Signup failed! Please try again.");
