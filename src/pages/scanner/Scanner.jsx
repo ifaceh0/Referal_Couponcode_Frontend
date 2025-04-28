@@ -198,6 +198,7 @@ import { Dialog, DialogTitle, DialogContent } from "@mui/material";
 import { motion } from "framer-motion";
 import { FaArrowLeft } from "react-icons/fa";
 import axios from "axios";
+import {  toast } from "react-toastify";
 
 const Scanner = () => {
   const [scannedData, setScannedData] = useState(null);
@@ -230,53 +231,75 @@ const Scanner = () => {
       setError("Please enter an amount.");
       return;
     }
-
+  
     const amount = parseFloat(redeemAmount);
     const availableBalance = parseFloat(scannedData?.availableBalance || 0);
-
+  
     if (amount > availableBalance) {
       setError("Amount cannot exceed available balance.");
       return;
     }
-
+  
     const token = localStorage.getItem("token");
-
+  
     if (!token) {
       setError("Authentication token not found.");
       return;
     }
-
+  
     const payload = {
       customerId: scannedData.customerId,
       referralCode: scannedData.referralCode,
       discountAmount: amount,
     };
-
+  
+    setLoading(true);
+    const toastId = toast.loading("Processing redemption...");
+    
     try {
-      setLoading(true);
       await axios.post(`${import.meta.env.VITE_BACKEND_URL}/api/shopkeeper/redeem-discount`, payload, {
         headers: {
           Authorization: `Bearer ${token}`,
         },
       });
-
-      setLoading(false);
-      setOpen(false);
-      setTimeout(() => {
-        window.location.reload();
-      }, 500);
+  
+      toast.update(toastId, {
+        render: "Discount redeemed successfully!",
+        type: "success",
+        isLoading: false,
+        autoClose: 3000,
+        closeOnClick: true,
+      });
+  
+      setOpen(false); // close dialog
+      setScannedData(null); 
+      setRedeemAmount(""); 
+      setError("");
+      
     } catch (err) {
       console.error("Redemption failed:", err);
+      toast.update(toastId, {
+        render: err.response?.data?.message || "Redemption failed. Please try again.",
+        type: "error",
+        isLoading: false,
+        autoClose: 3000,
+        closeOnClick: true,
+      });
       setError("Redemption failed. Please try again.");
-      setLoading(false);
+    } finally {
+      setLoading(false); // Always stop loading in both success and error
     }
   };
+  
 
   const handleCloseDialog = () => {
     setOpen(false);
-    setTimeout(() => {
-      window.location.reload();
-    }, 500);
+    setScannedData(null);
+    setRedeemAmount("");
+    setError("");
+    // setTimeout(() => {
+    //   // window.location.reload();
+    // }, 500);
   };
 
   return (
@@ -351,6 +374,10 @@ const Scanner = () => {
                     <tr className="border-b border-gray-300">
                       <td className="py-2 px-4 font-semibold text-gray-700">Customer ID:</td>
                       <td className="py-2 px-4 text-gray-600">{scannedData.customerId}</td>
+                    </tr>
+                    <tr className="border-b border-gray-300">
+                      <td className="py-2 px-4 font-semibold text-gray-700">Shop Name:</td>
+                      <td className="py-2 px-4 text-gray-600">{scannedData.shopName}</td>
                     </tr>
                     <tr className="border-b border-gray-300">
                       <td className="py-2 px-4 font-semibold text-gray-700">Name:</td>
