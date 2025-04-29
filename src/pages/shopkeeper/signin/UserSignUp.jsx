@@ -324,7 +324,8 @@ const UserSignUp = () => {
   const [errors, setErrors] = useState({});
   const [showPopup, setShowPopup] = useState(false);
   const [referralCode, setReferralCode] = useState("");
-  const [isCaptchaVerified, setIsCaptchaVerified] = useState(false);
+  const [captchaToken, setCaptchaToken] = useState(null);
+  const [captchaVerified, setCaptchaVerified] = useState(false);
   const captchaRef = useRef(null);
   const navigate = useNavigate();
 
@@ -337,9 +338,15 @@ const UserSignUp = () => {
     setErrors({ ...errors, [name]: "" });
   };
 
-  const handleCaptchaChange = (value) => {
-    // Value will be null when reCAPTCHA expires
-    setIsCaptchaVerified(!!value);
+  const handleCaptchaChange = (token) => {
+    if (token) {
+      setCaptchaToken(token);
+      setCaptchaVerified(true);
+      setErrors({ ...errors, captcha: "" });
+    } else {
+      setCaptchaToken(null);
+      setCaptchaVerified(false);
+    }
   };
 
   const validateFields = () => {
@@ -356,7 +363,7 @@ const UserSignUp = () => {
     if (formData.confirmPassword !== formData.password) {
       fieldErrors.confirmPassword = "Passwords do not match.";
     }
-    if (!isCaptchaVerified) {
+    if (!captchaVerified || !captchaToken) {
       fieldErrors.captcha = "Please verify you're not a robot.";
     }
     setErrors(fieldErrors);
@@ -369,6 +376,11 @@ const UserSignUp = () => {
   };
 
   const handlePopupSubmit = async () => {
+    if (!captchaVerified || !captchaToken) {
+      toast.error("Please complete CAPTCHA verification.");
+      return;
+    }
+
     setShowPopup(false);
     const toastId = toast.loading("Signing up...", {
       theme: "colored",
@@ -376,9 +388,6 @@ const UserSignUp = () => {
     });
 
     try {
-      // Get the captcha token
-      const captchaToken = captchaRef.current.getValue();
-      
       const { confirmPassword, ...submitData } = formData;
       const responseMessage = await signupUser({
         ...submitData,
@@ -396,8 +405,11 @@ const UserSignUp = () => {
       // Reset form
       setFormData({ name: "", email: "", phoneNumber: "", password: "", confirmPassword: "" });
       setReferralCode("");
-      captchaRef.current.reset();
-      setIsCaptchaVerified(false);
+      setCaptchaToken(null);
+      setCaptchaVerified(false);
+      if (captchaRef.current) {
+        captchaRef.current.reset();
+      }
 
       setTimeout(() => navigate("/signin"), 5000);
     } catch (err) {
@@ -408,8 +420,11 @@ const UserSignUp = () => {
         isLoading: false,
       });
       // Reset the captcha when there's an error
-      captchaRef.current.reset();
-      setIsCaptchaVerified(false);
+      if (captchaRef.current) {
+        captchaRef.current.reset();
+      }
+      setCaptchaToken(null);
+      setCaptchaVerified(false);
     }
   };
 
