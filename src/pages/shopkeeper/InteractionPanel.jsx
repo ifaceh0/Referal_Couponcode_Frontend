@@ -417,6 +417,14 @@ const InteractionPanel = () => {
         </button>
       </div>
 
+      {/* Header Section */}
+      <div className="w-full max-w-6xl flex justify-center items-center mb-6 bg-white p-4 rounded shadow">
+        <div className="text-center">
+          <h1 className="text-2xl font-bold text-gray-800">{userDetails?.shopName || "Shop Name"}</h1>
+          <p className="text-sm text-gray-500">Shop ID: {userDetails?.id || shopkeeperId}</p>
+        </div>
+      </div>
+
       {/* Responsive Layout */}
       <div className="max-w-6xl w-full grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
         {/* Search Code Card */}

@@ -37,6 +37,7 @@ import SignUpToggle from "./pages/shopkeeper/signin/SignUpToggle";
 import Scanner from "./pages/scanner/Scanner";
 import ProductShowcase from "./home/ProductShowcase";
 import FeatureDetailPage from "./home/FeatureDetailPage";
+import Shop from "./pages/shop/Shop";
 //import UserSignUp from "./pages/shopkeeper/signin/UserSignUp";
 
 const App = () => {
@@ -110,6 +111,7 @@ const App = () => {
           <Route path="generate-codes" element={<GenerateCodes />} />
           <Route path="g" element={<GraphDashboard />} />
           <Route path="scanner" element={<Scanner/>} />
+          <Route path="shop" element={<Shop/>} />
         </Route>
 
         {/* Routes for admin pages with AdminLayout */}
