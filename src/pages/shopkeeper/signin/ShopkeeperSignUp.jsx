@@ -437,7 +437,7 @@ const ShopkeeperSignUp = () => {
   const navigate = useNavigate();
 
   // Replace with your actual reCAPTCHA site key
-  const RECAPTCHA_SITE_KEY = "6LeIxAcTAAAAAJcZVRqyHh71UMIEGNQ_MXjiZKhI";
+  const RECAPTCHA_SITE_KEY = "6Lf_TIoqAAAAAAXYolwSahryD09PcdLptCEnQaQH";
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
