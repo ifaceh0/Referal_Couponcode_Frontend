@@ -408,7 +408,15 @@ const PhoneInputField = ({ label, name, value, onChange, error }) => (
         onlyCountries={["us", "ca"]}
         isValid={(inputNumber, country) => ["us", "ca"].includes(country?.iso2)}
         value={value}
-        onChange={(phone) => onChange({ target: { name, value: phone } })}
+        // onChange={(phone) => onChange({ target: { name, value: phone } })}
+        onChange={(phone, countryData) => {
+          const dialCode = countryData?.dialCode || "";
+          const nationalNumber = phone.startsWith(dialCode)
+            ? phone.slice(dialCode.length)
+            : phone;
+  
+          onChange({ target: { name, value: nationalNumber } });
+        }}
         inputClass="!w-full !h-12 !p-3 !pl-14 !border !border-gray-300 !rounded-lg !focus:outline-none !focus:ring-2 !focus:ring-purple-500 !transition-all"
         containerClass="w-full"
         buttonClass="!h-12"
