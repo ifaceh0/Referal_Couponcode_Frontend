@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { FaPhone, FaStore, FaTimes, FaQrcode } from "react-icons/fa";
-import { QRCodeSVG } from "qrcode.react"; // Updated import
+import { QRCodeSVG } from "qrcode.react";
 
 const Shop = () => {
   const shops = [
@@ -52,61 +52,66 @@ const Shop = () => {
   };
 
   return (
-    <div className="min-h-screen bg-gray-100 p-8 flex flex-col items-center">
-      <h1 className="text-3xl font-bold mb-6">Explore Shops</h1>
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 w-full max-w-6xl">
-        {shops.map((shop) => (
-          <div
-            key={shop.id}
-            className="bg-white rounded-lg shadow-lg overflow-hidden hover:shadow-xl transition transform hover:-translate-y-1"
-          >
-            {/* Shop Front Header */}
-            <div className="bg-amber-700 p-3 text-white flex items-center">
-              <FaStore className="mr-2" />
-              <h2 className="font-bold text-lg">{shop.name}</h2>
-            </div>
-            
-            {/* Shop Image with awning effect */}
-            <div className="relative">
-              <div className="absolute top-0 left-0 right-0 h-4 bg-red-600 clip-awning"></div>
-              <img
-                src={shop.image}
-                alt={shop.name}
-                className="w-full h-40 object-cover border-b-4 border-amber-800"
-              />
-            </div>
-            
-            {/* Shop Info */}
-            <div className="p-4 bg-amber-50">
-              <div className="flex justify-end mb-2">
-                <span className="text-xs bg-gray-200 px-2 py-1 rounded">
-                  ID: {shop.id}
-                </span>
-              </div>
-              
-              <div className="flex items-center mt-3 bg-white p-2 rounded border border-amber-200">
-                <FaPhone className="mr-2 text-amber-700" />
-                <span className="text-sm font-medium">{shop.phone}</span>
-              </div>
-              
-              <button 
-                onClick={() => handleVisitShop(shop)}
-                className="w-full mt-3 bg-amber-600 hover:bg-amber-700 text-white py-2 px-4 rounded-md text-sm font-medium transition"
+    <div className="min-h-screen bg-blue-50 p-8 flex flex-col items-center">
+      {/* Only show main content when modal is not visible */}
+      {!showModal && (
+        <>
+          <h1 className="text-3xl font-bold mb-6 text-blue-800">Explore Shops</h1>
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 w-full max-w-6xl">
+            {shops.map((shop) => (
+              <div
+                key={shop.id}
+                className="bg-white rounded-lg shadow-lg overflow-hidden hover:shadow-xl transition transform hover:-translate-y-1 border border-blue-100"
               >
-                Visit Shop
-              </button>
-            </div>
+                {/* Shop Front Header */}
+                <div className="bg-blue-700 p-3 text-white flex items-center">
+                  <FaStore className="mr-2" />
+                  <h2 className="font-bold text-lg">{shop.name}</h2>
+                </div>
+                
+                {/* Shop Image with awning effect */}
+                <div className="relative">
+                  <div className="absolute top-0 left-0 right-0 h-4 bg-blue-600 clip-awning"></div>
+                  <img
+                    src={shop.image}
+                    alt={shop.name}
+                    className="w-full h-40 object-cover border-b-4 border-blue-800"
+                  />
+                </div>
+                
+                {/* Shop Info */}
+                <div className="p-4 bg-blue-50">
+                  <div className="flex justify-end mb-2">
+                    <span className="text-xs bg-blue-100 text-blue-800 px-2 py-1 rounded">
+                      ID: {shop.id}
+                    </span>
+                  </div>
+                  
+                  <div className="flex items-center mt-3 bg-white p-2 rounded border border-blue-200">
+                    <FaPhone className="mr-2 text-blue-700" />
+                    <span className="text-sm font-medium text-blue-800">{shop.phone}</span>
+                  </div>
+                  
+                  <button 
+                    onClick={() => handleVisitShop(shop)}
+                    className="w-full mt-3 bg-blue-600 hover:bg-blue-700 text-white py-2 px-4 rounded-md text-sm font-medium transition"
+                  >
+                    Scan
+                  </button>
+                </div>
+              </div>
+            ))}
           </div>
-        ))}
-      </div>
+        </>
+      )}
 
       {/* Shop Details Modal */}
       {showModal && selectedShop && (
         <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
-          <div className="bg-white rounded-lg shadow-xl max-w-md w-full max-h-[90vh] overflow-y-auto">
-            <div className="flex justify-between items-center bg-amber-700 p-4 text-white">
+          <div className="bg-white rounded-lg shadow-xl max-w-md w-full max-h-[90vh] overflow-y-auto border border-blue-200">
+            <div className="flex justify-between items-center bg-blue-700 p-4 text-white">
               <h2 className="text-xl font-bold">{selectedShop.name}</h2>
-              <button onClick={closeModal} className="text-white hover:text-amber-200">
+              <button onClick={closeModal} className="text-white hover:text-blue-200">
                 <FaTimes />
               </button>
             </div>
@@ -114,14 +119,14 @@ const Shop = () => {
             <div className="p-6">
               {/* QR Code Section */}
               <div className="flex flex-col items-center mb-6">
-                <div className="bg-white p-4 rounded-lg border border-amber-200 mb-3">
+                <div className="bg-white p-4 rounded-lg border border-blue-200 mb-3">
                   <QRCodeSVG 
                     value={`shop:${selectedShop.id}`} 
                     size={150}
-                    fgColor="#b45309" // amber-700 color
+                    fgColor="#1d4ed8"
                   />
                 </div>
-                <div className="flex items-center text-amber-700">
+                <div className="flex items-center text-blue-700">
                   <FaQrcode className="mr-2" />
                   <span className="font-medium">Shop ID: {selectedShop.id}</span>
                 </div>
@@ -129,32 +134,32 @@ const Shop = () => {
               
               {/* Customer Details */}
               <div className="space-y-4">
-                <div className="bg-gray-50 p-4 rounded-lg">
-                  <h3 className="font-bold text-gray-700 mb-2">Customer Information</h3>
+                <div className="bg-blue-50 p-4 rounded-lg">
+                  <h3 className="font-bold text-blue-800 mb-2">Customer Information</h3>
                   <div className="grid grid-cols-2 gap-4">
                     <div>
-                      <p className="text-sm text-gray-500">Customer ID</p>
-                      <p className="font-medium">CUST-{selectedShop.id.slice(-3)}</p>
+                      <p className="text-sm text-blue-600">Customer ID</p>
+                      <p className="font-medium text-blue-800">CUST-{selectedShop.id.slice(-3)}</p>
                     </div>
                     <div>
-                      <p className="text-sm text-gray-500">Balance</p>
-                      <p className="font-medium text-green-600">{selectedShop.balance}</p>
+                      <p className="text-sm text-blue-600">Balance</p>
+                      <p className="font-medium text-blue-600">{selectedShop.balance}</p>
                     </div>
                   </div>
                 </div>
                 
                 {selectedShop.referredBy && (
-                  <div className="bg-gray-50 p-4 rounded-lg">
-                    <h3 className="font-bold text-gray-700 mb-2">Referral Information</h3>
-                    <p className="text-sm text-gray-500">Referred By</p>
-                    <p className="font-medium">{selectedShop.referredBy}</p>
+                  <div className="bg-blue-50 p-4 rounded-lg">
+                    <h3 className="font-bold text-blue-800 mb-2">Referral Information</h3>
+                    <p className="text-sm text-blue-600">Referred By</p>
+                    <p className="font-medium text-blue-800">{selectedShop.referredBy}</p>
                   </div>
                 )}
               </div>
               
               <button
                 onClick={closeModal}
-                className="w-full mt-6 bg-amber-600 hover:bg-amber-700 text-white py-2 px-4 rounded-md font-medium transition"
+                className="w-full mt-6 bg-blue-600 hover:bg-blue-700 text-white py-2 px-4 rounded-md font-medium transition"
               >
                 Close
               </button>

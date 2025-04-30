@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { NavLink, useNavigate } from "react-router-dom";
-import { FaBars, FaTimes, FaUser, FaCog, FaBell, FaQrcode } from "react-icons/fa";
+import { FaBars, FaTimes, FaUser, FaCog, FaBell, FaQrcode, FaStore } from "react-icons/fa";
 import Cookies from "js-cookie";
 
 const ShopkeeperDashboardLayout = ({ children }) => {
@@ -40,6 +40,7 @@ const ShopkeeperDashboardLayout = ({ children }) => {
             { to: "/shopkeeper/referral-codes", label: "Referral Codes" },
             { to: "/shopkeeper/coupon-codes", label: "Coupon Codes" },
             { to: "/shopkeeper/interaction-panel", label: "Interaction Panel", icon: <FaQrcode /> },
+            { to: "/shopkeeper/shop", label: "Shop", icon: <FaStore /> },
             { to: "/shopkeeper/transaction", label: "Transaction" },
             { to: "/shopkeeper/subscription", label: "Subscription" },
             { to: "/shopkeeper/analytics", label: "Analytics" },
