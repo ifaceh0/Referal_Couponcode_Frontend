@@ -478,54 +478,56 @@ const Scanner = () => {
       setError("Please enter an amount.");
       return;
     }
-  
+
     const amount = parseFloat(redeemAmount);
     const availableBalance = parseFloat(scannedData?.availableBalance || 0);
-  
+
     if (amount > availableBalance) {
       setError("Amount cannot exceed available balance.");
       return;
     }
-  
+
     const token = localStorage.getItem("token");
-  
+
     if (!token) {
       setError("Authentication token not found.");
       return;
     }
-  
+
     const payload = {
       customerId: scannedData.customerId,
       referralCode: scannedData.referralCode,
       discountAmount: amount,
     };
-  
+
     setLoading(true);
     const toastId = toast.loading("Processing redemption...");
-    
+
     try {
       await axios.post(`${import.meta.env.VITE_BACKEND_URL}/api/shopkeeper/redeem-discount`, payload, {
         headers: {
           Authorization: `Bearer ${token}`,
         },
       });
-  
-      // Success notification
+
       toast.update(toastId, {
         render: "Discount redeemed successfully!",
         type: "success",
         isLoading: false,
         autoClose: 3000,
         closeOnClick: true,
+        position: "top-right",
       });
-  
+
       setOpen(false);
       setScannedData(null);
       setRedeemAmount("");
       setError("");
 
-      navigate("/interaction-panel");
-      
+      // Allow toast to show before navigating
+      setTimeout(() => {
+        navigate("/shopkeeper/interaction-panel");
+      }, 500);
     } catch (err) {
       console.error("Redemption failed:", err);
       toast.update(toastId, {
@@ -534,6 +536,7 @@ const Scanner = () => {
         isLoading: false,
         autoClose: 3000,
         closeOnClick: true,
+        position: "top-right",
       });
       setError("Redemption failed. Please try again.");
     } finally {
@@ -550,7 +553,6 @@ const Scanner = () => {
 
   return (
     <div className="flex flex-col items-center justify-center min-h-screen p-6 bg-gradient-to-r from-blue-50 to-purple-50">
-      {/* Back Button */}
       <div className="w-full max-w-4xl mb-4">
         <button
           onClick={() => navigate(-1)}
