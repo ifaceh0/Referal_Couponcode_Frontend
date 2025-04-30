@@ -98,6 +98,7 @@
 //   );
 // }
 
+
 import { useState, useEffect } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import { Menu, X } from 'lucide-react';
@@ -133,7 +134,7 @@ export default function Navbar() {
 
   return (
     <>
-      <nav className="bg-white shadow-md fixed w-full z-10 top-0">
+      <nav className="bg-white shadow-md fixed w-full z-50 top-0">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex justify-between h-16 items-center">
             <Link to="/" className="text-xl font-bold text-purple-600">MyApp</Link>
@@ -158,11 +159,12 @@ export default function Navbar() {
               <div className="relative">
                 <button 
                   onClick={toggleDropdown} 
-                  className="px-4 py-2 bg-orange-500 text-white rounded-lg hover:bg-orange-600 transition relative">
+                  className="px-4 py-2 bg-orange-500 text-white rounded-lg hover:bg-orange-600 transition relative"
+                >
                   Sign Up
                 </button>
                 {showDropdown && (
-                  <div className="absolute right-0 mt-2 w-40 bg-white shadow-lg rounded-lg">
+                  <div className="absolute right-0 mt-2 w-40 bg-white shadow-lg rounded-lg z-50">
                     <Link 
                       to="/signup/shopkeeper" 
                       className="block px-4 py-2 text-gray-700 hover:bg-gray-200"
@@ -216,11 +218,12 @@ export default function Navbar() {
           <div className="relative dropdown-container">
             <button 
               onClick={toggleDropdown} 
-              className="block w-full text-left px-4 py-2 bg-orange-500 text-white rounded-md text-lg">
+              className="block w-full text-left px-4 py-2 bg-orange-500 text-white rounded-md text-lg"
+            >
               Sign Up
             </button>
             {showDropdown && (
-              <div className="mt-1 bg-white shadow-lg rounded-lg">
+              <div className="mt-1 bg-white shadow-lg rounded-lg z-50">
                 <Link to="/signup/shopkeeper" className="block px-4 py-2 text-gray-700 hover:bg-gray-200" onClick={toggleMenu}>
                   Shopkeeper
                 </Link>
