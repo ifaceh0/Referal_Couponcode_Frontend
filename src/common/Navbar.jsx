@@ -243,9 +243,9 @@
 // }
 
 import { useState, useEffect } from 'react';
-import { Link, useLocation } from 'react-router-dom';
-import { Menu, X, LogOut } from 'lucide-react';
-import { getCurrentUser } from '../api/signin';
+import { Link, useLocation, useNavigate } from 'react-router-dom';
+import { Menu, X } from 'lucide-react';
+import { getCurrentUser } from '../../api/signin';
 
 const navLinks = [
   { name: 'Home', path: '/' },
@@ -257,43 +257,46 @@ const navLinks = [
 
 export default function Navbar() {
   const location = useLocation();
+  const navigate = useNavigate();
   const [isOpen, setIsOpen] = useState(false);
   const [showDropdown, setShowDropdown] = useState(false);
-  const [user, setUser] = useState(null);
+  const [userDetails, setUserDetails] = useState(null);
+
+  useEffect(() => {
+    const fetchUser = async () => {
+      try {
+        const user = await getCurrentUser();
+        setUserDetails(user);
+      } catch (error) {
+        console.error("Error fetching user:", error);
+      }
+    };
+    
+    fetchUser();
+  }, []);
 
   const isActive = (path) => location.pathname === path;
   const toggleMenu = () => setIsOpen(!isOpen);
   const toggleDropdown = () => setShowDropdown(!showDropdown);
 
+  const handleLogout = () => {
+    localStorage.removeItem('token');
+    localStorage.removeItem('user');
+    setUserDetails(null);
+    navigate('/signin');
+  };
+
   useEffect(() => {
     const handleClickOutside = (event) => {
-      if (!event.target.closest('.dropdown-container')) {
+      if (!event.target.closest(".dropdown-container")) {
         setShowDropdown(false);
       }
     };
-    document.addEventListener('mousedown', handleClickOutside);
-    return () => document.removeEventListener('mousedown', handleClickOutside);
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+    };
   }, []);
-
-  useEffect(() => {
-                 const fetchData = async () => {
-                     try {
-                         const user = await getCurrentUser();
-                         console.log("Fetched user:", user.id);
-                         setUserDetails(user);
-                     } catch (error) {
-                         console.error("Error fetching monthly data:", error);
-                     }
-                 };
-         
-                 fetchData();
-             }, []);
-
-  const handleLogout = () => {
-    localStorage.clear();
-    setUser(null);
-    window.location.href = '/signin';
-  };
 
   return (
     <>
@@ -301,7 +304,7 @@ export default function Navbar() {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex justify-between h-16 items-center">
             <Link to="/" className="text-xl font-bold text-purple-600">MyApp</Link>
-
+            
             <div className="hidden sm:flex space-x-6">
               {navLinks.map(({ name, path }) => (
                 <Link
@@ -317,46 +320,60 @@ export default function Navbar() {
                 </Link>
               ))}
             </div>
-
-            <div className="hidden sm:flex items-center space-x-4 relative dropdown-container">
-              {user ? (
-                <div className="relative">
-                  <button
-                    onClick={toggleDropdown}
-                    className="px-4 py-2 bg-purple-600 text-white rounded-lg hover:bg-purple-700 transition"
+            
+            <div className="hidden sm:flex items-center space-x-4">
+              {userDetails ? (
+                <div className="relative dropdown-container">
+                  <button 
+                    onClick={toggleDropdown} 
+                    className="flex items-center space-x-2 px-4 py-2 bg-gray-100 rounded-lg hover:bg-gray-200 transition"
                   >
-                    {user.name}
+                    <span className="font-medium">{userDetails.name}</span>
+                    <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+                    </svg>
                   </button>
                   {showDropdown && (
-                    <div className="absolute right-0 mt-2 w-40 bg-white shadow-lg rounded-lg z-50">
+                    <div className="absolute right-0 mt-2 w-48 bg-white shadow-lg rounded-lg z-50">
+                      <div className="px-4 py-2 text-gray-700 border-b">
+                        <p className="text-sm">Logged in as</p>
+                        <p className="font-medium">{userDetails.name}</p>
+                      </div>
+                      <Link 
+                        to="/profile" 
+                        className="block px-4 py-2 text-gray-700 hover:bg-gray-100"
+                        onClick={() => setShowDropdown(false)}
+                      >
+                        Profile
+                      </Link>
                       <button
                         onClick={handleLogout}
-                        className="w-full px-4 py-2 text-left text-gray-700 hover:bg-gray-200 flex items-center gap-2"
+                        className="w-full text-left px-4 py-2 text-gray-700 hover:bg-gray-100"
                       >
-                        <LogOut size={16} /> Logout
+                        Sign Out
                       </button>
                     </div>
                   )}
                 </div>
               ) : (
                 <>
-                  <div className="relative">
-                    <button
-                      onClick={toggleDropdown}
-                      className="px-4 py-2 bg-orange-500 text-white rounded-lg hover:bg-orange-600 transition"
+                  <div className="relative dropdown-container">
+                    <button 
+                      onClick={toggleDropdown} 
+                      className="px-4 py-2 bg-orange-500 text-white rounded-lg hover:bg-orange-600 transition relative"
                     >
                       Sign Up
                     </button>
                     {showDropdown && (
                       <div className="absolute right-0 mt-2 w-40 bg-white shadow-lg rounded-lg z-50">
-                        <Link
-                          to="/signup/shopkeeper"
+                        <Link 
+                          to="/signup/shopkeeper" 
                           className="block px-4 py-2 text-gray-700 hover:bg-gray-200"
                           onClick={() => setShowDropdown(false)}
                         >
                           Shopkeeper
                         </Link>
-                        <Link
+                        <Link 
                           to="/signup/user"
                           className="block px-4 py-2 text-gray-700 hover:bg-gray-200"
                           onClick={() => setShowDropdown(false)}
@@ -366,32 +383,25 @@ export default function Navbar() {
                       </div>
                     )}
                   </div>
-                  <Link
-                    to="/signin"
-                    className="px-4 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600 transition"
-                  >
+                  <Link to="/signin" className="px-4 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600 transition">
                     Sign In
                   </Link>
                 </>
               )}
             </div>
-
-            <button
-              onClick={toggleMenu}
-              className="sm:hidden p-2 text-gray-600 focus:outline-none"
-            >
+            
+            <button onClick={toggleMenu} className="sm:hidden p-2 text-gray-600 focus:outline-none">
               {isOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
             </button>
           </div>
         </div>
       </nav>
-
-      <div className="h-16" />
-
-      <div
-        className={`sm:hidden transition-all duration-500 ease-in-out ${
-          isOpen ? 'max-h-screen opacity-100 scale-100' : 'max-h-0 opacity-0 scale-95'
-        } overflow-hidden`}
+      
+      <div className="h-16"></div>
+      
+      <div className={`sm:hidden transition-all duration-500 ease-in-out ${
+        isOpen ? 'max-h-screen opacity-100 transform scale-100' : 'max-h-0 opacity-0 transform scale-95'
+      } overflow-hidden`}
       >
         <div className="bg-white shadow-md space-y-2 p-4">
           {navLinks.map(({ name, path }) => (
@@ -408,55 +418,45 @@ export default function Navbar() {
               {name}
             </Link>
           ))}
-
-          {user ? (
+          {userDetails ? (
             <>
-              <div className="text-gray-700 px-4 py-2 font-medium">
-                Hello, {user.name}
+              <div className="px-4 py-2 border-t border-gray-200">
+                <p className="font-medium">Logged in as {userDetails.name}</p>
               </div>
+              <Link to="/profile" onClick={toggleMenu} className="block px-4 py-2 text-gray-700 hover:bg-gray-200">
+                Profile
+              </Link>
               <button
                 onClick={() => {
-                  toggleMenu();
                   handleLogout();
+                  toggleMenu();
                 }}
-                className="w-full text-left px-4 py-2 text-gray-700 hover:bg-gray-200 flex items-center gap-2"
+                className="block w-full text-left px-4 py-2 text-gray-700 hover:bg-gray-200"
               >
-                <LogOut size={16} /> Logout
+                Sign Out
               </button>
             </>
           ) : (
             <>
               <div className="relative dropdown-container">
-                <button
-                  onClick={toggleDropdown}
+                <button 
+                  onClick={toggleDropdown} 
                   className="block w-full text-left px-4 py-2 bg-orange-500 text-white rounded-md text-lg"
                 >
                   Sign Up
                 </button>
                 {showDropdown && (
                   <div className="mt-1 bg-white shadow-lg rounded-lg z-50">
-                    <Link
-                      to="/signup/shopkeeper"
-                      className="block px-4 py-2 text-gray-700 hover:bg-gray-200"
-                      onClick={toggleMenu}
-                    >
+                    <Link to="/signup/shopkeeper" className="block px-4 py-2 text-gray-700 hover:bg-gray-200" onClick={toggleMenu}>
                       Shopkeeper
                     </Link>
-                    <Link
-                      to="/signup/user"
-                      className="block px-4 py-2 text-gray-700 hover:bg-gray-200"
-                      onClick={toggleMenu}
-                    >
+                    <Link to="/signup/user" className="block px-4 py-2 text-gray-700 hover:bg-gray-200" onClick={toggleMenu}>
                       User
                     </Link>
                   </div>
                 )}
               </div>
-              <Link
-                to="/signin"
-                onClick={toggleMenu}
-                className="block px-4 py-2 bg-blue-500 text-white rounded-md text-lg"
-              >
+              <Link to="/signin" onClick={toggleMenu} className="block px-4 py-2 bg-blue-500 text-white rounded-md text-lg">
                 Sign In
               </Link>
             </>
