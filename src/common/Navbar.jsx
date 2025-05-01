@@ -276,18 +276,18 @@ export default function Navbar() {
   }, []);
 
   useEffect(() => {
-    const fetchUser = async () => {
-      try {
-        const userData = await getCurrentUser();
-        console.log('USER DATA:', userData);
-        if (userData?.name) setUser(userData);
-      } catch (error) {
-        console.error('User fetch failed:', error);
-        setUser(null);
-      }
-    };
-    fetchUser();
-  }, []);
+                 const fetchData = async () => {
+                     try {
+                         const user = await getCurrentUser();
+                         console.log("Fetched user:", user.id);
+                         setUserDetails(user);
+                     } catch (error) {
+                         console.error("Error fetching monthly data:", error);
+                     }
+                 };
+         
+                 fetchData();
+             }, []);
 
   const handleLogout = () => {
     localStorage.clear();
