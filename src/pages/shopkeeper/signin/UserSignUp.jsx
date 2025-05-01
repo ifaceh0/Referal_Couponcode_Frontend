@@ -271,14 +271,13 @@
 
 // export default UserSignUp;
 
-import React, { useState, useRef } from "react";
+import React, { useState } from "react";
 import { signupUser } from "../../../api/signin";
 import { useNavigate } from "react-router-dom";
 import { toast, ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
-import PhoneInput from 'react-phone-input-2'
-import 'react-phone-input-2/lib/style.css'
-import ReCAPTCHA from "react-google-recaptcha";
+import PhoneInput from "react-phone-input-2";
+import "react-phone-input-2/lib/style.css";
 
 const InputField = ({ label, type, name, value, onChange, error }) => (
   <div className="mb-4 w-full">
@@ -320,7 +319,14 @@ const PhoneInputField = ({ label, name, value, onChange, error }) => (
   </div>
 );
 
-
+const generateCaptcha = () => {
+  const chars = "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ";
+  let captcha = "";
+  for (let i = 0; i < 6; i++) {
+    captcha += chars.charAt(Math.floor(Math.random() * chars.length));
+  }
+  return captcha;
+};
 
 const UserSignUp = () => {
   const [formData, setFormData] = useState({
@@ -333,22 +339,14 @@ const UserSignUp = () => {
   const [errors, setErrors] = useState({});
   const [showPopup, setShowPopup] = useState(false);
   const [referralCode, setReferralCode] = useState("");
-  const [isCaptchaVerified, setIsCaptchaVerified] = useState(false);
-  const captchaRef = useRef(null);
+  const [captchaText, setCaptchaText] = useState(generateCaptcha());
+  const [userCaptchaInput, setUserCaptchaInput] = useState("");
   const navigate = useNavigate();
-
-  // Replace with your actual reCAPTCHA site key
-  const RECAPTCHA_SITE_KEY = "6LeIxAcTAAAAAJcZVRqyHh71UMIEGNQ_MXjiZKhI";
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
     setFormData({ ...formData, [name]: value });
     setErrors({ ...errors, [name]: "" });
-  };
-
-  const handleCaptchaChange = (value) => {
-    // Value will be null when reCAPTCHA expires
-    setIsCaptchaVerified(!!value);
   };
 
   const validateFields = () => {
@@ -365,8 +363,8 @@ const UserSignUp = () => {
     if (formData.confirmPassword !== formData.password) {
       fieldErrors.confirmPassword = "Passwords do not match.";
     }
-    if (!isCaptchaVerified) {
-      fieldErrors.captcha = "Please verify you're not a robot.";
+    if (userCaptchaInput !== captchaText) {
+      fieldErrors.captcha = "CAPTCHA verification failed. Please try again.";
     }
     setErrors(fieldErrors);
     return Object.keys(fieldErrors).length === 0;
@@ -385,14 +383,10 @@ const UserSignUp = () => {
     });
 
     try {
-      // Get the captcha token
-      const captchaToken = captchaRef.current.getValue();
-      
       const { confirmPassword, ...submitData } = formData;
       const responseMessage = await signupUser({
         ...submitData,
         referralCode,
-        captchaToken // Include the captcha token in your submission
       });
 
       toast.update(toastId, {
@@ -401,12 +395,17 @@ const UserSignUp = () => {
         autoClose: 5000,
         isLoading: false,
       });
-      
-      // Reset form
-      setFormData({ name: "", email: "", phoneNumber: "", password: "", confirmPassword: "" });
+
+      setFormData({
+        name: "",
+        email: "",
+        phoneNumber: "",
+        password: "",
+        confirmPassword: "",
+      });
       setReferralCode("");
-      captchaRef.current.reset();
-      setIsCaptchaVerified(false);
+      setUserCaptchaInput("");
+      setCaptchaText(generateCaptcha());
 
       setTimeout(() => navigate("/signin"), 5000);
     } catch (err) {
@@ -416,10 +415,14 @@ const UserSignUp = () => {
         autoClose: 5000,
         isLoading: false,
       });
-      // Reset the captcha when there's an error
-      captchaRef.current.reset();
-      setIsCaptchaVerified(false);
+      setUserCaptchaInput("");
+      setCaptchaText(generateCaptcha());
     }
+  };
+
+  const refreshCaptcha = () => {
+    setCaptchaText(generateCaptcha());
+    setUserCaptchaInput("");
   };
 
   return (
@@ -427,25 +430,102 @@ const UserSignUp = () => {
       <ToastContainer />
       <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-purple-500 to-orange-400 p-6">
         <div className="bg-white shadow-2xl rounded-xl p-8 w-full max-w-lg relative">
-          <h2 className="text-3xl font-bold mb-6 text-purple-600 text-center">User Sign Up</h2>
-          <InputField label="Name" type="text" name="name" value={formData.name} onChange={handleInputChange} error={errors.name} />
-          <InputField label="Email" type="email" name="email" value={formData.email} onChange={handleInputChange} error={errors.email} />
-          <PhoneInputField label="Phone" name="phoneNumber" value={formData.phoneNumber} onChange={handleInputChange} error={errors.phoneNumber} />
-          <InputField label="Password" type="password" name="password" value={formData.password} onChange={handleInputChange} error={errors.password} />
-          <InputField label="Confirm Password" type="password" name="confirmPassword" value={formData.confirmPassword} onChange={handleInputChange} error={errors.confirmPassword} />
-          
-          {/* Add reCAPTCHA component */}
+          <h2 className="text-3xl font-bold mb-6 text-purple-600 text-center">
+            User Sign Up
+          </h2>
+          <InputField
+            label="Name"
+            type="text"
+            name="name"
+            value={formData.name}
+            onChange={handleInputChange}
+            error={errors.name}
+          />
+          <InputField
+            label="Email"
+            type="email"
+            name="email"
+            value={formData.email}
+            onChange={handleInputChange}
+            error={errors.email}
+          />
+          <PhoneInputField
+            label="Phone"
+            name="phoneNumber"
+            value={formData.phoneNumber}
+            onChange={handleInputChange}
+            error={errors.phoneNumber}
+          />
+          <InputField
+            label="Password"
+            type="password"
+            name="password"
+            value={formData.password}
+            onChange={handleInputChange}
+            error={errors.password}
+          />
+          <InputField
+            label="Confirm Password"
+            type="password"
+            name="confirmPassword"
+            value={formData.confirmPassword}
+            onChange={handleInputChange}
+            error={errors.confirmPassword}
+          />
+
+          {/* CAPTCHA */}
           <div className="my-4">
-            <ReCAPTCHA
-              ref={captchaRef}
-              sitekey={RECAPTCHA_SITE_KEY}
-              onChange={handleCaptchaChange}
+            <div className="flex items-center mb-2">
+              <div className="flex-1 bg-gray-100 p-2 rounded-lg text-center font-mono text-xl tracking-widest select-none">
+                {captchaText.split("").map((char, index) => (
+                  <span
+                    key={index}
+                    style={{
+                      display: "inline-block",
+                      transform: `rotate(${Math.random() * 30 - 15}deg)`,
+                      color: "black",
+                      fontSize: "24px",
+                      fontWeight: "bold",
+                    }}
+                  >
+                    {char}
+                  </span>
+                ))}
+              </div>
+              <button
+                onClick={refreshCaptcha}
+                className="ml-2 p-2 bg-gray-200 rounded-lg hover:bg-gray-300 transition"
+                type="button"
+                aria-label="Refresh CAPTCHA"
+              >
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  className="h-5 w-5"
+                  viewBox="0 0 20 20"
+                  fill="currentColor"
+                >
+                  <path
+                    fillRule="evenodd"
+                    d="M4 2a1 1 0 011 1v2.101a7.002 7.002 0 0111.601 2.566 1 1 0 11-1.885.666A5.002 5.002 0 005.999 7H9a1 1 0 010 2H4a1 1 0 01-1-1V3a1 1 0 011-1zm.008 9.057a1 1 0 011.276.61A5.002 5.002 0 0014.001 13H11a1 1 0 110-2h5a1 1 0 011 1v5a1 1 0 11-2 0v-2.101a7.002 7.002 0 01-11.601-2.566 1 1 0 01.61-1.276z"
+                    clipRule="evenodd"
+                  />
+                </svg>
+              </button>
+            </div>
+            <input
+              type="text"
+              value={userCaptchaInput}
+              onChange={(e) => setUserCaptchaInput(e.target.value)}
+              placeholder="Enter the CAPTCHA above"
+              className="w-full h-12 p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500 transition-all"
             />
-            {errors.captcha && <span className="text-red-500 text-sm">{errors.captcha}</span>}
+            {errors.captcha && (
+              <span className="text-red-500 text-sm">{errors.captcha}</span>
+            )}
           </div>
-          
-          <button 
-            onClick={handleSignUpClick} 
+
+          <button
+            onClick={handleSignUpClick}
             className="bg-green-600 text-white py-2 px-4 rounded-lg w-full mt-4 hover:bg-green-700 transition"
           >
             Sign Up
@@ -456,8 +536,19 @@ const UserSignUp = () => {
         <div className="fixed inset-0 flex items-center justify-center bg-gray-900 bg-opacity-50">
           <div className="bg-white p-6 rounded-lg shadow-lg w-80">
             <h3 className="text-xl font-bold mb-4">Enter Referral Code</h3>
-            <InputField label="Referral Code" type="text" name="referralCode" value={referralCode} onChange={(e) => setReferralCode(e.target.value)} />
-            <button onClick={handlePopupSubmit} className="bg-blue-600 text-white py-2 px-4 rounded-lg w-full mt-2 hover:bg-blue-700 transition">OK</button>
+            <InputField
+              label="Referral Code"
+              type="text"
+              name="referralCode"
+              value={referralCode}
+              onChange={(e) => setReferralCode(e.target.value)}
+            />
+            <button
+              onClick={handlePopupSubmit}
+              className="bg-blue-600 text-white py-2 px-4 rounded-lg w-full mt-2 hover:bg-blue-700 transition"
+            >
+              OK
+            </button>
           </div>
         </div>
       )}

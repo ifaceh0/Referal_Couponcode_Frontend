@@ -374,14 +374,13 @@
 
 // export default ShopkeeperSignUp;
 
-import React, { useState, useRef } from "react";
+import React, { useState, useEffect } from "react";
 import { signupShopkeeper } from "../../../api/signin";
-import { useNavigate, useParams } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import { toast, ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
-import PhoneInput from 'react-phone-input-2'
-import 'react-phone-input-2/lib/style.css'
-import ReCAPTCHA from "react-google-recaptcha";
+import PhoneInput from 'react-phone-input-2';
+import 'react-phone-input-2/lib/style.css';
 
 const InputField = ({ label, type, name, value, onChange, error }) => (
   <div className="mb-4 w-full">
@@ -404,17 +403,15 @@ const PhoneInputField = ({ label, name, value, onChange, error }) => (
     <label className="block text-gray-700 mb-2 font-medium">{label}</label>
     <div className="relative w-full">
       <PhoneInput
-        country={"us"} // Default country (change as needed)
+        country={"us"}
         onlyCountries={["us", "ca"]}
         isValid={(inputNumber, country) => ["us", "ca"].includes(country?.iso2)}
         value={value}
-        // onChange={(phone) => onChange({ target: { name, value: phone } })}
         onChange={(phone, countryData) => {
           const dialCode = countryData?.dialCode || "";
           const nationalNumber = phone.startsWith(dialCode)
             ? phone.slice(dialCode.length)
             : phone;
-  
           onChange({ target: { name, value: nationalNumber } });
         }}
         inputClass="!w-full !h-12 !p-3 !pl-14 !border !border-gray-300 !rounded-lg !focus:outline-none !focus:ring-2 !focus:ring-purple-500 !transition-all"
@@ -440,22 +437,37 @@ const ShopkeeperSignUp = () => {
     companyPhone: "",
   });
   const [errors, setErrors] = useState({});
-  const [isCaptchaVerified, setIsCaptchaVerified] = useState(false);
-  const captchaRef = useRef(null);
+  const [captchaText, setCaptchaText] = useState("");
+  const [userCaptchaInput, setUserCaptchaInput] = useState("");
   const navigate = useNavigate();
 
-  // Replace with your actual reCAPTCHA site key
-  const RECAPTCHA_SITE_KEY = "6LeIxAcTAAAAAJcZVRqyHh71UMIEGNQ_MXjiZKhI";
+  // Generate alphanumeric CAPTCHA (6 characters)
+  const generateCaptcha = () => {
+    const chars = 'ABCDEFGHJKLMNPQRSTUVWXYZabcdefghijkmnpqrstuvwxyz23456789';
+    let captcha = '';
+    for (let i = 0; i < 6; i++) {
+      captcha += chars.charAt(Math.floor(Math.random() * chars.length));
+    }
+    
+    // Add slight distortion effect by randomly changing case
+    captcha = captcha.split('').map(char => {
+      return Math.random() > 0.5 ? char.toUpperCase() : char.toLowerCase();
+    }).join('');
+    
+    setCaptchaText(captcha);
+    setUserCaptchaInput("");
+    return captcha;
+  };
+
+  // Initialize CAPTCHA on component mount
+  useEffect(() => {
+    generateCaptcha();
+  }, []);
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
     setFormData({ ...formData, [name]: value });
     setErrors({ ...errors, [name]: "" });
-  };
-
-  const handleCaptchaChange = (value) => {
-    // Value will be null when reCAPTCHA expires
-    setIsCaptchaVerified(!!value);
   };
 
   const validateFields = (fields) => {
@@ -481,8 +493,8 @@ const ShopkeeperSignUp = () => {
     if (fields.includes("companyEmail") && !/\S+@\S+\.\S+/.test(formData.companyEmail)) {
       fieldErrors.companyEmail = "Invalid company email address.";
     }
-    if (step === 2 && !isCaptchaVerified) {
-      fieldErrors.captcha = "Please verify you're not a robot.";
+    if (step === 2 && userCaptchaInput !== captchaText) {
+      fieldErrors.captcha = "CAPTCHA verification failed. Please try again.";
     }
     setErrors(fieldErrors);
     if (Object.keys(fieldErrors).length > 0) {
@@ -498,8 +510,7 @@ const ShopkeeperSignUp = () => {
 
   const handleBack = () => {
     setStep(1);
-    captchaRef.current.reset();
-    setIsCaptchaVerified(false);
+    generateCaptcha();
   };
 
   const handleSubmit = async () => {
@@ -511,13 +522,9 @@ const ShopkeeperSignUp = () => {
     });
 
     try {
-      // Get the captcha token
-      const captchaToken = captchaRef.current.getValue();
-      
       const { confirmPassword, ...submitData } = formData;
       const responseMessage = await signupShopkeeper({
-        ...submitData,
-        captchaToken // Include the captcha token in your submission
+        ...submitData
       });
 
       toast.update(toastId, {
@@ -535,10 +542,13 @@ const ShopkeeperSignUp = () => {
         autoClose: 5000,
         isLoading: false,
       });
-      // Reset the captcha when there's an error
-      captchaRef.current.reset();
-      setIsCaptchaVerified(false);
+      // Regenerate CAPTCHA on error
+      generateCaptcha();
     }
+  };
+
+  const refreshCaptcha = () => {
+    generateCaptcha();
   };
 
   return (
@@ -563,12 +573,41 @@ const ShopkeeperSignUp = () => {
               <InputField label="Company Email" type="email" name="companyEmail" value={formData.companyEmail} onChange={handleInputChange} error={errors.companyEmail} />
               <PhoneInputField label="Company Phone" name="companyPhone" value={formData.companyPhone} onChange={handleInputChange} error={errors.companyPhone} />
               
-              {/* Add reCAPTCHA component */}
+              {/* Enhanced Alphanumeric CAPTCHA */}
               <div className="my-4">
-                <ReCAPTCHA
-                  ref={captchaRef}
-                  sitekey={RECAPTCHA_SITE_KEY}
-                  onChange={handleCaptchaChange}
+                <label className="block text-gray-700 mb-2 font-medium">CAPTCHA Verification</label>
+                <div className="flex items-center gap-2 mb-2">
+                  <div className="flex-1 flex items-center justify-center bg-gray-100 p-4 rounded-lg">
+                    <span 
+                      className="text-2xl font-bold tracking-wider"
+                      style={{
+                        fontFamily: "'Courier New', monospace",
+                        color: '#000',
+                        letterSpacing: '3px',
+                        textDecoration: 'line-through',
+                        textDecorationColor: 'rgba(0,0,0,0.2)'
+                      }}
+                    >
+                      {captchaText}
+                    </span>
+                  </div>
+                  <button 
+                    type="button" 
+                    onClick={refreshCaptcha}
+                    className="p-3 bg-gray-800 text-white rounded-lg hover:bg-gray-700 transition"
+                    aria-label="Refresh CAPTCHA"
+                  >
+                    <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
+                      <path fillRule="evenodd" d="M4 2a1 1 0 011 1v2.101a7.002 7.002 0 0111.601 2.566 1 1 0 11-1.885.666A5.002 5.002 0 005.999 7H9a1 1 0 010 2H4a1 1 0 01-1-1V3a1 1 0 011-1zm.008 9.057a1 1 0 011.276.61A5.002 5.002 0 0014.001 13H11a1 1 0 110-2h5a1 1 0 011 1v5a1 1 0 11-2 0v-2.101a7.002 7.002 0 01-11.601-2.566 1 1 0 01.61-1.276z" clipRule="evenodd" />
+                    </svg>
+                  </button>
+                </div>
+                <input
+                  type="text"
+                  placeholder="Type the characters above"
+                  value={userCaptchaInput}
+                  onChange={(e) => setUserCaptchaInput(e.target.value)}
+                  className="w-full h-12 p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500 transition-all"
                 />
                 {errors.captcha && <span className="text-red-500 text-sm">{errors.captcha}</span>}
               </div>
@@ -586,3 +625,4 @@ const ShopkeeperSignUp = () => {
 };
 
 export default ShopkeeperSignUp;
+
