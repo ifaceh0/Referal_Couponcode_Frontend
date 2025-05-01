@@ -245,7 +245,7 @@
 import { useState, useEffect } from 'react';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { Menu, X } from 'lucide-react';
-import { getCurrentUser } from '../../api/signin';
+import { getCurrentUser } from '../api/signin';
 
 const navLinks = [
   { name: 'Home', path: '/' },
