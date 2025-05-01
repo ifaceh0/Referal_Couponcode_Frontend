@@ -323,7 +323,7 @@ export default function Navbar() {
             </div>
             
             <div className="hidden sm:flex items-center space-x-4">
-              {userDetails ? (
+              {userDetails?.name ? (
                 <div className="relative dropdown-container">
                   <button 
                     onClick={toggleDropdown} 

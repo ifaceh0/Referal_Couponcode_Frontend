@@ -26,8 +26,10 @@ const ShopkeeperDashboardLayout = ({ children }) => {
   const closeSidebar = () => setIsSidebarOpen(false); 
 
   const handleLogout = () => {
-    Cookies.remove("jwt");
-    navigate("/");
+    localStorage.removeItem('token');
+    localStorage.removeItem('user');
+    setUserDetails(null);
+    navigate('/signin');
   };
 
   return (
