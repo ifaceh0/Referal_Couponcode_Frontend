@@ -1,14 +1,29 @@
-import React, { useState } from "react";
+import React, { useState,useEffect } from "react";
 import { NavLink, useNavigate } from "react-router-dom";
 import { FaBars, FaTimes, FaUser, FaCog, FaBell, FaQrcode, FaStore } from "react-icons/fa";
 import Cookies from "js-cookie";
+import { getCurrentUser } from '../api/signin';
 
 const ShopkeeperDashboardLayout = ({ children }) => {
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
   const navigate = useNavigate();
+  const [userDetails, setUserDetails] = useState(null);
+
+  useEffect(() => {
+    const fetchUser = async () => {
+      try {
+        const user = await getCurrentUser();
+        setUserDetails(user);
+      } catch (error) {
+        console.error("Error fetching user:", error);
+      }
+    };
+    
+    fetchUser();
+  }, []);
 
   const toggleSidebar = () => setIsSidebarOpen(!isSidebarOpen);
-  const closeSidebar = () => setIsSidebarOpen(false);
+  const closeSidebar = () => setIsSidebarOpen(false); 
 
   const handleLogout = () => {
     Cookies.remove("jwt");
@@ -96,7 +111,7 @@ const ShopkeeperDashboardLayout = ({ children }) => {
             <div className="relative group">
               <button className="flex items-center space-x-2 focus:outline-none">
                 <FaUser className="text-blue-800" />
-                <span className="hidden lg:inline">Username</span>
+                <span className="hidden lg:inline">{userDetails?.name ? userDetails.name : "Username"}</span>
               </button>
               <div className="hidden group-hover:block absolute top-full right-0 w-40 bg-white shadow-lg border rounded-md p-2">
                 <NavLink to="/profile" className="block py-1 px-2 text-sm hover:bg-gray-100">

@@ -267,6 +267,7 @@ export default function Navbar() {
       try {
         const user = await getCurrentUser();
         setUserDetails(user);
+        console.dir(user)
       } catch (error) {
         console.error("Error fetching user:", error);
       }

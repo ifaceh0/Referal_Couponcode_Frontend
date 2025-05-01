@@ -1,8 +1,9 @@
 import { useNavigate } from "react-router-dom";
+import { VITE_BACKEND_URL } from "../apiConfig";
 
 // Signup API
 export const signupShopkeeperOld = async (formData) => {
-    const url = `${import.meta.env.VITE_BACKEND_URL}/api/auth/signup`;
+    const url = `${VITE_BACKEND_URL}/api/auth/signup`;
     console.log(formData);
 
     const response = await fetch(url, {
@@ -45,7 +46,7 @@ export const signupShopkeeperOld = async (formData) => {
 // };
 export const signupShopkeeper = async (formData) => {
     try {
-        const response = await fetch(`${import.meta.env.VITE_BACKEND_URL}/api/auth/signup`, {
+        const response = await fetch(`${VITE_BACKEND_URL}/api/auth/signup`, {
             method: "POST",
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify(formData),
@@ -67,7 +68,7 @@ export const signupShopkeeper = async (formData) => {
 export const getCurrentUser = async () => {
     try {
         const token = localStorage.getItem("token");
-        const response = await fetch(`${import.meta.env.VITE_BACKEND_URL}/api/auth/current-user`, {
+        const response = await fetch(`${VITE_BACKEND_URL}/api/auth/current-user`, {
             method: "GET",
             headers: {
                 "Content-Type": "application/json",
@@ -86,7 +87,7 @@ export const getCurrentUser = async () => {
 
         return data;
     } catch (error) {
-        console.error("Failed to fetch referral codes:", error);
+        console.dir("Failed to fetch referral codes:", error);
         return [];
     }
 };
@@ -96,7 +97,7 @@ export const getCurrentUser = async () => {
 
 // Login API
 export const loginShopkeeper = async (credentials) => {
-    const url = `${import.meta.env.VITE_BACKEND_URL}/api/auth/login`;
+    const url = `${VITE_BACKEND_URL}/api/auth/login`;
 
     const response = await fetch(url, {
         method: "POST",
@@ -185,12 +186,12 @@ export const logoutShopkeeper = async () => {
 // User Signup API
 export const signupUser = async (formData,referralCode) => {
     try {
-        // const response = await fetch(`${import.meta.env.VITE_BACKEND_URL}/api/auth/user/register`, {
+        // const response = await fetch(`${VITE_BACKEND_URL}/api/auth/user/register`, {
         //     method: "POST",
         //     headers: { "Content-Type": "application/json" },
         //     body: JSON.stringify(formData),
         // });
-        let url = `${import.meta.env.VITE_BACKEND_URL}/api/auth/user/register`;
+        let url = `${VITE_BACKEND_URL}/api/auth/user/register`;
         if (referralCode) {
         url += `?referralCode=${encodeURIComponent(referralCode)}`; 
         }
