@@ -245,7 +245,7 @@
 import { useState, useEffect } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import { Menu, X, LogOut } from 'lucide-react';
-import { getCurrentUser } from '../api/signin'; // Adjust this path as needed
+import { getCurrentUser } from '../api/signin';
 
 const navLinks = [
   { name: 'Home', path: '/' },
@@ -267,20 +267,22 @@ export default function Navbar() {
 
   useEffect(() => {
     const handleClickOutside = (event) => {
-      if (!(event.target).closest(".dropdown-container")) {
+      if (!event.target.closest('.dropdown-container')) {
         setShowDropdown(false);
       }
     };
-    document.addEventListener("mousedown", handleClickOutside);
-    return () => document.removeEventListener("mousedown", handleClickOutside);
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => document.removeEventListener('mousedown', handleClickOutside);
   }, []);
 
   useEffect(() => {
     const fetchUser = async () => {
       try {
         const userData = await getCurrentUser();
+        console.log('USER DATA:', userData);
         if (userData?.name) setUser(userData);
       } catch (error) {
+        console.error('User fetch failed:', error);
         setUser(null);
       }
     };
@@ -384,13 +386,11 @@ export default function Navbar() {
         </div>
       </nav>
 
-      <div className="h-16"></div>
+      <div className="h-16" />
 
       <div
         className={`sm:hidden transition-all duration-500 ease-in-out ${
-          isOpen
-            ? 'max-h-screen opacity-100 transform scale-100'
-            : 'max-h-0 opacity-0 transform scale-95'
+          isOpen ? 'max-h-screen opacity-100 scale-100' : 'max-h-0 opacity-0 scale-95'
         } overflow-hidden`}
       >
         <div className="bg-white shadow-md space-y-2 p-4">
