@@ -449,6 +449,7 @@ import { toast , ToastContainer } from "react-toastify";
 import { getCurrentUser } from "../../api/signin";
 
 
+
 const Scanner = () => {
   const [scannedData, setScannedData] = useState(null);
   const [open, setOpen] = useState(false);
@@ -457,6 +458,10 @@ const Scanner = () => {
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
   const [userDetails, setUserDetails] = useState(null);
+
+  const [errorDialogOpen, setErrorDialogOpen] = useState(false);// for dialog box
+  const [errorMessage, setErrorMessage] = useState("");// for dialog box
+
      useEffect(() => {
             const fetchData = async () => {
                 try {
@@ -483,11 +488,20 @@ const Scanner = () => {
         console.log("Scanned shopID:", parsedData.shopID);
         console.log("Current userID:", userDetails.id);
         // Validate shop ID
+        // if (String(parsedData.shopID) !== String(userDetails.id)) {
+        //   console.warn("Mismatch detected – IDs are not the same.");
+        //   toast.error("Invalid scan code. This customer does not belong to your shop.");
+        //   return;
+        // }
+
+        // display error in the dialog
         if (String(parsedData.shopID) !== String(userDetails.id)) {
           console.warn("Mismatch detected – IDs are not the same.");
-          toast.error("Invalid scan code. This customer does not belong to your shop.");
+          setErrorMessage("Invalid scan code. This customer does not belong to your shop.");
+          setErrorDialogOpen(true);
           return;
         }
+
         setScannedData(parsedData);
         setOpen(true);
         setError("");
