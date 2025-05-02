@@ -62,6 +62,8 @@ const ShopkeeperDashboardLayout = ({ children }) => {
             { to: "/shopkeeper/subscription", label: "Subscription" },
             { to: "/shopkeeper/analytics", label: "Analytics" },
             { to: "/shopkeeper/settings", label: "Settings" },
+            { to: "/shopkeeper/employee", label: "Employee" },
+
             // { to: "/shopkeeper/generate-codes", label: "Generate Codes" },
         //   ].map(({ to, label }) => (
         //     <NavLink

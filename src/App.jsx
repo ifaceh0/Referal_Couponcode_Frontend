@@ -38,6 +38,8 @@ import Scanner from "./pages/scanner/Scanner";
 import ProductShowcase from "./home/ProductShowcase";
 import FeatureDetailPage from "./home/FeatureDetailPage";
 import Shop from "./pages/shop/Shop";
+import Employee from "./pages/Employee/Employee";
+
 //import UserSignUp from "./pages/shopkeeper/signin/UserSignUp";
 
 const App = () => {
@@ -112,6 +114,7 @@ const App = () => {
           <Route path="g" element={<GraphDashboard />} />
           <Route path="scanner" element={<Scanner/>} />
           <Route path="shop" element={<Shop/>} />
+          <Route path="employee" element={<Employee/>} />
         </Route>
 
         {/* Routes for admin pages with AdminLayout */}
