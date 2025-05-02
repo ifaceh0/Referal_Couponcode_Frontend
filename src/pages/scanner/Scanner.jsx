@@ -883,6 +883,7 @@ const Scanner = () => {
   const handleCloseErrorDialog = () => {
     setErrorDialogOpen(false);
     setErrorDialogMessage("");
+    navigate("/shopkeeper/interaction-panel"); // Added navigation here
   };
 
   return (
