@@ -96,7 +96,7 @@ const Shop = () => {
                     onClick={() => handleVisitShop(shop)}
                     className="w-full mt-3 bg-blue-600 hover:bg-blue-700 text-white py-2 px-4 rounded-md text-sm font-medium transition"
                   >
-                    Scan
+                    QR code
                   </button>
                 </div>
               </div>
