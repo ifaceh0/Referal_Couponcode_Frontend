@@ -595,7 +595,7 @@
 import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { validateCode } from "../../api/validateCode";
-import { useCouponCode } from "../../api/validateCode";
+import { useCouponCode,userInfo } from "../../api/validateCode";
 import { toast, ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { FaQrcode, FaArrowLeft, FaPhone, FaEnvelope, FaCheck } from "react-icons/fa";
@@ -603,6 +603,7 @@ import { getCurrentUser } from "../../api/signin";
 import Dialog from '@mui/material/Dialog';
 import DialogTitle from '@mui/material/DialogTitle';
 import DialogContent from '@mui/material/DialogContent';
+import axios from "axios";
 
 const InteractionPanel = () => {
   const [code, setCode] = useState("");
@@ -638,100 +639,184 @@ const InteractionPanel = () => {
   const shopkeeperId = userDetails?.id || localStorage.getItem("shopkeeperId");
   const navigate = useNavigate();
 
-  const handleVerifyPhone = () => {
+  // const handleVerifyPhone = () => {
+  //   if (!phoneNumber.trim()) {
+  //     toast.error("Please enter a phone number");
+  //     return;
+  //   }
+    
+  //   // In a real app, you would verify the phone number with an API call here
+  //   // For this example, we'll simulate verification with mock data
+  //   const mockVerificationData = {
+  //     customerId: "CUST12345",
+  //     name: "John Doe",
+  //     phone: phoneNumber,
+  //     email: "john.doe@example.com",
+  //     availableBalance: 150.00,
+  //     couponAmount: 25.00,
+  //     couponUsageLimit: 3,
+  //     couponCode: "SUMMER25",
+  //     referralCode: "REFERJOHN",
+  //     shopName: userDetails?.name || "Default Shop"
+  //   };
+    
+  //   setVerificationData(mockVerificationData);
+  //   setVerificationDialogOpen(true);
+  //   setPhoneVerified(true);
+  // };
+
+  const handleVerifyPhone = async () => {
     if (!phoneNumber.trim()) {
       toast.error("Please enter a phone number");
       return;
     }
-    
-    // In a real app, you would verify the phone number with an API call here
-    // For this example, we'll simulate verification with mock data
-    const mockVerificationData = {
-      customerId: "CUST12345",
-      name: "John Doe",
-      phone: phoneNumber,
-      email: "john.doe@example.com",
-      availableBalance: 150.00,
-      couponAmount: 25.00,
-      couponUsageLimit: 3,
-      couponCode: "SUMMER25",
-      referralCode: "REFERJOHN",
-      shopName: userDetails?.name || "Default Shop"
-    };
-    
-    setVerificationData(mockVerificationData);
-    setVerificationDialogOpen(true);
-    setPhoneVerified(true);
+  
+    try {
+      // Call the real userInfo API with phone
+      const data = await userInfo("", phoneNumber); // pass email as empty
+  
+      if (data && data.phone) {
+        const verificationData = {
+          customerId: data.customerId || "Unknown",  // Add customerId if returned
+          name: data.name,
+          phone: data.phone,
+          email: data.email,
+          availableBalance: data.availableBalance || 0,
+          couponAmount: data.couponAmount || 0,
+          couponUsageLimit: data.couponUsageLimit || 0,
+          couponCode: data.couponCode || "",
+          referralCode: data.referralCode || "",
+          shopName: userDetails?.name || "Default Shop"
+        };
+  
+        setVerificationData(verificationData);
+        setVerificationDialogOpen(true);
+        setPhoneVerified(true);
+      } else {
+        toast.error("No user found with this phone number.");
+      }
+    } catch (error) {
+      toast.error(error.message || "Verification failed. Please try again.");
+    }
   };
+  
 
-  const handleVerifyEmail = () => {
+  const handleVerifyEmail = async () => {
     if (!email.trim()) {
       toast.error("Please enter an email address");
       return;
     }
+  
     if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
       toast.error("Please enter a valid email address");
       return;
     }
-    
-    // In a real app, you would verify the email with an API call here
-    // For this example, we'll simulate verification with mock data
-    const mockVerificationData = {
-      customerId: "CUST67890",
-      name: "Jane Smith",
-      phone: "+1234567890",
-      email: email,
-      availableBalance: 200.00,
-      couponAmount: 30.00,
-      couponUsageLimit: 5,
-      couponCode: "WINTER30",
-      referralCode: "REFERJANE",
-      shopName: userDetails?.name || "Default Shop"
-    };
-    
-    setVerificationData(mockVerificationData);
-    setVerificationDialogOpen(true);
-    setEmailVerified(true);
+  
+    try {
+      const data = await userInfo(email, ""); // pass phone as empty
+  
+      if (data && data.email) {
+        const verificationData = {
+          customerId: data.customerId || "Unknown",
+          name: data.name,
+          phone: data.phone || "",
+          email: data.email,
+          availableBalance: data.availableBalance || 0,
+          couponAmount: data.couponAmount || 0,
+          couponUsageLimit: data.couponUsageLimit || 0,
+          couponCode: data.couponCode || "",
+          referralCode: data.referralCode || "",
+          shopName: userDetails?.name || "Default Shop"
+        };
+  
+        setVerificationData(verificationData);
+        setVerificationDialogOpen(true);
+        setEmailVerified(true);
+      } else {
+        toast.error("No user found with this email address.");
+      }
+    } catch (error) {
+      toast.error(error.message || "Verification failed. Please try again.");
+    }
   };
-
+  
   const handleCloseVerificationDialog = () => {
     setVerificationDialogOpen(false);
     setRedeemAmount("");
     setError("");
   };
 
-  const handleRedeemClick = () => {
+  const handleRedeemClick = async () => {
     if (!redeemAmount) {
       setError("Please enter an amount to redeem");
       return;
     }
-
+  
     const amount = parseFloat(redeemAmount);
     if (isNaN(amount) || amount <= 0) {
       setError("Please enter a valid positive amount");
       return;
     }
-
+  
     if (verificationData && amount > verificationData.availableBalance) {
       setError("Redeem amount cannot exceed available balance");
       return;
     }
-
+  
+    const token = localStorage.getItem("token");
+  
+    if (!token) {
+      setError("Authentication token not found.");
+      return;
+    }
+  
+    const payload = {
+      customerId: verificationData.customerId,
+      referralCode: verificationData.referralCode,
+      discountAmount: amount,
+    };
+  
     setLoading(true);
-    
-    // Simulate API call for redemption
-    setTimeout(() => {
-      setLoading(false);
-      toast.success(`Successfully redeemed $${amount}`);
-      handleCloseVerificationDialog();
+    const toastId = toast.loading("Processing redemption...");
+  
+    try {
+      await axios.post(`${import.meta.env.VITE_BACKEND_URL}/api/shopkeeper/redeem-discount`, payload, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
       
-      // Update the verification data with new balance (in a real app, you'd get this from the API response)
+      toast.update(toastId, {
+        render: "Discount redeemed successfully!",
+        type: "success",
+        isLoading: false,
+        autoClose: 3000,
+        closeOnClick: true,
+        position: "top-right",
+      });
       setVerificationData({
         ...verificationData,
-        availableBalance: verificationData.availableBalance - amount
+        availableBalance: verificationData.availableBalance - amount,
       });
-    }, 1500);
+      setRedeemAmount("");
+      setError("");
+      setVerificationDialogOpen(false);
+    } catch (err) {
+      console.error("Redemption failed:", err);
+      toast.update(toastId, {
+        render: err.response?.data?.message || "Redemption failed. Please try again.",
+        type: "error",
+        isLoading: false,
+        autoClose: 3000,
+        closeOnClick: true,
+        position: "top-right",
+      });
+      setError("Redemption failed. Please try again.");
+    } finally {
+      setLoading(false);
+    }
   };
+  
 
   const handleSearchCode = async () => {
     if (!code.trim()) {
