@@ -291,7 +291,13 @@ const Shop = () => {
           {!showModal && (
             <>
               <h1 className="text-3xl font-bold mb-6 text-blue-800">Explore Shops</h1>
+              {shops.length === 0 ? (
+                <p className="text-blue-700 font-semibold text-center w-full mt-6">
+                  No shops available for this user.
+                </p>
+              ) : (
               <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 w-full max-w-6xl">
+                
                 {shops.map((shop) => (
                   <div
                     key={shop.id}
@@ -333,6 +339,7 @@ const Shop = () => {
                   </div>
                 ))}
               </div>
+              )}
             </>
           )}
 
@@ -389,29 +396,35 @@ const Shop = () => {
                       </div>
                     </div>
 
-                    {selectedShop.referredBy && (
-                      <div className="bg-blue-50 p-4 rounded-lg">
-                        <h3 className="font-bold text-blue-800 mb-2">Referral Information</h3>
-                        <div className="grid grid-cols-2 gap-4">
-                          <div>
-                            <p className="text-sm text-blue-600">Referral Code</p>
-                            <p className="font-medium text-blue-800">{selectedShop.referredBy}</p>
-                          </div>
-                          <div>
-                            <p className="text-sm text-blue-600">Expiry Date</p>
-                            <p className="font-medium text-blue-800">{selectedShop.expiryDate}</p>
-                          </div>
-                          <div>
-                            <p className="text-sm text-blue-600">Referral Amount</p>
-                            <p className="font-medium text-blue-800">${selectedShop.referralAmount}</p>
-                          </div>
-                          <div>
-                            <p className="text-sm text-blue-600">Referrer Amount</p>
-                            <p className="font-medium text-blue-800">${selectedShop.referrerAmount}</p>
-                          </div>
-                        </div>
-                      </div>
-                    )}
+                    {selectedShop.referredBy ? (
+  <div className="bg-blue-50 p-4 rounded-lg">
+    <h3 className="font-bold text-blue-800 mb-2">Referral Information</h3>
+    <div className="grid grid-cols-2 gap-4">
+      <div>
+        <p className="text-sm text-blue-600">Referral Code</p>
+        <p className="font-medium text-blue-800">{selectedShop.referredBy}</p>
+      </div>
+      <div>
+        <p className="text-sm text-blue-600">Expiry Date</p>
+        <p className="font-medium text-blue-800">{selectedShop.expiryDate}</p>
+      </div>
+      <div>
+        <p className="text-sm text-blue-600">Referral Amount</p>
+        <p className="font-medium text-blue-800">${selectedShop.referralAmount}</p>
+      </div>
+      <div>
+        <p className="text-sm text-blue-600">Referrer Amount</p>
+        <p className="font-medium text-blue-800">${selectedShop.referrerAmount}</p>
+      </div>
+    </div>
+  </div>
+) : (
+  <div className="bg-blue-50 p-4 rounded-lg">
+    <h3 className="font-bold text-blue-800 mb-2">Referral Information</h3>
+    <p className="text-blue-600">Referral not added here.</p>
+  </div>
+)}
+
                   </div>
 
                   <button
