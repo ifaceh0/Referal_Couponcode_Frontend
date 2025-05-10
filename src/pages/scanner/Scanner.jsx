@@ -860,14 +860,14 @@ const Scanner = () => {
     } catch (err) {
       console.error("Redemption failed:", err);
       toast.update(toastId, {
-        render: err.response?.data?.message || "Redemption failed. Please try again.",
+        render: err.response?.data || "Redemption failed. Please try again.",
         type: "error",
         isLoading: false,
         autoClose: 3000,
         closeOnClick: true,
         position: "top-right",
       });
-      setError("Redemption failed. Please try again.");
+      setError(err.response?.data || "Redemption failed. Please try again.");
     } finally {
       setLoading(false);
     }
