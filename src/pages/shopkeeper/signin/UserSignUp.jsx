@@ -381,13 +381,13 @@ const UserSignUp = () => {
       theme: "colored",
       progressStyle: { background: "#7c3aed" },
     });
-
+    console.log("Referral Code before submit:", referralCode); 
     try {
       const { confirmPassword, ...submitData } = formData;
-      const responseMessage = await signupUser({
-        ...submitData,
+      const responseMessage = await signupUser(
+        submitData,
         referralCode,
-      });
+      );
 
       toast.update(toastId, {
         render: responseMessage || "Signup successful! Redirecting...",

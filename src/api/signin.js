@@ -184,34 +184,49 @@ export const logoutShopkeeper = async () => {
 // Additional APIs can be added as needed.
 
 // User Signup API
-export const signupUser = async (formData,referralCode) => {
+export const signupUser = async (formData, referralCode) => {
     try {
-        // const response = await fetch(`${VITE_BACKEND_URL}/api/auth/user/register`, {
-        //     method: "POST",
-        //     headers: { "Content-Type": "application/json" },
-        //     body: JSON.stringify(formData),
-        // });
-        let url = `${VITE_BACKEND_URL}/api/auth/user/register`;
-        if (referralCode) {
-        url += `?referralCode=${encodeURIComponent(referralCode)}`; 
-        }
-
-        const response = await fetch(url, {
+      // Remove referralCode from formData if it's present
+      const { referralCode: _, ...cleanFormData } = formData;
+  
+      // Debugging: Check referralCode type
+      console.log("Type of referralCode:", typeof referralCode);
+      console.log("Value of referralCode:", referralCode);
+  
+      // Check if referralCode is a valid string
+      if (typeof referralCode !== "string") {
+        console.error("Referral Code is not a valid string:", referralCode);
+        throw new Error("Referral Code is not a valid string.");
+      }
+  
+      // Construct the URL with referralCode as a query parameter if it exists
+      let url = `${VITE_BACKEND_URL}/api/auth/user/register`;
+      
+      if (referralCode) {
+        url += `?referralCode=${encodeURIComponent(referralCode)}`;
+      }
+  
+      // Debugging: Log the URL to check if it's correctly constructed
+      console.log("Generated URL:", url);
+  
+      // Make the POST request without the referralCode in the body
+      const response = await fetch(url, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(formData), // Body is your formData
-        });
-
-        const data = await response.text(); // Read response as JSON
-
-        if (!response.ok) {
-            throw new Error(data.message || "Signup failed! Please try again.");
-        }
-
-        return data.message; // Return success message
+        body: JSON.stringify(cleanFormData), // Only submit the formData without referralCode
+      });
+  
+      const data = await response.text();
+  
+      if (!response.ok) {
+        throw new Error(data.message || "Signup failed! Please try again.");
+      }
+  
+      return data.message || "Signup successful!";
     } catch (error) {
-        console.error("Signup API Error:", error);
-        throw error;
+      console.error("Signup API Error:", error);
+      throw error;
     }
-};
+  };
+  
 
