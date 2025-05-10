@@ -219,7 +219,7 @@ export const signupUser = async (formData, referralCode) => {
       const data = await response.text();
   
       if (!response.ok) {
-        throw new Error(data.message || "Signup failed! Please try again.");
+        throw new Error(data || "Signup failed! Please try again.");
       }
   
       return data.message || "Signup successful!";
