@@ -205,11 +205,7 @@ export const signupUser = async (formData, referralCode) => {
       if (referralCode) {
         url += `?referralCode=${encodeURIComponent(referralCode)}`;
       }
-  
-      // Debugging: Log the URL to check if it's correctly constructed
       console.log("Generated URL:", url);
-  
-      // Make the POST request without the referralCode in the body
       const response = await fetch(url, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
@@ -222,7 +218,7 @@ export const signupUser = async (formData, referralCode) => {
         throw new Error(data || "Signup failed! Please try again.");
       }
   
-      return data.message || "Signup successful!";
+      return data || "Signup successful!";
     } catch (error) {
       console.error("Signup API Error:", error);
       throw error;

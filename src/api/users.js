@@ -18,11 +18,11 @@ export const getAllUsers = async () => {
 
 };
 //Get All shopkeeper
-export const getAllShopkeeper = async (userId) => {
+export const getAllShopkeeper = async (userId,shopkeeperId) => {
 
   const token = localStorage.getItem("token");
 
-  const url = `${import.meta.env.VITE_BACKEND_URL}/api/qrcode/getAllShopkeeper?userId=${userId}`;
+  const url = `${import.meta.env.VITE_BACKEND_URL}/api/qrcode/getAllShopkeeper?userId=${userId}&shopkeeperId=${shopkeeperId}`;
 
   const response = await fetch(url, {
     method: "GET",

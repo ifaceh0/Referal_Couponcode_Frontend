@@ -518,7 +518,14 @@
 
 // export default Employee;
 
-import React, { useState } from "react";
+import React, { useState,useEffect } from "react";
+import { getAllShopEmployee,
+  getAllInviteEmployee,
+  deleteInvitation,
+  employeeInvitation
+ } from "../../api/employee";
+ import { getCurrentUser } from "../../api/signin";
+ import { toast, ToastContainer } from "react-toastify";
 
 const initialEmployees = [
   {
@@ -560,19 +567,73 @@ const initialInvites = [
   },
 ];
 
+const formatDate = (dateStr) => {
+  const date = new Date(dateStr);
+  const day = String(date.getDate()).padStart(2, '0');
+  const month = String(date.getMonth() + 1).padStart(2, '0'); // Month is 0-based
+  const year = date.getFullYear();
+  return `${day}-${month}-${year}`;
+};
+
 const Employee = () => {
-  const [employees, setEmployees] = useState(initialEmployees);
-  const [invites, setInvites] = useState(initialInvites);
+  const [employees, setEmployees] = useState([]);
+  const [invites, setInvites] = useState([]);
   const [editingEmployee, setEditingEmployee] = useState(null);
   const [showInviteModal, setShowInviteModal] = useState(false);
   const [inviteEmail, setInviteEmail] = useState("");
+  const [userDetails, setUserDetails] = useState(null);
+  const [loading, setLoading] = useState(false);
+  const shopkeeperId = userDetails?.id;
+     useEffect(() => {
+            const fetchData = async () => {
+                try {
+                    const user = await getCurrentUser();
+                    console.log("Fetched user:", user.id);
+                    setUserDetails(user);
+                } catch (error) {
+                    console.error("Error fetching monthly data:", error);
+                }
+            };
+    
+            fetchData();
+        }, []);
+       
+
+        useEffect(() => {
+          if (!shopkeeperId) return; 
+          const fetchData = async () => {
+            try {
+              const empData = await getAllShopEmployee(shopkeeperId);
+              setEmployees(empData);
+              console.log(empData)
+        
+              const inviteData = await getAllInviteEmployee(shopkeeperId);
+              setInvites(inviteData);
+              console.log(inviteData)
+              // setInvites(Array.isArray(inviteData) ? inviteData : []);
+
+            } catch (error) {
+              console.error("Error loading data", error);
+            }
+          };
+        
+          fetchData();
+        }, [shopkeeperId]);
 
   const handleDelete = (id) => {
     setEmployees((prev) => prev.filter((emp) => emp.id !== id));
   };
 
-  const handleDeleteInvite = (id) => {
-    setInvites((prev) => prev.filter((invite) => invite.id !== id));
+  const handleDeleteInvite = async (id) => {
+    // setInvites((prev) => prev.filter((invite) => invite.id !== id));
+    const confirmDelete = window.confirm("Do you want to delete this invitation?");
+    if (!confirmDelete) return;
+    try {
+      await deleteInvitation(id);
+      setInvites((prev) => prev.filter((invite) => invite.id !== id));
+    } catch (error) {
+      console.error("Failed to delete invite", error);
+    }
   };
 
   const handleAdd = () => {
@@ -596,26 +657,29 @@ const Employee = () => {
     setShowInviteModal(true);
   };
 
-  const handleSendInvite = () => {
+  const handleSendInvite = async () => {
     if (!inviteEmail) return;
-    
-    const newId = invites.length ? Math.max(...invites.map((i) => i.id)) + 1 : 1;
-    const today = new Date().toISOString().split("T")[0];
-    const expiredDate = new Date();
-    expiredDate.setMonth(expiredDate.getMonth() + 1);
-    const formattedExpiredDate = expiredDate.toISOString().split("T")[0];
-    
-    const newInvite = {
-      id: newId,
-      email: inviteEmail,
-      creationDate: today,
-      expiredDate: formattedExpiredDate,
-      status: "Pending",
-    };
-    
-    setInvites((prev) => [...prev, newInvite]);
-    setInviteEmail("");
-    setShowInviteModal(false);
+    setLoading(true);
+        const toastId = toast.loading("Processing ...");
+      try {
+        const response = await employeeInvitation(inviteEmail );
+        console.log(response)
+        const updatedInvites = await getAllInviteEmployee(shopkeeperId);
+        toast.success(toastId, {
+                render: response,
+                type: "success",
+                isLoading: false,
+                autoClose: 3000,
+                closeOnClick: true,
+                position: "top-right",
+              });
+        setInvites(updatedInvites);
+        setInviteEmail("");
+        setShowInviteModal(false);
+        window.location.reload();
+      } catch (error) {
+        console.error("Failed to send invite", error);
+      }
   };
 
   const handleEdit = (employee) => {
@@ -653,34 +717,41 @@ const Employee = () => {
         <table className="min-w-full bg-white border border-gray-200 text-sm">
           <thead className="bg-blue-500 text-white">
             <tr>
-              <th className="px-4 py-2 text-left">First Name</th>
-              <th className="px-4 py-2 text-left">Last Name</th>
+              <th className="px-4 py-2 text-left">Name</th>
+              {/* <th className="px-4 py-2 text-left">Last Name</th> */}
               <th className="px-4 py-2 text-left">Phone Number</th>
               <th className="px-4 py-2 text-left">Email Address</th>
               <th className="px-4 py-2 text-left">Created</th>
-              <th className="px-4 py-2 text-left">Expired</th>
+              {/* <th className="px-4 py-2 text-left">Expired</th> */}
               <th className="px-4 py-2 text-left">Actions</th>
             </tr>
           </thead>
           <tbody>
-            {employees.map((emp) => (
-              <tr key={emp.id} className="border-t hover:bg-gray-50">
-                <td className="px-4 py-2">{emp.firstName}</td>
-                <td className="px-4 py-2">{emp.lastName}</td>
+          {employees.length === 0 ? (
+            <tr>
+              <td colSpan="4" className="text-center text-gray-500 py-4">
+                No employees found.
+              </td>
+            </tr>
+          ) : (
+            employees.map((emp) => (
+              <tr key={emp.id || `${emp.email}-${emp.phone}`} className="border-t hover:bg-gray-50">
+                <td className="px-4 py-2">{emp.name}</td>
+                {/* <td className="px-4 py-2">{emp.lastName}</td> */}
                 <td className="px-4 py-2">{emp.phone}</td>
                 <td className="px-4 py-2">{emp.email}</td>
-                <td className="px-4 py-2">{emp.creationDate}</td>
-                <td className="px-4 py-2">{emp.updatedDate}</td>
-                <td className="px-4 py-2 space-x-2 whitespace-nowrap">
+                <td className="px-4 py-2">{formatDate(emp.createdDate)}</td>
+                {/* <td className="px-4 py-2">{emp.updatedDate}</td> */}
+                {/* <td className="px-4 py-2 space-x-2 whitespace-nowrap">
                   <button
                     onClick={() => handleDelete(emp.id)}
                     className="bg-red-500 text-white px-3 py-1 rounded hover:bg-red-600"
                   >
                     Delete
                   </button>
-                </td>
+                </td> */}
               </tr>
-            ))}
+            )))}
           </tbody>
         </table>
       </div>
@@ -701,17 +772,24 @@ const Employee = () => {
           <thead className="bg-blue-500 text-white">
             <tr>
               <th className="px-4 py-2 text-left">Email</th>
-              <th className="px-4 py-2 text-left">Created</th>
+              <th className="px-4 py-2 text-left">Created Date</th>
               <th className="px-4 py-2 text-left">Status</th>
               <th className="px-4 py-2 text-left">Actions</th>
             </tr>
           </thead>
           <tbody>
-            {invites.map((invite) => (
+          {invites.length === 0 ? (
+            <tr>
+              <td colSpan="4" className="text-center text-gray-500 py-4">
+                No employees Invitation found.
+              </td>
+            </tr>
+          ) : (
+            invites.map((invite) => (
               <tr key={invite.id} className="border-t hover:bg-gray-50">
                 <td className="px-4 py-2">{invite.email}</td>
-                <td className="px-4 py-2">{invite.creationDate}</td>
-                <td className="px-4 py-2">{invite.status}</td>
+                <td className="px-4 py-2">{formatDate(invite.createdDate)}</td>
+                <td className="px-4 py-2">{formatDate(invite.expiryDate)}</td>
                 <td className="px-4 py-2 space-x-2 whitespace-nowrap">
                   <button
                     onClick={() => handleDeleteInvite(invite.id)}
@@ -721,7 +799,7 @@ const Employee = () => {
                   </button>
                 </td>
               </tr>
-            ))}
+            )))}
           </tbody>
         </table>
       </div>

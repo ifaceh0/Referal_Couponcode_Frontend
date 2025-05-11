@@ -211,6 +211,7 @@ const Shop = () => {
 
   if (userDetails) {
     console.log("User ID:", userDetails.userId);
+    console.log("Shopkeeper ID:",userDetails.shopkeeperId)
   }
   useEffect(() => {
     const fetchShopkeeper = async () => {
@@ -218,7 +219,7 @@ const Shop = () => {
       setIsLoading(true);
       try {
         if (userDetails) {
-          const result = await getAllShopkeeper(userDetails.userId); // Assumes it returns user data and shopkeepers list
+          const result = await getAllShopkeeper(userDetails.userId,userDetails.shopkeeperId); // Assumes it returns user data and shopkeepers list
           setUserInfo({
             id: result.userId,
             name: result.userName,
