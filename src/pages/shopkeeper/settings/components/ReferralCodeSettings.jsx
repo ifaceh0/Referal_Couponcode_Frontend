@@ -557,6 +557,7 @@
 import React, { useState } from "react";
 import { FaEdit, FaTrash, FaSave, FaPaperPlane } from "react-icons/fa";
 import { discountData } from "../../../../utils/demoData";
+import { toast } from 'react-toastify';
 
 const ReferralCodeSettings = () => {
     const [useCredits, setUseCredits] = useState(true); // Toggle between Credits and Dollars
@@ -607,39 +608,80 @@ const ReferralCodeSettings = () => {
         alert('Coupon promotion settings saved');
     };
 
+    // Helper function to check if a date is in the future
+        const isFutureDate = (dateString) => {
+        if (!dateString) return false;
+        const inputDate = new Date(dateString);
+        const today = new Date();
+        today.setHours(0, 0, 0, 0); // Reset time to midnight for accurate comparison
+        return inputDate >= today;
+        };
+
+        // Helper function to check if expiry date is after begin date
+        const isValidDateRange = (beginDate, expiryDate) => {
+        if (!beginDate || !expiryDate) return false;
+        return new Date(expiryDate) >= new Date(beginDate);
+        };
+
     const handleSendPromotion = async () => {
-        try {
-            // Validate data before sending
-            if (!promotion.beginDate || !promotion.expiryDate || !promotion.referralAmount || !promotion.referrerAmount) {
-                alert('Please fill all promotion fields before sending');
-                return;
-            }
-
-            const response = await fetch('/api/promotions/referral', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                    // Add authorization header if needed
-                    // 'Authorization': `Bearer ${yourAuthToken}`
-                },
-                body: JSON.stringify({
-                    ...promotion,
-                    currencyType: useCredits ? 'dollars' : 'points'
-                }),
-            });
-
-            if (!response.ok) {
-                throw new Error(`HTTP error! status: ${response.status}`);
-            }
-
-            const result = await response.json();
-            alert('Referral promotion sent successfully!');
-            console.log('Server response:', result);
-        } catch (error) {
-            console.error('Error sending referral promotion:', error);
-            alert('Failed to send referral promotion. Please try again.');
+    try {
+        // Validate required fields
+        if (!promotion.beginDate || !promotion.expiryDate || !promotion.referralAmount || !promotion.referrerAmount) {
+            alert('Please fill all promotion fields before sending');
+            return;
         }
-    };
+
+        // Check if begin date is in the future
+        const today = new Date();
+        today.setHours(0, 0, 0, 0); // Reset time to midnight for accurate comparison
+        const beginDate = new Date(promotion.beginDate);
+        
+        if (beginDate < today) {
+            alert('Begin date must be in the future!');
+            return;
+        }
+
+        // Check if expiry date is after begin date
+        const expiryDate = new Date(promotion.expiryDate);
+        if (expiryDate <= beginDate) {
+            alert('Expiry date must be after begin date!');
+            return;
+        }
+
+        // API call to send promotion
+        const response = await fetch('/api/promotions/referral', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                // Add authorization header if needed
+                // 'Authorization': `Bearer ${yourAuthToken}`
+            },
+            body: JSON.stringify({
+                ...promotion,
+                currencyType: useCredits ? 'dollars' : 'points'
+            }),
+        });
+
+        if (!response.ok) {
+            throw new Error(`HTTP error! status: ${response.status}`);
+        }
+
+        const result = await response.json();
+        alert('Referral promotion sent successfully!');
+        console.log('Server response:', result);
+
+        // Optional: Reset form after successful submission
+        setPromotion({
+            beginDate: '',
+            expiryDate: '',
+            referralAmount: '',
+            referrerAmount: ''
+        });
+    } catch (error) {
+        console.error('Error sending referral promotion:', error);
+        alert('Failed to send referral promotion. Please try again.');
+    }
+};
 
     const handleSendCouponPromotion = async () => {
         try {
@@ -688,6 +730,10 @@ const ReferralCodeSettings = () => {
             { milestoneType: "Referrals", milestoneValue: "", rewardType: "", reward: "" },
         ]);
     };
+
+    // Replace `alert()` with:
+    toast.error('Begin date must be in the future!', { position: 'top-right' });
+    toast.success('Referral promotion sent successfully!', { position: 'top-right' });
 
     return (
         <div className="p-6 max-w-4xl mx-auto bg-white shadow-md rounded-lg">

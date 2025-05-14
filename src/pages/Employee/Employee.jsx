@@ -202,7 +202,7 @@ const Employee = () => {
               <th className="px-4 py-2 text-left">Phone Number</th>
               <th className="px-4 py-2 text-left">Email Address</th>
               <th className="px-4 py-2 text-left">Created</th>
-              <th className="px-4 py-2 text-left">Expired</th>
+              {/* <th className="px-4 py-2 text-left">Expired</th> */}
               <th className="px-4 py-2 text-left">Actions</th>
             </tr>
           </thead>
@@ -221,7 +221,7 @@ const Employee = () => {
                 <td className="px-4 py-2">{emp.phone}</td>
                 <td className="px-4 py-2">{emp.email}</td>
                 <td className="px-4 py-2">{formatDate(emp.createdDate)}</td>
-                <td className="px-4 py-2">{emp.expiredDate ? formatDate(emp.expiredDate) : "—"}</td>
+                {/* <td className="px-4 py-2">{emp.expiredDate ? formatDate(emp.expiredDate) : "—"}</td> */}
                 {/* <td className="px-4 py-2">{emp.updatedDate}</td> */}
                 {/* <td className="px-4 py-2 space-x-2 whitespace-nowrap">
                   <button
