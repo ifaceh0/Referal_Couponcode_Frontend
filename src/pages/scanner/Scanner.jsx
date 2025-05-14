@@ -754,6 +754,8 @@ const Scanner = () => {
   const [userDetails, setUserDetails] = useState(null);
   const [errorDialogOpen, setErrorDialogOpen] = useState(false);
   const [errorDialogMessage, setErrorDialogMessage] = useState("");
+  const [successDialogOpen, setSuccessDialogOpen] = useState(false);
+  const [successMessage, setSuccessMessage] = useState("");
 
   useEffect(() => {
     const fetchData = async () => {
@@ -848,6 +850,10 @@ const Scanner = () => {
         position: "top-right",
       });
 
+      // Set success message and open dialog
+      setSuccessMessage(`$${amount} redeemed successfully!`);
+      setSuccessDialogOpen(true);
+
       setOpen(false);
       setScannedData(null);
       setRedeemAmount("");
@@ -884,6 +890,11 @@ const Scanner = () => {
     setErrorDialogOpen(false);
     setErrorDialogMessage("");
     navigate("/shopkeeper/interaction-panel"); // Added navigation here
+  };
+
+  const handleCloseSuccessDialog = () => {
+    setSuccessDialogOpen(false);
+    navigate("/shopkeeper/interaction-panel");
   };
 
   return (
@@ -1046,6 +1057,36 @@ const Scanner = () => {
             color="primary"
             fullWidth
             className="bg-blue-600 hover:bg-blue-700"
+          >
+            OK
+          </Button>
+        </DialogActions>
+      </Dialog>
+
+      <Dialog
+        open={successDialogOpen}
+        onClose={handleCloseSuccessDialog}
+        PaperProps={{
+          style: {
+            borderRadius: "12px",
+            width: "400px",
+            maxWidth: "90%",
+          },
+        }}
+      >
+        <DialogTitle className="bg-green-500 text-white text-center text-xl font-bold py-4">
+          Success
+        </DialogTitle>
+        <DialogContent className="p-6 bg-white">
+          <p className="text-gray-700 text-center">{successMessage}</p>
+        </DialogContent>
+        <DialogActions className="p-4 bg-gray-50">
+          <Button
+            onClick={handleCloseSuccessDialog}
+            variant="contained"
+            color="primary"
+            fullWidth
+            className="bg-green-600 hover:bg-green-700"
           >
             OK
           </Button>

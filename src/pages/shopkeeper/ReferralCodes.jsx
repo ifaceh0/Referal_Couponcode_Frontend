@@ -153,7 +153,7 @@ const ReferralManagement = () => {
             containerClass="w-full"
             inputClass="border rounded p-2 w-full"
           />
-          <input type="date" value={expiryDate} onChange={(e) => setExpiryDate(e.target.value)} className="border rounded p-2" />
+          <input type="date" value={expiryDate} onChange={(e) => setExpiryDate(e.target.value)} className="border rounded p-2" title="Expire Date - mm/dd/yyyy"/>
           <input type="number" placeholder="Referral Amount ($)" value={referralAmount} onChange={(e) => setReferralAmount(e.target.value)} className="border rounded p-2" />
           <input type="number" placeholder="Referrer Amount ($)" value={referrerAmount} onChange={(e) => setReferrerAmount(e.target.value)} className="border rounded p-2" />
         </div>
@@ -169,7 +169,7 @@ const ReferralManagement = () => {
         </h2>
         <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-4">
           <input type="file" accept=".csv, .xls, .xlsx" onChange={handleBulkUpload} className="border rounded p-2" />
-          <input type="date" value={bulkExpiryDate} onChange={(e) => setBulkExpiryDate(e.target.value)} className="border rounded p-2" />
+          <input type="date" value={bulkExpiryDate} onChange={(e) => setBulkExpiryDate(e.target.value)} className="border rounded p-2" title="Expire Date - mm/dd/yyyy" />
           <input type="number" placeholder="Referral Amount ($)" value={bulkReferralAmount} onChange={(e) => setBulkReferralAmount(e.target.value)} className="border rounded p-2" />
           <input type="number" placeholder="Referrer Amount ($)" value={bulkReferrerAmount} onChange={(e) => setBulkReferrerAmount(e.target.value)} className="border rounded p-2" />
         </div>

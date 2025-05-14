@@ -11,7 +11,7 @@ const tabs = [
     { id: "personalProfile", label: "Personal Profile" },
     { id: "emailSettings", label: "Email" },
     { id: "smsSettings", label: "SMS" },
-    { id: "referralCodeSettings", label: "Referral Code" },
+    { id: "referralCodeSettings", label: "Promotion" },
     { id: "generalSettings", label: "General" },
 ];
 

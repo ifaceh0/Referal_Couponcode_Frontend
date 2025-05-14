@@ -217,7 +217,7 @@ const ShopkeeperSignIn = () => {
     <div className="min-h-screen flex items-center justify-center bg-gray-100">
       <div className="w-full max-w-md bg-white shadow-lg rounded-lg p-8">
         <h2 className="text-2xl font-bold mb-4" style={{ color: colorPalette.primary }}>
-          Shopkeeper Login
+          Sign-In
         </h2>
         {error && <p className="text-red-500 mb-4">{error}</p>}
         
