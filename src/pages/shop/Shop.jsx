@@ -185,6 +185,7 @@ import { FaPhone, FaStore, FaTimes, FaQrcode } from "react-icons/fa";
 import { QRCodeSVG } from "qrcode.react";
 import { getAllShopkeeper, getQRCodeByShopkeeper } from "../../api/users";
 import { getCurrentUser } from "../../api/signin";
+import referralImage from "../../assets/referralImage.jpg";
 
 
 const Shop = () => {
@@ -219,11 +220,11 @@ const Shop = () => {
       setIsLoading(true);
       try {
         if (userDetails) {
-          const result = await getAllShopkeeper(userDetails.userId,userDetails.shopkeeperId); // Assumes it returns user data and shopkeepers list
+          const result = await getAllShopkeeper(userDetails.userId); // Assumes it returns user data and shopkeepers list
           setUserInfo({
             id: result.userId,
             name: result.userName,
-            balance: result.availableBalance,
+            // balance: result.availableBalance,
           });
 
           const mappedShops = result.shopkeepers.map((shop, index) => ({
@@ -231,12 +232,14 @@ const Shop = () => {
             id: shop.shopkeeperId,
             name: shop.name,
             phone: shop.phone,
-            image: `https://source.unsplash.com/400x300/?store,shop,${index}`,
-            balance: `$${result.availableBalance.toFixed(2)}`,
+            // image: `https://source.unsplash.com/400x300/?store,shop,${index}`,
+            image: referralImage,
+            balance: `$${shop.availableBalance.toFixed(2)}`,
             referredBy: shop.referralCode,
             referralAmount: shop.referralAmount,
             referrerAmount: shop.referrerAmount,
-            expiryDate: shop.expiryDate
+            expiryDate: shop.expiryDate,
+            referredUser:shop.userName
           }));
           setShops(mappedShops);
         }
@@ -416,6 +419,10 @@ const Shop = () => {
       <div>
         <p className="text-sm text-blue-600">Referrer Amount</p>
         <p className="font-medium text-blue-800">${selectedShop.referrerAmount}</p>
+      </div>
+      <div>
+        <p className="text-sm text-blue-600">Referrer By</p>
+        <p className="font-medium text-blue-800">{selectedShop.referredUser}</p>
       </div>
     </div>
   </div>
