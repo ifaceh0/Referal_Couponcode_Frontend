@@ -558,12 +558,15 @@ import React, { useState } from "react";
 import { FaEdit, FaTrash, FaSave, FaPaperPlane } from "react-icons/fa";
 import { discountData } from "../../../../utils/demoData";
 import { toast } from 'react-toastify';
+import { updateAndSaveSettingAction } from "../../../../api/settingPageApi";
 
 const ReferralCodeSettings = () => {
     const [useCredits, setUseCredits] = useState(true); // Toggle between Credits and Dollars
     const [signupPoints, setSignupPoints] = useState(100);
     const [signupDollars, setSignupDollars] = useState(10);
     const [isEditingSignup, setIsEditingSignup] = useState(false);
+
+    updateAndSaveSettingAction();
 
     // Discount Mapping (Credits only)
     const [discountMapping, setDiscountMapping] = useState(discountData.discountMapping);

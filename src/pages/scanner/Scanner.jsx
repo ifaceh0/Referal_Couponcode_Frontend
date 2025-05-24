@@ -869,7 +869,7 @@ const Scanner = () => {
         render: err.response?.data || "Redemption failed. Please try again.",
         type: "error",
         isLoading: false,
-        autoClose: 3000,
+        autoClose: false,
         closeOnClick: true,
         position: "top-right",
       });
@@ -1006,9 +1006,17 @@ const Scanner = () => {
               type="text"
               value={redeemAmount ? `$${redeemAmount}` : `$`}
               onChange={(e) => {
-                const value = e.target.value.substring(1).replace(/\D/g, "");
-                setRedeemAmount(value);
-                setError("");
+                // const value = e.target.value.substring(1).replace(/\D/g, "");
+                // setRedeemAmount(value);
+                // setError("");
+                const raw = e.target.value.substring(1);
+                const value = raw.replace(/[^0-9.]/g, "");
+
+                if (/^\d*\.?\d{0,2}$/.test(value)) {
+                  setRedeemAmount(value);
+                  setError("");
+                }
+
               }}
               className={`w-full p-3 border ${
                 error ? "border-red-500" : "border-gray-300"
@@ -1094,7 +1102,7 @@ const Scanner = () => {
       </Dialog>
 
       {/* ToastContainer for notifications */}
-      <ToastContainer position="top-right" autoClose={3000} />
+      <ToastContainer position="top-right" autoClose={false} />
     </div>
   );
 };
