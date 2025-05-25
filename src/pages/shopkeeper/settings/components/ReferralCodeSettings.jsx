@@ -565,6 +565,9 @@ const ReferralCodeSettings = () => {
     const [signupPoints, setSignupPoints] = useState(100);
     const [signupDollars, setSignupDollars] = useState(10);
     const [isEditingSignup, setIsEditingSignup] = useState(false);
+    const [existingCustomerValue, setExistingCustomerValue] = useState(10);
+
+
 
     updateAndSaveSettingAction();
 
@@ -610,6 +613,8 @@ const ReferralCodeSettings = () => {
         setIsEditingCouponPromotion(false);
         alert('Coupon promotion settings saved');
     };
+
+
 
     // Helper function to check if a date is in the future
         const isFutureDate = (dateString) => {
@@ -754,7 +759,7 @@ const ReferralCodeSettings = () => {
             </div>
 
             {/* Signup Settings */}
-            <div className="mb-6">
+            {/* <div className="mb-6">
                 <div className="flex justify-between items-center">
                     <div>
                         <h3 className="font-bold">
@@ -777,6 +782,74 @@ const ReferralCodeSettings = () => {
                             </p>
                         )}
                     </div>
+                    <div>
+                        {isEditingSignup ? (
+                            <button
+                                onClick={handleSaveSignup}
+                                className="flex items-center px-4 py-2 bg-green-500 text-white rounded hover:bg-green-600"
+                            >
+                                <FaSave className="mr-2" /> Save
+                            </button>
+                        ) : (
+                            <button
+                                onClick={() => setIsEditingSignup(true)}
+                                className="flex items-center px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600"
+                            >
+                                <FaEdit className="mr-2" /> Edit
+                            </button>
+                        )}
+                    </div>
+                </div>
+            </div> */}
+
+            <div className="mb-6">
+                <div className="flex justify-between items-start gap-8 flex-wrap">
+                    {/* Signup for New Users */}
+                    <div>
+                        <h3 className="font-bold">
+                            Signup {useCredits ? "Dollars" : "Points"} for New Users
+                        </h3>
+                        {isEditingSignup ? (
+                            <input
+                                type="number"
+                                value={useCredits ? signupDollars : signupPoints}
+                                onChange={(e) =>
+                                    useCredits
+                                        ? setSignupDollars(e.target.value)
+                                        : setSignupPoints(e.target.value)
+                                }
+                                className="border p-2 rounded mt-2 w-32"
+                            />
+                        ) : (
+                            <p className="mt-2">
+                                {useCredits ? `$${signupDollars}` : `${signupPoints} Points`}
+                            </p>
+                        )}
+                    </div>
+
+                    {/* Existing Customer */}
+                    <div>
+                        <h3 className="font-bold mb-2">Existing Customer</h3>
+                        <button
+                            onClick={() => applyReward('existing')}
+                            className="px-4 py-2 bg-purple-500 text-white rounded hover:bg-purple-600"
+                        >
+                            X
+                        </button>
+                    </div>
+
+                    {/* New Customer */}
+                    <div>
+                        <h3 className="font-bold mb-2">New Customer</h3>
+                        <button
+                            onClick={() => applyReward('new')}
+                            className="px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600"
+                        >
+                            X
+                        </button>
+                    </div>
+
+                    {/* Edit / Save Button */}
                     <div>
                         {isEditingSignup ? (
                             <button

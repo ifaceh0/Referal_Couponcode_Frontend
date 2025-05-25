@@ -845,7 +845,7 @@ const Scanner = () => {
         render: "Discount redeemed successfully!",
         type: "success",
         isLoading: false,
-        autoClose: 3000,
+        autoClose: false,
         closeOnClick: true,
         position: "top-right",
       });
@@ -862,7 +862,7 @@ const Scanner = () => {
       // Allow toast to show before navigating
       setTimeout(() => {
         navigate("/shopkeeper/interaction-panel");
-      }, 500);
+      }, 5000);
     } catch (err) {
       console.error("Redemption failed:", err);
       toast.update(toastId, {
