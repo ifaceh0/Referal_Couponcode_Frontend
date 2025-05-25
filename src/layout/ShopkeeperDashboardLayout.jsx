@@ -41,18 +41,18 @@ const ShopkeeperDashboardLayout = ({ children }) => {
   {
     to: "/shopkeeper/referral-codes",
     label: "Referral Codes",
-    roles: ["SHOPKEEPER", "USER"],
+    roles: ["SHOPKEEPER"],
   },
   {
     to: "/shopkeeper/coupon-codes",
     label: "Coupon Codes",
-    roles: ["SHOPKEEPER", "USER"],
+    roles: ["SHOPKEEPER"],
   },
   {
     to: "/shopkeeper/interaction-panel",
     label: "Interaction Panel",
     icon: <FaQrcode />,
-    roles: ["SHOPKEEPER", "SHOP_EMPLOYEE", "USER"],
+    roles: ["SHOPKEEPER", "SHOP_EMPLOYEE"],
   },
   {
     to: "/shopkeeper/shop",
@@ -63,22 +63,22 @@ const ShopkeeperDashboardLayout = ({ children }) => {
   {
     to: "/shopkeeper/transaction",
     label: "Transaction",
-    roles: ["SHOPKEEPER", "USER"],
+    roles: ["SHOPKEEPER"],
   },
   {
     to: "/shopkeeper/subscription",
     label: "Subscription",
-    roles: ["SHOPKEEPER", "USER"],
+    roles: ["SHOPKEEPER"],
   },
   {
     to: "/shopkeeper/analytics",
     label: "Analytics",
-    roles: ["SHOPKEEPER", "USER"],
+    roles: ["SHOPKEEPER"],
   },
   {
     to: "/shopkeeper/settings",
     label: "Settings",
-    roles: ["SHOPKEEPER", "USER"],
+    roles: ["SHOPKEEPER"],
   },
   {
     to: "/shopkeeper/employee",
