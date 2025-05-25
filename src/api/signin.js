@@ -224,5 +224,32 @@ export const signupUser = async (formData, referralCode) => {
       throw error;
     }
   };
+
+
+  // Employee Signup API
+export const signupEmployee = async (formData, invitationToken) => {
+  try {
+    const url = `${VITE_BACKEND_URL}/api/auth/signup/employee?token=${encodeURIComponent(invitationToken)}`;
+
+    const response = await fetch(url, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(formData),
+    });
+
+    const data = await response.text();
+
+    if (!response.ok) {
+      throw new Error(data || "Signup failed! Please try again.");
+    }
+
+    return data || "Signup successful!";
+  } catch (error) {
+    console.error("Signup Employee API Error:", error);
+    throw error;
+  }
+};
+
+
   
 

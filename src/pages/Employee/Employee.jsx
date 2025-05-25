@@ -138,29 +138,41 @@ const Employee = () => {
   };
 
   const handleSendInvite = async () => {
-    if (!inviteEmail) return;
-    setLoading(true);
-        const toastId = toast.loading("Processing ...");
-      try {
-        const response = await employeeInvitation(inviteEmail );
-        console.log(response)
-        const updatedInvites = await getAllInviteEmployee(shopkeeperId);
-        toast.success(toastId, {
-                render: response,
-                type: "success",
-                isLoading: false,
-                autoClose: 3000,
-                closeOnClick: true,
-                position: "top-right",
-              });
-        setInvites(updatedInvites);
-        setInviteEmail("");
-        setShowInviteModal(false);
-        window.location.reload();
-      } catch (error) {
-        console.error("Failed to send invite", error);
-      }
-  };
+  if (!inviteEmail) return;
+  setLoading(true);
+
+  const toastId = toast.loading("Processing...");
+
+  try {
+    const response = await employeeInvitation(inviteEmail);
+    console.log(response);
+
+    const updatedInvites = await getAllInviteEmployee(shopkeeperId);
+    setInvites(updatedInvites);
+
+    toast.update(toastId, {
+      render: response || "Invitation sent successfully!",
+      type: "success",
+      isLoading: false,
+      autoClose: 3000,
+      closeOnClick: true,
+      position: "top-right",
+    });
+
+    setInviteEmail("");
+    setShowInviteModal(false); //  Close modal here
+  } catch (error) {
+    console.error("Failed to send invite", error);
+    toast.update(toastId, {
+      render: error.message || "Failed to send invitation.",
+      type: "error",
+      isLoading: false,
+      autoClose: 3000,
+    });
+  } finally {
+    setLoading(false);
+  }
+};
 
   const handleEdit = (employee) => {
     setEditingEmployee({ ...employee, isNew: false });

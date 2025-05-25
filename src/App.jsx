@@ -39,6 +39,7 @@ import ProductShowcase from "./home/ProductShowcase";
 import FeatureDetailPage from "./home/FeatureDetailPage";
 import Shop from "./pages/shop/Shop";
 import Employee from "./pages/Employee/Employee";
+import ShopEmployee from "./pages/shopkeeper/signin/ShopEmployee";
 
 //import UserSignUp from "./pages/shopkeeper/signin/UserSignUp";
 
@@ -62,6 +63,7 @@ const App = () => {
               <Route path="/t" element={<ToastTest />} />
               <Route path="/features" element={<ProductShowcase/>} />
               <Route path="/features/:id" element={<FeatureDetailPage/>} />
+              <Route path="/signup/employee" element={<ShopEmployee />} />
             </Route>
           <Route
             path="/:slug"

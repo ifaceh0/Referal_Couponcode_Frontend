@@ -32,6 +32,67 @@ const ShopkeeperDashboardLayout = ({ children }) => {
     navigate('/signin');
   };
 
+ const navItems = [
+  {
+    to: "/shopkeeper/dashboard",
+    label: "Dashboard",
+    roles: ["SHOPKEEPER", "SHOP_EMPLOYEE", "USER"],
+  },
+  {
+    to: "/shopkeeper/referral-codes",
+    label: "Referral Codes",
+    roles: ["SHOPKEEPER", "USER"],
+  },
+  {
+    to: "/shopkeeper/coupon-codes",
+    label: "Coupon Codes",
+    roles: ["SHOPKEEPER", "USER"],
+  },
+  {
+    to: "/shopkeeper/interaction-panel",
+    label: "Interaction Panel",
+    icon: <FaQrcode />,
+    roles: ["SHOPKEEPER", "SHOP_EMPLOYEE", "USER"],
+  },
+  {
+    to: "/shopkeeper/shop",
+    label: "Shop",
+    icon: <FaStore />,
+    roles: ["USER"], // excluded from SHOPKEEPER
+  },
+  {
+    to: "/shopkeeper/transaction",
+    label: "Transaction",
+    roles: ["SHOPKEEPER", "USER"],
+  },
+  {
+    to: "/shopkeeper/subscription",
+    label: "Subscription",
+    roles: ["SHOPKEEPER", "USER"],
+  },
+  {
+    to: "/shopkeeper/analytics",
+    label: "Analytics",
+    roles: ["SHOPKEEPER", "USER"],
+  },
+  {
+    to: "/shopkeeper/settings",
+    label: "Settings",
+    roles: ["SHOPKEEPER", "USER"],
+  },
+  {
+    to: "/shopkeeper/employee",
+    label: "Employee",
+    roles: ["SHOPKEEPER"], // excluded from USER
+  },
+];
+
+
+  const filteredNavItems = navItems.filter(item => {
+    if (!item.roles) return true; // visible to all if roles not defined
+    return item.roles.includes(userDetails?.role); // only show if role matches
+  });
+
   return (
     <div className="flex min-h-screen bg-gray-100 relative">
       {/* Overlay to close sidebar when clicked outside */}
@@ -51,7 +112,7 @@ const ShopkeeperDashboardLayout = ({ children }) => {
         >
           <FaTimes className="text-xl mx-auto" />
         </button>
-        <nav className="mt-4 space-y-2 px-4">
+        {/* <nav className="mt-4 space-y-2 px-4">
           {[ 
             { to: "/shopkeeper/dashboard", label: "Dashboard" },
             { to: "/shopkeeper/referral-codes", label: "Referral Codes" },
@@ -64,26 +125,13 @@ const ShopkeeperDashboardLayout = ({ children }) => {
             { to: "/shopkeeper/settings", label: "Settings" },
             { to: "/shopkeeper/employee", label: "Employee" },
 
-            // { to: "/shopkeeper/generate-codes", label: "Generate Codes" },
-        //   ].map(({ to, label }) => (
-        //     <NavLink
-        //       key={to}
-        //       to={to}
-        //       className={({ isActive }) =>
-        //         `block py-2 px-4 rounded-md hover:bg-blue-700 transition ${isActive ? "bg-blue-600" : ""}`
-        //       }
-        //       onClick={closeSidebar}
-        //     >
-        //       {label}
-        //     </NavLink>
-        //   ))}
-        // </nav>
       ].map(({ to, label, icon }) => (
         <NavLink
           key={to}
           to={to}
           className={({ isActive }) =>
-            `flex items-center space-x-2 py-2 px-4 rounded-md hover:bg-blue-700 transition ${isActive ? "bg-blue-600" : ""}`
+            `flex items-center space-x-2 py-2 px-4 rounded-md hover:bg-blue-700 transition
+           ${isActive ? "bg-blue-600" : ""}`
           }
           onClick={closeSidebar}
         >
@@ -91,7 +139,24 @@ const ShopkeeperDashboardLayout = ({ children }) => {
           <span>{label}</span>
         </NavLink>
       ))}
-    </nav>
+    </nav> */}
+    <nav className="mt-4 space-y-2 px-4">
+          {filteredNavItems.map(({ to, label, icon }) => (
+            <NavLink
+              key={to}
+              to={to}
+              className={({ isActive }) =>
+                `flex items-center space-x-2 py-2 px-4 rounded-md hover:bg-blue-700 transition ${
+                  isActive ? "bg-blue-600" : ""
+                }`
+              }
+              onClick={closeSidebar}
+            >
+              {icon && <span className="text-xl">{icon}</span>}
+              <span>{label}</span>
+            </NavLink>
+          ))}
+        </nav>
       </div>
 
       {/* Main Content */}

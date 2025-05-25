@@ -85,7 +85,7 @@ export const employeeInvitation = async (email) => {
       },
     });
   
-    const data = await response.json();
+    const data = await response.text();
   
     if (!response.ok) {
       throw new Error(data || "Failed to send invite.");
