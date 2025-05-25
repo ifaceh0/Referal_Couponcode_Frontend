@@ -1012,7 +1012,7 @@ const Scanner = () => {
                 const raw = e.target.value.substring(1);
                 const value = raw.replace(/[^0-9.]/g, "");
 
-                if (/^\d*\.?\d{0,2}$/.test(value)) {
+                if (/^\d*\.?\d{0,4}$/.test(value)) {
                   setRedeemAmount(value);
                   setError("");
                 }
