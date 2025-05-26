@@ -827,26 +827,24 @@ const ReferralCodeSettings = () => {
                         )}
                     </div>
 
-                    {/* Existing Customer */}
-                    <div>
-                        <h3 className="font-bold mb-2">Existing Customer</h3>
-                        <button
-                            onClick={() => applyReward('existing')}
-                            className="px-4 py-2 bg-purple-500 text-white rounded hover:bg-purple-600"
-                        >
-                            X
-                        </button>
+                   <div>
+                    <h3 className="font-bold mb-2">Existing Customer</h3>
+                    <button
+                        onClick={() => applyReward('existing')}
+                        className="px-4 py-2 bg-purple-500 text-white rounded hover:bg-purple-600"
+                    >
+                        Apply Reward
+                    </button>
                     </div>
 
-                    {/* New Customer */}
                     <div>
-                        <h3 className="font-bold mb-2">New Customer</h3>
-                        <button
-                            onClick={() => applyReward('new')}
-                            className="px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600"
-                        >
-                            X
-                        </button>
+                    <h3 className="font-bold mb-2">New Customer</h3>
+                    <button
+                        onClick={() => applyReward('new')}
+                        className="px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600"
+                    >
+                        Apply Reward
+                    </button>
                     </div>
 
                     {/* Edit / Save Button */}

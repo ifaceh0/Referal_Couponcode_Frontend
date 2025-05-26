@@ -55,15 +55,24 @@ const formatDate = (dateStr) => {
   return `${day}-${month}-${year}`;
 };
 
+
+
 const Employee = () => {
   const [employees, setEmployees] = useState([]);
   const [invites, setInvites] = useState([]);
   const [editingEmployee, setEditingEmployee] = useState(null);
   const [showInviteModal, setShowInviteModal] = useState(false);
   const [inviteEmail, setInviteEmail] = useState("");
+  const [emailError, setEmailError] = useState("");
+
   const [userDetails, setUserDetails] = useState(null);
   const [loading, setLoading] = useState(false);
   const shopkeeperId = userDetails?.id;
+
+  const validateEmailFormat = (email) => {
+    const re = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    return re.test(String(email).toLowerCase());
+  };
      useEffect(() => {
             const fetchData = async () => {
                 try {
@@ -137,6 +146,19 @@ const Employee = () => {
     setShowInviteModal(true);
   };
 
+  const handleEmailChange = (e) => {
+    const email = e.target.value;
+    setInviteEmail(email);
+    
+    if (!email) {
+      setEmailError("");
+    } else if (!validateEmailFormat(email)) {
+      setEmailError("Please enter a valid email address (e.g., user@example.com)");
+    } else {
+      setEmailError("");
+    }
+  };
+
   const handleSendInvite = async () => {
   if (!inviteEmail) return;
   setLoading(true);
@@ -197,6 +219,8 @@ const Employee = () => {
   const handleClose = () => {
     setEditingEmployee(null);
   };
+
+  
 
   return (
     <div className="px-4 sm:px-6 md:px-8 lg:px-10 py-6 mx-auto">
@@ -380,8 +404,16 @@ const Employee = () => {
                   value={inviteEmail}
                   onChange={(e) => setInviteEmail(e.target.value)}
                   placeholder="Enter email to invite"
-                  className="w-full border border-gray-300 focus:border-blue-500 focus:ring-blue-500 px-3 py-2 rounded-lg outline-none"
+                  className={`w-full border ${
+                  inviteEmail && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(inviteEmail)
+                    ? "border-red-500"
+                    : "border-gray-300"
+                } focus:border-blue-500 focus:ring-blue-500 px-3 py-2 rounded-lg outline-none`}
                 />
+                {/* Add the validation message here */}
+                {inviteEmail && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(inviteEmail) && (
+                  <p className="text-red-500 text-sm mt-1">Please enter a valid email address</p>
+                )}
               </div>
             </div>
             <div className="mt-6 flex justify-end space-x-3">
