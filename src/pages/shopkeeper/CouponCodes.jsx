@@ -14,15 +14,27 @@ const CouponCodes = () => {
   const [bulkLimit, setBulkLimit] = useState("");
   const [bulkReferralAmount, setBulkReferralAmount] = useState("");
   const [isLoading, setIsLoading] = useState(false);
+  // const [form, setForm] = useState({
+  //   name: "",
+  //   email: "",
+  //   phone: "",
+  //   referralAmount: "",
+  //   usageLimit: "",
+  //   expiryDate: "",
+  //   type: "C",
+  // });
+
   const [form, setForm] = useState({
-    name: "",
-    email: "",
-    phone: "",
-    referralAmount: "",
-    usageLimit: "",
-    expiryDate: "",
-    type: "C",
-  });
+  name: "",
+  email: "",
+  phone: "",
+  phoneDialCode: "+1",
+  referralAmount: "",
+  usageLimit: "",
+  expiryDate: "",
+  type: "C",
+});
+
 
   const shopkeeperId = 1; // Replace with actual shopkeeper ID
 
@@ -95,7 +107,18 @@ const CouponCodes = () => {
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 mb-4">
             <input type="text" placeholder="Name" value={form.name} onChange={(e) => setForm({ ...form, name: e.target.value })} className="border rounded p-2" />
             <input type="email" placeholder="Email" value={form.email} onChange={(e) => setForm({ ...form, email: e.target.value })} className="border rounded p-2" />
-            <PhoneInputField label="" name="phone" value={form.phone} onChange={(e) => setForm({ ...form, phone: e.target.value })} containerClass="w-full" inputClass="border rounded p-2 w-full" />
+            {/* <PhoneInputField label="" name="phone" value={form.phone} onChange={(e) => setForm({ ...form, phone: e.target.value })} containerClass="w-full" inputClass="border rounded p-2 w-full" /> */}
+            <PhoneInputField
+              label=""
+              name="phone"
+              dialCodeField="phoneDialCode"
+              value={form.phone}
+              dialCodeValue={form.phoneDialCode}
+              onChange={(e) => setForm((prev) => ({ ...prev, [e.target.name]: e.target.value }))}
+              containerClass="w-full"
+              inputClass="border rounded p-2 w-full"
+            />
+
             <input type="date" value={form.expiryDate} onChange={(e) => setForm({ ...form, expiryDate: e.target.value })} className="border rounded p-2" title="Expire Date"/>
             <input type="number" placeholder="Coupon Amount ($)" value={form.referralAmount} onChange={(e) => setForm({ ...form, referralAmount: e.target.value })} className="border rounded p-2" />
             <input type="number" placeholder="Limit" value={form.usageLimit} onChange={(e) => setForm({ ...form, usageLimit: e.target.value })} className="border rounded p-2" />
