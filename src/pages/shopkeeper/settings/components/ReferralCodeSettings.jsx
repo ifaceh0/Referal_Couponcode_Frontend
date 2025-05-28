@@ -593,7 +593,7 @@ const ReferralCodeSettings = ({ shopkeeperId }) => {
 
 
 
-    updateAndSaveSettingAction();
+    //updateAndSaveSettingAction();
 
     // // Discount Mapping (Credits only)
     // const [discountMapping, setDiscountMapping] = useState(discountData.discountMapping);
