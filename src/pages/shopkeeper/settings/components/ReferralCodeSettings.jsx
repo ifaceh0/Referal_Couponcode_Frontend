@@ -560,33 +560,29 @@ import { discountData } from "../../../../utils/demoData";
 import { toast } from 'react-toastify';
 import { updateAndSaveSettingAction } from "../../../../api/settingPageApi";
 
-const ReferralCodeSettings = () => {
-    const [useCredits, setUseCredits] = useState(true); // Toggle between Credits and Dollars
+// const ReferralCodeSettings = () => {
+//     const [useCredits, setUseCredits] = useState(true); // Toggle between Credits and Dollars
+//     const [signupPoints, setSignupPoints] = useState(100);
+//     const [signupDollars, setSignupDollars] = useState(10);
+//     const [isEditingSignup, setIsEditingSignup] = useState(false);
+//     const [existingCustomerValue, setExistingCustomerValue] = useState(10);
+
+const ReferralCodeSettings = ({ shopkeeperId }) => {
+    const [loading, setLoading] = useState(true);
+    const [useCredits, setUseCredits] = useState(true);
     const [signupPoints, setSignupPoints] = useState(100);
     const [signupDollars, setSignupDollars] = useState(10);
     const [isEditingSignup, setIsEditingSignup] = useState(false);
     const [existingCustomerValue, setExistingCustomerValue] = useState(10);
-
-
-
-    updateAndSaveSettingAction();
-
-    // Discount Mapping (Credits only)
     const [discountMapping, setDiscountMapping] = useState(discountData.discountMapping);
-
-    // Milestone Mapping (Available for both)
     const [milestoneMapping, setMilestoneMapping] = useState(discountData.milestoneMapping);
-
-    // New Referral Promotion state
-    const [promotion, setPromotion] = useState({
+     const [promotion, setPromotion] = useState({
         beginDate: '',
         expiryDate: '',
         referralAmount: '',
         referrerAmount: ''
     });
     const [isEditingPromotion, setIsEditingPromotion] = useState(false);
-
-    // New Coupon Promotion state
     const [couponPromotion, setCouponPromotion] = useState({
         beginDate: '',
         expiryDate: '',
@@ -594,6 +590,73 @@ const ReferralCodeSettings = () => {
         limitOfUse: ''
     });
     const [isEditingCouponPromotion, setIsEditingCouponPromotion] = useState(false);
+
+
+
+    updateAndSaveSettingAction();
+
+    // // Discount Mapping (Credits only)
+    // const [discountMapping, setDiscountMapping] = useState(discountData.discountMapping);
+
+    // // Milestone Mapping (Available for both)
+    // const [milestoneMapping, setMilestoneMapping] = useState(discountData.milestoneMapping);
+
+    // // New Referral Promotion state
+    // const [promotion, setPromotion] = useState({
+    //     beginDate: '',
+    //     expiryDate: '',
+    //     referralAmount: '',
+    //     referrerAmount: ''
+    // });
+    // const [isEditingPromotion, setIsEditingPromotion] = useState(false);
+
+    // // New Coupon Promotion state
+    // const [couponPromotion, setCouponPromotion] = useState({
+    //     beginDate: '',
+    //     expiryDate: '',
+    //     couponAmount: '',
+    //     limitOfUse: ''
+    // });
+    // const [isEditingCouponPromotion, setIsEditingCouponPromotion] = useState(false);
+
+    useEffect(() => {
+        const fetchSettings = async () => {
+            try {
+                setLoading(true);
+                const response = await getSettingsAction(shopkeeperId);
+                
+                if (response.settings) {
+                    const settings = response.settings.referralSettings || {};
+                    
+                    setUseCredits(settings.useCredits || true);
+                    setSignupPoints(settings.signupPoints || 100);
+                    setSignupDollars(settings.signupDollars || 10);
+                    setExistingCustomerValue(settings.existingCustomerValue || 10);
+                    setDiscountMapping(settings.discountMapping || discountData.discountMapping);
+                    setMilestoneMapping(settings.milestoneMapping || discountData.milestoneMapping);
+                    setPromotion(settings.promotion || {
+                        beginDate: '',
+                        expiryDate: '',
+                        referralAmount: '',
+                        referrerAmount: ''
+                    });
+                    setCouponPromotion(settings.couponPromotion || {
+                        beginDate: '',
+                        expiryDate: '',
+                        couponAmount: '',
+                        limitOfUse: ''
+                    });
+                }
+            } catch (error) {
+                toast.error('Failed to load settings');
+                console.error('Error fetching settings:', error);
+            } finally {
+                setLoading(false);
+            }
+        };
+        
+        fetchSettings();
+    }, [shopkeeperId]);
 
     const handleSaveSignup = () => {
         setIsEditingSignup(false);
