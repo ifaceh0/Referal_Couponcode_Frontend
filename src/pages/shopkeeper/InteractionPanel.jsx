@@ -68,7 +68,7 @@
 //           <p><strong>Code:</strong> {codeDetails.code}</p>
 //           <p><strong>Status:</strong> {codeDetails.status}</p>
 //           <p><strong>Expiry Date:</strong> {codeDetails.expiryDate}</p>
-          
+
 //           {/* User Details */}
 //           {codeDetails.user && (
 //             <>
@@ -317,7 +317,7 @@
 //                         console.error("Error fetching monthly data:", error);
 //                     }
 //                 };
-        
+
 //                 fetchData();
 //             }, []);
 //             const shopkeeperId = userDetails?.id || localStorage.getItem("shopkeeperId") ;
@@ -595,7 +595,7 @@
 import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { validateCode } from "../../api/validateCode";
-import { useCouponCode,userInfo } from "../../api/validateCode";
+import { useCouponCode, userInfo } from "../../api/validateCode";
 import { toast, ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { FaQrcode, FaArrowLeft, FaPhone, FaEnvelope, FaCheck } from "react-icons/fa";
@@ -621,7 +621,7 @@ const InteractionPanel = () => {
   const [redeemAmount, setRedeemAmount] = useState("");
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
-  
+
   useEffect(() => {
     const fetchData = async () => {
       try {
@@ -635,46 +635,20 @@ const InteractionPanel = () => {
 
     fetchData();
   }, []);
-  
+
   const shopkeeperId = userDetails?.id || localStorage.getItem("shopkeeperId");
   const navigate = useNavigate();
-
-  // const handleVerifyPhone = () => {
-  //   if (!phoneNumber.trim()) {
-  //     toast.error("Please enter a phone number");
-  //     return;
-  //   }
-    
-  //   // In a real app, you would verify the phone number with an API call here
-  //   // For this example, we'll simulate verification with mock data
-  //   const mockVerificationData = {
-  //     customerId: "CUST12345",
-  //     name: "John Doe",
-  //     phone: phoneNumber,
-  //     email: "john.doe@example.com",
-  //     availableBalance: 150.00,
-  //     couponAmount: 25.00,
-  //     couponUsageLimit: 3,
-  //     couponCode: "SUMMER25",
-  //     referralCode: "REFERJOHN",
-  //     shopName: userDetails?.name || "Default Shop"
-  //   };
-    
-  //   setVerificationData(mockVerificationData);
-  //   setVerificationDialogOpen(true);
-  //   setPhoneVerified(true);
-  // };
 
   const handleVerifyPhone = async () => {
     if (!phoneNumber.trim()) {
       toast.error("Please enter a phone number");
       return;
     }
-  
+
     try {
       // Call the real userInfo API with phone
       const data = await userInfo("", phoneNumber); // pass email as empty
-  
+
       if (data && data.phone) {
         const verificationData = {
           customerId: data.customerId || "Unknown",  // Add customerId if returned
@@ -688,7 +662,7 @@ const InteractionPanel = () => {
           referralCode: data.referralCode || "",
           shopName: userDetails?.name || "Default Shop"
         };
-  
+
         setVerificationData(verificationData);
         setVerificationDialogOpen(true);
         setPhoneVerified(true);
@@ -699,22 +673,22 @@ const InteractionPanel = () => {
       toast.error(error.message || "Verification failed. Please try again.");
     }
   };
-  
+
 
   const handleVerifyEmail = async () => {
     if (!email.trim()) {
       toast.error("Please enter an email address");
       return;
     }
-  
+
     if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
       toast.error("Please enter a valid email address");
       return;
     }
-  
+
     try {
       const data = await userInfo(email, ""); // pass phone as empty
-  
+
       if (data && data.email) {
         const verificationData = {
           customerId: data.customerId || "Unknown",
@@ -728,7 +702,7 @@ const InteractionPanel = () => {
           referralCode: data.referralCode || "",
           shopName: userDetails?.name || "Default Shop"
         };
-  
+
         setVerificationData(verificationData);
         setVerificationDialogOpen(true);
         setEmailVerified(true);
@@ -739,7 +713,7 @@ const InteractionPanel = () => {
       toast.error(error.message || "Verification failed. Please try again.");
     }
   };
-  
+
   const handleCloseVerificationDialog = () => {
     setVerificationDialogOpen(false);
     setRedeemAmount("");
@@ -751,41 +725,41 @@ const InteractionPanel = () => {
       setError("Please enter an amount to redeem");
       return;
     }
-  
+
     const amount = parseFloat(redeemAmount);
     if (isNaN(amount) || amount <= 0) {
       setError("Please enter a valid positive amount");
       return;
     }
-  
+
     if (verificationData && amount > verificationData.availableBalance) {
       setError("Redeem amount cannot exceed available balance");
       return;
     }
-  
+
     const token = localStorage.getItem("token");
-  
+
     if (!token) {
       setError("Authentication token not found.");
       return;
     }
-  
+
     const payload = {
       customerId: verificationData.customerId,
       referralCode: verificationData.referralCode,
       discountAmount: amount,
     };
-  
+
     setLoading(true);
     const toastId = toast.loading("Processing redemption...");
-  
+
     try {
       await axios.post(`${import.meta.env.VITE_BACKEND_URL}/api/shopkeeper/redeem-discount`, payload, {
         headers: {
           Authorization: `Bearer ${token}`,
         },
       });
-      
+
       toast.update(toastId, {
         render: "Discount redeemed successfully!",
         type: "success",
@@ -801,10 +775,13 @@ const InteractionPanel = () => {
       setRedeemAmount("");
       setError("");
       setVerificationDialogOpen(false);
+      setTimeout(() => {
+        window.location.reload(); //Refresh the entire page after showing success
+      }, 3000);
     } catch (err) {
       console.error("Redemption failed:", err);
       toast.update(toastId, {
-        render: err.response?.data?.message || "Redemption failed. Please try again.",
+        render: err || "Redemption failed. Please try again.",
         type: "error",
         isLoading: false,
         autoClose: 3000,
@@ -816,7 +793,7 @@ const InteractionPanel = () => {
       setLoading(false);
     }
   };
-  
+
 
   const handleSearchCode = async () => {
     if (!code.trim()) {
@@ -932,13 +909,19 @@ const InteractionPanel = () => {
               type="text"
               value={redeemAmount ? `$${redeemAmount}` : `$`}
               onChange={(e) => {
-                const value = e.target.value.substring(1).replace(/\D/g, "");
-                setRedeemAmount(value);
-                setError("");
+                // const value = e.target.value.substring(1).replace(/\D/g, "");
+                // setRedeemAmount(value);
+                // setError("");
+                const raw = e.target.value.substring(1);
+                const value = raw.replace(/[^0-9.]/g, "");
+
+                if (/^\d*\.?\d{0,4}$/.test(value)) {
+                  setRedeemAmount(value);
+                  setError("");
+                }
               }}
-              className={`w-full p-3 border ${
-                error ? "border-red-500" : "border-gray-300"
-              } rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500`}
+              className={`w-full p-3 border ${error ? "border-red-500" : "border-gray-300"
+                } rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500`}
               placeholder="Enter amount"
             />
             {error && <p className="text-sm text-red-500 mt-2">{error}</p>}
@@ -954,11 +937,10 @@ const InteractionPanel = () => {
             <button
               onClick={handleRedeemClick}
               disabled={loading}
-              className={`w-1/3 max-w-xs py-2 px-4 rounded hover:bg-blue-600 transition ${
-                loading
+              className={`w-1/3 max-w-xs py-2 px-4 rounded hover:bg-blue-600 transition ${loading
                   ? "bg-gray-400 cursor-not-allowed"
                   : "bg-gradient-to-r from-blue-600 to-purple-600 text-white"
-              }`}
+                }`}
             >
               {loading ? "Processing..." : "Redeem"}
             </button>
@@ -968,7 +950,7 @@ const InteractionPanel = () => {
 
       {/* Back Button */}
       <div className="w-full max-w-6xl mb-4">
-        <button 
+        <button
           onClick={() => navigate(-1)}
           className="flex items-center text-blue-600 hover:text-blue-800 transition mb-4"
         >
@@ -1071,7 +1053,7 @@ const InteractionPanel = () => {
         <div className="bg-blue-50 p-6 rounded-lg shadow">
           <h2 className="text-lg font-semibold mb-2 text-center">Scan Code</h2>
           <div className="flex flex-col items-center">
-            <div 
+            <div
               className="w-20 h-20 bg-blue-100 rounded-full flex items-center justify-center mb-3 cursor-pointer hover:bg-blue-200 transition"
               onClick={() => navigate("../scanner")}
             >
