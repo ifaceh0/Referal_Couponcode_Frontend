@@ -422,9 +422,10 @@ const Scanner = () => {
       setError("");
 
       // Allow toast to show before navigating
-      setTimeout(() => {
-        navigate("/shopkeeper/interaction-panel");
-      }, 5000);
+      // setTimeout(() => {
+      //   navigate("/shopkeeper/interaction-panel");
+      // }, 5000);
+
     } catch (err) {
       console.error("Redemption failed:", err);
       toast.update(toastId, {
