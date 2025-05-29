@@ -19,6 +19,8 @@ const ReferralManagement = () => {
   const [expiryDate, setExpiryDate] = useState("");
   const [referralAmount, setReferralAmount] = useState("");
   const [referrerAmount, setReferrerAmount] = useState("");
+  const [failedUsers, setFailedUsers] = useState([]);
+
 
   // Bulk Upload
   const [bulkFile, setBulkFile] = useState(null);
@@ -101,26 +103,52 @@ const ReferralManagement = () => {
         shopkeeperId,
         "R"
       );
-      toast.update(toastId, { render: result.message || "Bulk referral codes generated successfully.", type: "success", isLoading: false, autoClose: 3000 });
-      window.location.reload();
-    } catch (error) {
-      toast.update(toastId, { render: error.message || "Failed to generate bulk referral codes.", type: "error", isLoading: false, autoClose: 3000 });
+       setFailedUsers(result.failedUsers || []);
+    if (result.failedUsers?.length > 0) {
+      toast.update(toastId, {
+        render: `Upload completed. ${result.failedUsers.length} failed.`,
+        type: "error",
+        isLoading: false,
+        // autoClose: false,
+        // closeOnClick: true,
+        autoClose: 3000,
+      });
+    } else {
+      toast.update(toastId, {
+        render: result.message || "Bulk referral codes generated successfully.",
+        type: "success",
+        isLoading: false,
+        autoClose: 3000,
+      });
     }
+    // Add delayed page reload here (10 seconds)
+    setTimeout(() => {
+      window.location.reload();
+    }, 15000);
+
+  } catch (error) {
+    toast.update(toastId, {
+      render: error.message || "Failed to generate bulk referral codes.",
+      type: "error",
+      isLoading: false,
+      autoClose: 3000,
+    });
+  }
   };
 
-  // 🔹 Edit Function
+  //  Edit Function
   const handleEdit = (row) => {
     console.log("Editing:", row);
     // Add your edit logic here
   };
 
-  // 🔹 Delete Function
+  //  Delete Function
   const handleDelete = (row) => {
     console.log("Deleting:", row);
     setCodes((prev) => prev.filter((code) => code.code !== row.code));
   };
 
-  // 🔹 Bulk Edit/Delete Function
+  // Bulk Edit/Delete Function
   const handleBulkAction = (action, selectedRows) => {
     console.log(`${action.toUpperCase()} Selected Rows:`, selectedRows);
 
@@ -177,6 +205,34 @@ const ReferralManagement = () => {
           Generate Bulk Codes
         </button>
       </section>
+
+      {failedUsers.length > 0 && (
+  <div className="mt-6 border border-red-300 rounded p-4 bg-red-50">
+    <h3 className="text-lg font-semibold text-red-700 mb-3">Failed Users</h3>
+    <div className="overflow-x-auto">
+      <table className="min-w-full text-sm text-left border-collapse">
+        <thead className="bg-red-100 text-red-800">
+          <tr>
+            <th className="border px-4 py-2">Name</th>
+            <th className="border px-4 py-2">Email</th>
+            <th className="border px-4 py-2">Phone</th>
+            <th className="border px-4 py-2">Reason</th>
+          </tr>
+        </thead>
+        <tbody>
+          {failedUsers.map((user, idx) => (
+            <tr key={idx} className="bg-white hover:bg-red-50">
+              <td className="border px-4 py-2">{user.name}</td>
+              <td className="border px-4 py-2">{user.email}</td>
+              <td className="border px-4 py-2">{user.phone}</td>
+              <td className="border px-4 py-2 text-red-600">{user.reason}</td>
+            </tr>
+          ))}
+        </tbody>
+      </table>
+    </div>
+  </div>
+)}
 
       <section className="bg-white p-6 rounded shadow-md">
         <h2 className="text-xl font-semibold mb-4" style={{ color: colorPalette.primaryDark }}>

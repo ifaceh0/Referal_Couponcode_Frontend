@@ -77,11 +77,15 @@ export const uploadBulkReferralCodes = async (file, expiryDate, referralAmount, 
         );
 
         const result = await response.json();
-        return result; // Expected response { message: "...", generatedCodes: [...] }
-    } catch (error) {
-        console.error("Error uploading bulk referral codes:", error);
-        return { message: "Failed to upload referral codes.", generatedCodes: [] };
+       if (!response.ok) {
+      throw new Error(result.message || "Upload failed.");
     }
+
+    return result;
+  } catch (error) {
+    console.error("Upload error:", error);
+    throw error;
+  }
 };
 
 export const uploadBulkCouponCodes = async (file, expiryDate, referralAmount, usageLimit,shopkeeperId, type) => {
