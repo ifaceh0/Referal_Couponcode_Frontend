@@ -718,6 +718,9 @@ const InteractionPanel = () => {
     setVerificationDialogOpen(false);
     setRedeemAmount("");
     setError("");
+    setTimeout(() => {
+        window.location.reload();
+      }, 3000);
   };
 
   const handleRedeemClick = async () => {
