@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState,useEffect } from "react";
 import { FaEdit, FaTrash, FaSave, FaPaperPlane } from "react-icons/fa";
 import { discountData } from "../../../../utils/demoData";
 import { toast } from 'react-toastify';
