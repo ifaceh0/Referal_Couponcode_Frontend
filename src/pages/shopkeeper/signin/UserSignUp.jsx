@@ -295,7 +295,7 @@ const InputField = ({ label, type, name, value, onChange, error }) => (
   </div>
 );
 
-const PhoneInputField = ({ label, name, value, onChange, error }) => (
+/* const PhoneInputField = ({ label, name, value, onChange, error }) => (
   <div className="mb-4 w-full">
     <label className="block text-gray-700 mb-2 font-medium">{label}</label>
     <PhoneInput
@@ -324,6 +324,33 @@ const PhoneInputField = ({ label, name, value, onChange, error }) => (
       containerClass="w-full"
       buttonClass="!h-12"
     />
+    {error && <span className="text-red-500 text-sm">{error}</span>}
+  </div>
+); */
+
+const PhoneInputField = ({ label, name, value, onChange, error }) => (
+  <div className="mb-4 w-full">
+    <label className="block text-gray-700 mb-2 font-medium">{label}</label>
+    <div className="relative w-full">
+      <PhoneInput
+        country={"us"}
+        onlyCountries={["us", "ca"]}
+        isValid={(inputNumber, country) => ["us", "ca"].includes(country?.iso2)}
+        countryCodeEditable={false}
+        value={value}
+        onChange={(phone) => {
+          onChange({ target: { name, value: phone } });
+        }}
+        inputProps={{
+          name,
+          required: true
+        }}
+        inputClass="!w-full !h-12 !p-3 !pl-16 !border !border-gray-300 !rounded-lg !focus:outline-none !focus:ring-2 !focus:ring-purple-500"
+        buttonClass="!h-12"
+        containerClass="!w-full"
+        specialLabel="" // Removes default label
+      />
+    </div>
     {error && <span className="text-red-500 text-sm">{error}</span>}
   </div>
 );
