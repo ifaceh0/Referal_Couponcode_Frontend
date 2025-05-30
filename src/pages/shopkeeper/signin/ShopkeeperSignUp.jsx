@@ -432,7 +432,7 @@ const InputField = ({ label, type, name, value, onChange, error }) => (
   </div>
 ); */
 
-/* // To have the front end ph# input to be displayed with Country Code (+1), Area Code (xxx), Ph# (xxx-xxxx) format
+// To have the front end ph# input to be displayed with Country Code (+1), Area Code (xxx), Ph# (xxx-xxxx) format
 const PhoneInputField = ({ label, name, value, onChange, error }) => (
   <div className="mb-4 w-full">
     <label className="block text-gray-700 mb-2 font-medium">{label}</label>
@@ -454,35 +454,6 @@ const PhoneInputField = ({ label, name, value, onChange, error }) => (
         buttonClass="!h-12"
         containerClass="!w-full"
         specialLabel="" // Removes default label
-      />
-    </div>
-    {error && <span className="text-red-500 text-sm">{error}</span>}
-  </div>
-); */
-
-//Pass only Area Code + Ph# to the Springboot backend
-const PhoneInputField = ({ label, name, value, onChange, error }) => (
-  <div className="mb-4 w-full">
-    <label className="block text-gray-700 mb-2 font-medium">{label}</label>
-    <div className="relative w-full">
-      <PhoneInput
-        country={"us"}
-        onlyCountries={["us", "ca"]}
-        isValid={(inputNumber, country) => ["us", "ca"].includes(country?.iso2)}
-        countryCodeEditable={false}
-        value={value}
-        onChange={(phone, countryData) => {
-          const nationalNumber = phone.replace(`+${countryData?.dialCode}`, "").replace(/\D/g, ""); // Remove country code & non-digits
-          onChange({ target: { name, value: nationalNumber } });
-        }}
-        inputProps={{
-          name,
-          required: true
-        }}
-        inputClass="!w-full !h-12 !p-3 !pl-16 !border !border-gray-300 !rounded-lg !focus:outline-none !focus:ring-2 !focus:ring-purple-500"
-        buttonClass="!h-12"
-        containerClass="!w-full"
-        specialLabel=""
       />
     </div>
     {error && <span className="text-red-500 text-sm">{error}</span>}
