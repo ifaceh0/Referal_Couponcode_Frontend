@@ -28,7 +28,7 @@ const CouponCodes = () => {
   name: "",
   email: "",
   phone: "",
-  phoneDialCode: "+1",
+  
   referralAmount: "",
   usageLimit: "",
   expiryDate: "",

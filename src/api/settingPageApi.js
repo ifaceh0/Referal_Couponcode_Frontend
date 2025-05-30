@@ -1,48 +1,39 @@
 import { VITE_BACKEND_URL } from "../apiConfig";
 
-export const updateAndSaveSettingAction = async()=>{
+export const getSettingsAction = async (token) => {
     const response = await fetch(`${VITE_BACKEND_URL}/api/shopkeeper/get-settings`, {
-        method: "POST",
+        method: "GET",
         headers: {
-            "Content-Type": "application/json",
+            Authorization: `Bearer ${token}`,
         },
-        // body: JSON.stringify({}),
     });
-    console.log(VITE_BACKEND_URL)
-}
 
+    if (!response.ok) {
+        throw new Error("Failed to retrieve shop settings");
+    }
 
-// import { VITE_BACKEND_URL } from "../apiConfig";
+    return response.json();
+};
 
-// export const getSettingsAction = async (shopkeeperId: string) => {
-//     const response = await fetch(`${VITE_BACKEND_URL}/api/shopkeeper/get-settings`, {
-//         method: "POST",
-//         headers: {
-//             "Content-Type": "application/json",
-//         },
-//         body: JSON.stringify({ shopkeeperId }),
-//     });
+export const updateSettingsAction = async (settingsData, token) => {
+    const formData = new FormData();
 
-//     if (!response.ok) {
-//         throw new Error("Failed to retrieve shop settings");
-//     }
+    Object.entries(settingsData).forEach(([key, value]) => {
+        // Convert booleans and numbers to string
+        formData.append(key, String(value));
+    });
 
-//     return response.json();
-// };
+    const response = await fetch(`${VITE_BACKEND_URL}/api/shopkeeper/update-settings`, {
+        method: "PUT",
+        headers: {
+            Authorization: `Bearer ${token}`,
+        },
+        body: formData,
+    });
 
-// export const updateSettingsAction = async (settingsData: any) => {
-//     const response = await fetch(`${VITE_BACKEND_URL}/api/shopkeeper/update-settings`, {
-//         method: "PUT",
-//         headers: {
-//             "Content-Type": "application/json",
-//         },
-//         body: JSON.stringify(settingsData),
-//     });
+    if (!response.ok) {
+        throw new Error("Failed to update shop settings");
+    }
 
-//     if (!response.ok) {
-//         throw new Error("Failed to update shop settings");
-//     }
-
-//     return response.json();
-// };
-
+    return response.json();
+};
