@@ -14,6 +14,10 @@ const CouponCodes = () => {
   const [bulkLimit, setBulkLimit] = useState("");
   const [bulkReferralAmount, setBulkReferralAmount] = useState("");
   const [isLoading, setIsLoading] = useState(false);
+  const [failedUsers, setFailedUsers] = useState([]);
+  const [failedUsersPage, setFailedUsersPage] = useState(1);
+  const [showFailedModal, setShowFailedModal] = useState(false);
+  const failedUsersPerPage = 5;
   // const [form, setForm] = useState({
   //   name: "",
   //   email: "",
@@ -25,15 +29,15 @@ const CouponCodes = () => {
   // });
 
   const [form, setForm] = useState({
-  name: "",
-  email: "",
-  phone: "",
-  
-  referralAmount: "",
-  usageLimit: "",
-  expiryDate: "",
-  type: "C",
-});
+    name: "",
+    email: "",
+    phone: "",
+
+    referralAmount: "",
+    usageLimit: "",
+    expiryDate: "",
+    type: "C",
+  });
 
 
   const shopkeeperId = 1; // Replace with actual shopkeeper ID
@@ -85,16 +89,72 @@ const CouponCodes = () => {
     const toastId = toast.loading("Uploading bulk coupon codes...");
     try {
       const result = await uploadBulkCouponCodes(bulkFile, bulkExpiryDate, bulkReferralAmount, bulkLimit, shopkeeperId, "C");
+      setFailedUsers(result.failedUsers || []);
       const message = result.message || "Bulk coupon codes generated successfully!";
-      toast.update(toastId, { render: message, type: "success", isLoading: false, autoClose: 3000 });
 
-      setAllCodes([...allCodes, ...result.generatedCodes]);
-      setTimeout(() => window.location.reload(), 3000);
+      // toast.update(toastId, { render: message, type: "success", isLoading: false, autoClose: 3000 });
+
+      if (result.failedUsers?.length > 0) {
+        toast.update(toastId, {
+          render: `Upload completed. ${result.failedUsers.length} failed.`,
+          type: "error",
+          isLoading: false,
+          // autoClose: false,
+          // closeOnClick: true,
+          autoClose: 3000,
+        });
+        setShowFailedModal(true);
+      } else {
+        toast.update(toastId, {
+          render: result.message || "Bulk coupon codes generated successfully!.",
+          type: "success",
+          isLoading: false,
+          autoClose: 3000,
+
+        });
+        setAllCodes([...allCodes, ...result.generatedCodes]);
+        setTimeout(() => window.location.reload(), 3000);
+      }
+
     } catch (error) {
-      const errorMessage = error.response?.data?.message || "Failed to upload bulk coupon codes.";
-      toast.update(toastId, { render: errorMessage, type: "error", isLoading: false, autoClose: 3000 });
+      toast.update(toastId, {
+        render: error.message || "Failed to upload bulk coupon codes.",
+        type: "error",
+        isLoading: false,
+        autoClose: 3000,
+      });
     }
+
+
+
+    //   setAllCodes([...allCodes, ...result.generatedCodes]);
+    //   setTimeout(() => window.location.reload(), 3000);
+    // } catch (error) {
+    //   const errorMessage = error.response?.data?.message || "Failed to upload bulk coupon codes.";
+    //   toast.update(toastId, { render: errorMessage, type: "error", isLoading: false, autoClose: 3000 });
+    // }
   };
+
+  const handleDownloadCSV = () => {
+    const headers = ["Name", "Email", "Phone", "Reason"];
+    const rows = failedUsers.map(user =>
+      [user.name, user.email, user.phone, user.reason].join(",")
+    );
+    const csvContent = [headers.join(","), ...rows].join("\n");
+
+    const blob = new Blob([csvContent], { type: "text/csv;charset=utf-8;" });
+    const link = document.createElement("a");
+    link.href = URL.createObjectURL(blob);
+    link.setAttribute("download", "failed_users.csv");
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+  };
+  const paginatedFailedUsers = failedUsers.slice(
+    (failedUsersPage - 1) * failedUsersPerPage,
+    failedUsersPage * failedUsersPerPage
+  );
+  const failedUsersTotalPages = Math.ceil(failedUsers.length / failedUsersPerPage);
 
   return (
     <>
@@ -119,7 +179,7 @@ const CouponCodes = () => {
               inputClass="border rounded p-2 w-full"
             />
 
-            <input type="date" value={form.expiryDate} onChange={(e) => setForm({ ...form, expiryDate: e.target.value })} className="border rounded p-2" title="Expire Date"/>
+            <input type="date" value={form.expiryDate} onChange={(e) => setForm({ ...form, expiryDate: e.target.value })} className="border rounded p-2" title="Expire Date" />
             <input type="number" placeholder="Coupon Amount ($)" value={form.referralAmount} onChange={(e) => setForm({ ...form, referralAmount: e.target.value })} className="border rounded p-2" />
             <input type="number" placeholder="Limit" value={form.usageLimit} onChange={(e) => setForm({ ...form, usageLimit: e.target.value })} className="border rounded p-2" />
           </div>
@@ -138,6 +198,88 @@ const CouponCodes = () => {
           </div>
           <button onClick={handleBulkGenerate} className="px-4 py-2 rounded shadow" style={{ backgroundColor: colorPalette.secondary, color: colorPalette.white }}>Generate Coupon Codes</button>
         </div>
+        {showFailedModal && (
+          <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+            <div className="bg-white rounded-xl shadow-lg p-6 max-w-3xl w-full">
+              <h2 className="text-xl font-bold mb-4 text-red-700">Failed Users</h2>
+
+              {/* Paginated Data */}
+              <div className="overflow-x-auto max-h-96 overflow-y-auto mb-4">
+                <table className="min-w-full text-sm border">
+                  <thead className="bg-red-100 text-red-800">
+                    <tr>
+                      <th className="border px-4 py-2">Name</th>
+                      <th className="border px-4 py-2">Email</th>
+                      <th className="border px-4 py-2">Phone</th>
+                      <th className="border px-4 py-2">Reason</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {paginatedFailedUsers.map((user, idx) => (
+                      <tr key={idx} className="bg-white hover:bg-red-50">
+                        <td className="border px-4 py-2">{user.name}</td>
+                        <td className="border px-4 py-2">{user.email}</td>
+                        <td className="border px-4 py-2">{user.phone}</td>
+                        <td className="border px-4 py-2 text-red-600">{user.reason}</td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
+
+              {/* Pagination Controls */}
+              {failedUsersTotalPages > 1 && (
+                <div className="flex justify-between items-center mb-4 text-sm text-gray-700">
+                  <span>
+                    Page {failedUsersPage} of {failedUsersTotalPages}
+                  </span>
+                  <div className="space-x-2">
+                    <button
+                      onClick={() => setFailedUsersPage((prev) => Math.max(prev - 1, 1))}
+                      disabled={failedUsersPage === 1}
+                      className="px-3 py-1 border rounded bg-gray-100 hover:bg-gray-200 disabled:opacity-50"
+                    >
+                      Previous
+                    </button>
+                    <button
+                      onClick={() =>
+                        setFailedUsersPage((prev) =>
+                          Math.min(prev + 1, failedUsersTotalPages)
+                        )
+                      }
+                      disabled={failedUsersPage === failedUsersTotalPages}
+                      className="px-3 py-1 border rounded bg-gray-100 hover:bg-gray-200 disabled:opacity-50"
+                    >
+                      Next
+                    </button>
+                  </div>
+                </div>
+              )}
+
+              {/* Action Buttons */}
+              <div className="flex justify-end space-x-4">
+                <button
+                  className="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700"
+                  onClick={handleDownloadCSV}
+                >
+                  Download CSV
+                </button>
+                <button
+                  className="bg-green-600 text-white px-4 py-2 rounded hover:bg-green-700"
+                  onClick={() => {
+                    setShowFailedModal(false);
+                    setTimeout(() => window.location.reload(), 3000);
+                  }}
+                >
+                  OK
+                </button>
+              </div>
+            </div>
+          </div>
+        )}
+
+
+
 
         <section className="bg-white p-6 rounded shadow-md">
           <h2 className="text-xl font-semibold mb-4" style={{ color: colorPalette.accentDark }}>

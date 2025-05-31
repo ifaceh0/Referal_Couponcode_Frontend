@@ -34,20 +34,20 @@ const ReferralManagement = () => {
   const [type, setType] = useState("R");
   // const shopkeeperId = localStorage.getItem("shopkeeperId");
   const [userDetails, setUserDetails] = useState(null);
-     useEffect(() => {
-            const fetchData = async () => {
-                try {
-                    const user = await getCurrentUser();
-                    console.log("Fetched user:", user.id);
-                    setUserDetails(user);
-                } catch (error) {
-                    console.error("Error fetching monthly data:", error);
-                }
-            };
-    
-            fetchData();
-        }, []);
-        const shopkeeperId = userDetails?.id || localStorage.getItem("shopkeeperId") ; // Replace with actual shopkeeper ID
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const user = await getCurrentUser();
+        console.log("Fetched user:", user.id);
+        setUserDetails(user);
+      } catch (error) {
+        console.error("Error fetching monthly data:", error);
+      }
+    };
+
+    fetchData();
+  }, []);
+  const shopkeeperId = userDetails?.id || localStorage.getItem("shopkeeperId"); // Replace with actual shopkeeper ID
   useEffect(() => {
     const fetchCodes = async () => {
       setIsLoading(true);
@@ -106,38 +106,38 @@ const ReferralManagement = () => {
         shopkeeperId,
         "R"
       );
-       setFailedUsers(result.failedUsers || []);
-    if (result.failedUsers?.length > 0) {
+      setFailedUsers(result.failedUsers || []);
+      if (result.failedUsers?.length > 0) {
+        toast.update(toastId, {
+          render: `Upload completed. ${result.failedUsers.length} failed.`,
+          type: "error",
+          isLoading: false,
+          // autoClose: false,
+          // closeOnClick: true,
+          autoClose: 3000,
+        });
+        setShowFailedModal(true);
+      } else {
+        toast.update(toastId, {
+          render: result.message || "Bulk referral codes generated successfully.",
+          type: "success",
+          isLoading: false,
+          autoClose: 3000,
+        });
+      }
+      // Add delayed page reload here (10 seconds)
+      // setTimeout(() => {
+      //   window.location.reload();
+      // }, 15000);
+
+    } catch (error) {
       toast.update(toastId, {
-        render: `Upload completed. ${result.failedUsers.length} failed.`,
+        render: error.message || "Failed to generate bulk referral codes.",
         type: "error",
-        isLoading: false,
-        // autoClose: false,
-        // closeOnClick: true,
-        autoClose: 3000,
-      });
-      setShowFailedModal(true);
-    } else {
-      toast.update(toastId, {
-        render: result.message || "Bulk referral codes generated successfully.",
-        type: "success",
         isLoading: false,
         autoClose: 3000,
       });
     }
-    // Add delayed page reload here (10 seconds)
-    // setTimeout(() => {
-    //   window.location.reload();
-    // }, 15000);
-
-  } catch (error) {
-    toast.update(toastId, {
-      render: error.message || "Failed to generate bulk referral codes.",
-      type: "error",
-      isLoading: false,
-      autoClose: 3000,
-    });
-  }
   };
 
   //  Edit Function
@@ -162,203 +162,203 @@ const ReferralManagement = () => {
   };
 
   const handleDownloadCSV = () => {
-  const headers = ["Name", "Email", "Phone", "Reason"];
-  const rows = failedUsers.map(user =>
-    [user.name, user.email, user.phone, user.reason].join(",")
-  );
-  const csvContent = [headers.join(","), ...rows].join("\n");
+    const headers = ["Name", "Email", "Phone", "Reason"];
+    const rows = failedUsers.map(user =>
+      [user.name, user.email, user.phone, user.reason].join(",")
+    );
+    const csvContent = [headers.join(","), ...rows].join("\n");
 
-  const blob = new Blob([csvContent], { type: "text/csv;charset=utf-8;" });
-  const link = document.createElement("a");
-  link.href = URL.createObjectURL(blob);
-  link.setAttribute("download", "failed_users.csv");
-  document.body.appendChild(link);
-  link.click();
-  document.body.removeChild(link);
-};
-const paginatedFailedUsers = failedUsers.slice(
-  (failedUsersPage - 1) * failedUsersPerPage,
-  failedUsersPage * failedUsersPerPage
-);
-const failedUsersTotalPages = Math.ceil(failedUsers.length / failedUsersPerPage);
+    const blob = new Blob([csvContent], { type: "text/csv;charset=utf-8;" });
+    const link = document.createElement("a");
+    link.href = URL.createObjectURL(blob);
+    link.setAttribute("download", "failed_users.csv");
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+  };
+  const paginatedFailedUsers = failedUsers.slice(
+    (failedUsersPage - 1) * failedUsersPerPage,
+    failedUsersPage * failedUsersPerPage
+  );
+  const failedUsersTotalPages = Math.ceil(failedUsers.length / failedUsersPerPage);
 
   return (
     <>
       <ToastContainer position="top-right" autoClose={3000} />
-      
-    <div className="min-h-screen p-8" style={{ backgroundColor: colorPalette.primaryLight }}>
-      <h1 className="text-3xl font-bold text-white mb-6">Manage Referral Codes</h1>
 
-      {/* Individual Referral Code Generation */}
-      <section className="mb-8 bg-white p-6 rounded shadow-md">
-        <h2 className="text-xl font-semibold mb-4" style={{ color: colorPalette.primaryDark }}>
-          Individual Referral Code Generation
-        </h2>
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-4">
-          <input type="text" placeholder="Full Name" value={name} onChange={(e) => setName(e.target.value)} className="border rounded p-2" />
-          <input type="email" placeholder="Email" value={email} onChange={(e) => setEmail(e.target.value)} className="border rounded p-2" />
-          {/* <input type="tel" placeholder="Phone" value={phone} onChange={(e) => setPhone(e.target.value)} className="border rounded p-2" /> */}
-          <PhoneInputField
-            label=""
-            name="phone"
-            value={phone}
-            onChange={(e) => setPhone(e.target.value)}
-            containerClass="w-full"
-            inputClass="border rounded p-2 w-full"
-          />
-          <input type="date" value={expiryDate} onChange={(e) => setExpiryDate(e.target.value)} className="border rounded p-2" title="Expire Date - mm/dd/yyyy"/>
-          <input type="number" placeholder="Referral Amount ($)" value={referralAmount} onChange={(e) => setReferralAmount(e.target.value)} className="border rounded p-2" />
-          <input type="number" placeholder="Referrer Amount ($)" value={referrerAmount} onChange={(e) => setReferrerAmount(e.target.value)} className="border rounded p-2" />
-        </div>
-        <button onClick={handleRegister} className="px-4 py-2 rounded" style={{ backgroundColor: colorPalette.accent, color: colorPalette.white }}>
-          Generate Code
-        </button>
-      </section>
+      <div className="min-h-screen p-8" style={{ backgroundColor: colorPalette.primaryLight }}>
+        <h1 className="text-3xl font-bold text-white mb-6">Manage Referral Codes</h1>
 
-      {/* Bulk Upload Section */}
-      <section className="mb-8 bg-white p-6 rounded shadow-md">
-        <h2 className="text-xl font-semibold mb-4" style={{ color: colorPalette.primaryDark }}>
-          Bulk Referral Code Upload
-        </h2>
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-4">
-          <input type="file" accept=".csv, .xls, .xlsx" onChange={handleBulkUpload} className="border rounded p-2" />
-          <input type="date" value={bulkExpiryDate} onChange={(e) => setBulkExpiryDate(e.target.value)} className="border rounded p-2" title="Expire Date - mm/dd/yyyy" />
-          <input type="number" placeholder="Referral Amount ($)" value={bulkReferralAmount} onChange={(e) => setBulkReferralAmount(e.target.value)} className="border rounded p-2" />
-          <input type="number" placeholder="Referrer Amount ($)" value={bulkReferrerAmount} onChange={(e) => setBulkReferrerAmount(e.target.value)} className="border rounded p-2" />
-        </div>
-        <button onClick={handleBulkGenerate} className="px-4 py-2 rounded" style={{ backgroundColor: colorPalette.accent, color: colorPalette.white }}>
-          Generate Bulk Codes
-        </button>
-      </section>
-
-      {showFailedModal && (
-  <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
-    <div className="bg-white rounded-xl shadow-lg p-6 max-w-3xl w-full">
-      <h2 className="text-xl font-bold mb-4 text-red-700">Failed Users</h2>
-
-      {/* Paginated Data */}
-      <div className="overflow-x-auto max-h-96 overflow-y-auto mb-4">
-        <table className="min-w-full text-sm border">
-          <thead className="bg-red-100 text-red-800">
-            <tr>
-              <th className="border px-4 py-2">Name</th>
-              <th className="border px-4 py-2">Email</th>
-              <th className="border px-4 py-2">Phone</th>
-              <th className="border px-4 py-2">Reason</th>
-            </tr>
-          </thead>
-          <tbody>
-            {paginatedFailedUsers.map((user, idx) => (
-              <tr key={idx} className="bg-white hover:bg-red-50">
-                <td className="border px-4 py-2">{user.name}</td>
-                <td className="border px-4 py-2">{user.email}</td>
-                <td className="border px-4 py-2">{user.phone}</td>
-                <td className="border px-4 py-2 text-red-600">{user.reason}</td>
-              </tr>
-            ))}
-          </tbody>
-        </table>
-      </div>
-
-      {/* Pagination Controls */}
-      {failedUsersTotalPages > 1 && (
-        <div className="flex justify-between items-center mb-4 text-sm text-gray-700">
-          <span>
-            Page {failedUsersPage} of {failedUsersTotalPages}
-          </span>
-          <div className="space-x-2">
-            <button
-              onClick={() => setFailedUsersPage((prev) => Math.max(prev - 1, 1))}
-              disabled={failedUsersPage === 1}
-              className="px-3 py-1 border rounded bg-gray-100 hover:bg-gray-200 disabled:opacity-50"
-            >
-              Previous
-            </button>
-            <button
-              onClick={() =>
-                setFailedUsersPage((prev) =>
-                  Math.min(prev + 1, failedUsersTotalPages)
-                )
-              }
-              disabled={failedUsersPage === failedUsersTotalPages}
-              className="px-3 py-1 border rounded bg-gray-100 hover:bg-gray-200 disabled:opacity-50"
-            >
-              Next
-            </button>
+        {/* Individual Referral Code Generation */}
+        <section className="mb-8 bg-white p-6 rounded shadow-md">
+          <h2 className="text-xl font-semibold mb-4" style={{ color: colorPalette.primaryDark }}>
+            Individual Referral Code Generation
+          </h2>
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-4">
+            <input type="text" placeholder="Full Name" value={name} onChange={(e) => setName(e.target.value)} className="border rounded p-2" />
+            <input type="email" placeholder="Email" value={email} onChange={(e) => setEmail(e.target.value)} className="border rounded p-2" />
+            {/* <input type="tel" placeholder="Phone" value={phone} onChange={(e) => setPhone(e.target.value)} className="border rounded p-2" /> */}
+            <PhoneInputField
+              label=""
+              name="phone"
+              value={phone}
+              onChange={(e) => setPhone(e.target.value)}
+              containerClass="w-full"
+              inputClass="border rounded p-2 w-full"
+            />
+            <input type="date" value={expiryDate} onChange={(e) => setExpiryDate(e.target.value)} className="border rounded p-2" title="Expire Date - mm/dd/yyyy" />
+            <input type="number" placeholder="Referral Amount ($)" value={referralAmount} onChange={(e) => setReferralAmount(e.target.value)} className="border rounded p-2" />
+            <input type="number" placeholder="Referrer Amount ($)" value={referrerAmount} onChange={(e) => setReferrerAmount(e.target.value)} className="border rounded p-2" />
           </div>
-        </div>
-      )}
+          <button onClick={handleRegister} className="px-4 py-2 rounded" style={{ backgroundColor: colorPalette.accent, color: colorPalette.white }}>
+            Generate Code
+          </button>
+        </section>
 
-      {/* Action Buttons */}
-      <div className="flex justify-end space-x-4">
-        <button
-          className="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700"
-          onClick={handleDownloadCSV}
-        >
-          Download CSV
-        </button>
-        <button
-          className="bg-green-600 text-white px-4 py-2 rounded hover:bg-green-700"
-          onClick={() => {
-            setShowFailedModal(false);
-            setTimeout(() => window.location.reload(), 3000);
-          }}
-        >
-          OK
-        </button>
-      </div>
-    </div>
-  </div>
-)}
+        {/* Bulk Upload Section */}
+        <section className="mb-8 bg-white p-6 rounded shadow-md">
+          <h2 className="text-xl font-semibold mb-4" style={{ color: colorPalette.primaryDark }}>
+            Bulk Referral Code Upload
+          </h2>
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-4">
+            <input type="file" accept=".csv, .xls, .xlsx" onChange={handleBulkUpload} className="border rounded p-2" />
+            <input type="date" value={bulkExpiryDate} onChange={(e) => setBulkExpiryDate(e.target.value)} className="border rounded p-2" title="Expire Date - mm/dd/yyyy" />
+            <input type="number" placeholder="Referral Amount ($)" value={bulkReferralAmount} onChange={(e) => setBulkReferralAmount(e.target.value)} className="border rounded p-2" />
+            <input type="number" placeholder="Referrer Amount ($)" value={bulkReferrerAmount} onChange={(e) => setBulkReferrerAmount(e.target.value)} className="border rounded p-2" />
+          </div>
+          <button onClick={handleBulkGenerate} className="px-4 py-2 rounded" style={{ backgroundColor: colorPalette.accent, color: colorPalette.white }}>
+            Generate Bulk Codes
+          </button>
+        </section>
 
+        {showFailedModal && (
+          <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+            <div className="bg-white rounded-xl shadow-lg p-6 max-w-3xl w-full">
+              <h2 className="text-xl font-bold mb-4 text-red-700">Failed Users</h2>
 
-      <section className="bg-white p-6 rounded shadow-md">
-        <h2 className="text-xl font-semibold mb-4" style={{ color: colorPalette.primaryDark }}>
-          Generated Referral Codes
-        </h2>
+              {/* Paginated Data */}
+              <div className="overflow-x-auto max-h-96 overflow-y-auto mb-4">
+                <table className="min-w-full text-sm border">
+                  <thead className="bg-red-100 text-red-800">
+                    <tr>
+                      <th className="border px-4 py-2">Name</th>
+                      <th className="border px-4 py-2">Email</th>
+                      <th className="border px-4 py-2">Phone</th>
+                      <th className="border px-4 py-2">Reason</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {paginatedFailedUsers.map((user, idx) => (
+                      <tr key={idx} className="bg-white hover:bg-red-50">
+                        <td className="border px-4 py-2">{user.name}</td>
+                        <td className="border px-4 py-2">{user.email}</td>
+                        <td className="border px-4 py-2">{user.phone}</td>
+                        <td className="border px-4 py-2 text-red-600">{user.reason}</td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
 
-        {isLoading ? (
-          <p>Loading...</p>
-        ) : codes.length > 0 ? (
-          <ResponsiveTable
-            rowData={codes.map((code) => ({
-              name: code.user?.name || "N/A",
-              email: code.user?.email || "N/A",
-              phone: code.user?.phone || "N/A",
-              expiryDate: code.expiryDate || "",
-              referralAmount: `$${code.referralAmount || 0}`,
-              referrerAmount: `$${code.referrerAmount || 0}`,
-              code: code.code || "N/A",
-              status: code.status || "N/A",
-              createdDate: code.createdDate || "N/A",
-            }))}
-            columnDefs={[
-              { headerName: "Name", field: "name" },
-              { headerName: "Email", field: "email" },
-              { headerName: "Phone", field: "phone" },
-              { headerName: "Expiry Date", field: "expiryDate" },
-              { headerName: "Referral Amount", field: "referralAmount" },
-              { headerName: "Referrer Amount", field: "referrerAmount" },
-              { headerName: "Code", field: "code" },
-              { headerName: "Status", field: "status" },
-            ]}
-            filterableColumns={["status"]}
-            enableSorting={true}
-            enableRowSelection={true}
-            enableGlobalSearch={true}
-            enableDateFilter={true}
-            enableEdit={true}
-            enableDelete={false}
-            onEdit={handleEdit}
-            onDelete={handleDelete}
-            onBulkAction={handleBulkAction}
-          />
-        ) : (
-          <p>No referral codes found.</p>
+              {/* Pagination Controls */}
+              {failedUsersTotalPages > 1 && (
+                <div className="flex justify-between items-center mb-4 text-sm text-gray-700">
+                  <span>
+                    Page {failedUsersPage} of {failedUsersTotalPages}
+                  </span>
+                  <div className="space-x-2">
+                    <button
+                      onClick={() => setFailedUsersPage((prev) => Math.max(prev - 1, 1))}
+                      disabled={failedUsersPage === 1}
+                      className="px-3 py-1 border rounded bg-gray-100 hover:bg-gray-200 disabled:opacity-50"
+                    >
+                      Previous
+                    </button>
+                    <button
+                      onClick={() =>
+                        setFailedUsersPage((prev) =>
+                          Math.min(prev + 1, failedUsersTotalPages)
+                        )
+                      }
+                      disabled={failedUsersPage === failedUsersTotalPages}
+                      className="px-3 py-1 border rounded bg-gray-100 hover:bg-gray-200 disabled:opacity-50"
+                    >
+                      Next
+                    </button>
+                  </div>
+                </div>
+              )}
+
+              {/* Action Buttons */}
+              <div className="flex justify-end space-x-4">
+                <button
+                  className="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700"
+                  onClick={handleDownloadCSV}
+                >
+                  Download CSV
+                </button>
+                <button
+                  className="bg-green-600 text-white px-4 py-2 rounded hover:bg-green-700"
+                  onClick={() => {
+                    setShowFailedModal(false);
+                    setTimeout(() => window.location.reload(), 3000);
+                  }}
+                >
+                  OK
+                </button>
+              </div>
+            </div>
+          </div>
         )}
-      </section>
 
-    </div>
+
+        <section className="bg-white p-6 rounded shadow-md">
+          <h2 className="text-xl font-semibold mb-4" style={{ color: colorPalette.primaryDark }}>
+            Generated Referral Codes
+          </h2>
+
+          {isLoading ? (
+            <p>Loading...</p>
+          ) : codes.length > 0 ? (
+            <ResponsiveTable
+              rowData={codes.map((code) => ({
+                name: code.user?.name || "N/A",
+                email: code.user?.email || "N/A",
+                phone: code.user?.phone || "N/A",
+                expiryDate: code.expiryDate || "",
+                referralAmount: `$${code.referralAmount || 0}`,
+                referrerAmount: `$${code.referrerAmount || 0}`,
+                code: code.code || "N/A",
+                status: code.status || "N/A",
+                createdDate: code.createdDate || "N/A",
+              }))}
+              columnDefs={[
+                { headerName: "Name", field: "name" },
+                { headerName: "Email", field: "email" },
+                { headerName: "Phone", field: "phone" },
+                { headerName: "Expiry Date", field: "expiryDate" },
+                { headerName: "Referral Amount", field: "referralAmount" },
+                { headerName: "Referrer Amount", field: "referrerAmount" },
+                { headerName: "Code", field: "code" },
+                { headerName: "Status", field: "status" },
+              ]}
+              filterableColumns={["status"]}
+              enableSorting={true}
+              enableRowSelection={true}
+              enableGlobalSearch={true}
+              enableDateFilter={true}
+              enableEdit={true}
+              enableDelete={false}
+              onEdit={handleEdit}
+              onDelete={handleDelete}
+              onBulkAction={handleBulkAction}
+            />
+          ) : (
+            <p>No referral codes found.</p>
+          )}
+        </section>
+
+      </div>
     </>
   );
 };
