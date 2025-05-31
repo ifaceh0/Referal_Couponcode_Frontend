@@ -301,7 +301,7 @@ import { useNavigate } from "react-router-dom";
 import QrScanner from "react-qr-scanner";
 import { Dialog, DialogTitle, DialogContent, DialogActions, Button } from "@mui/material";
 import { motion } from "framer-motion";
-import { FaArrowLeft } from "react-icons/fa";
+import { FaArrowLeft, FaSyncAlt } from "react-icons/fa";
 import axios from "axios";
 import { toast, ToastContainer } from "react-toastify";
 import { getCurrentUser } from "../../api/signin";
@@ -318,6 +318,8 @@ const Scanner = () => {
   const [errorDialogMessage, setErrorDialogMessage] = useState("");
   const [successDialogOpen, setSuccessDialogOpen] = useState(false);
   const [successMessage, setSuccessMessage] = useState("");
+  const [cameraFacingMode, setCameraFacingMode] = useState("environment");
+  const [hasCameraPermission, setHasCameraPermission] = useState(true);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -347,7 +349,7 @@ const Scanner = () => {
 
         // Validate shop ID
         if (String(parsedData.shopID) !== String(userDetails.id)) {
-          console.warn("Mismatch detected – IDs are not the same.");
+          console.warn("Mismatch detected - IDs are not the same.");
           setErrorDialogMessage("Invalid scan code. This customer does not belong to your shop.");
           setErrorDialogOpen(true);
           return;
@@ -364,6 +366,16 @@ const Scanner = () => {
 
   const handleError = (err) => {
     console.error("QR Scan Error:", err);
+    if (err.name === 'NotAllowedError') {
+      setHasCameraPermission(false);
+    }
+  };
+
+  const toggleCamera = () => {
+    console.dir(cameraFacingMode)
+    setCameraFacingMode(prevMode => 
+      prevMode === "environment" ? "user" : "environment"
+    );
   };
 
   const handleRedeemClick = async () => {
@@ -421,11 +433,6 @@ const Scanner = () => {
       setRedeemAmount("");
       setError("");
 
-      // Allow toast to show before navigating
-      // setTimeout(() => {
-      //   navigate("/shopkeeper/interaction-panel");
-      // }, 5000);
-
     } catch (err) {
       console.error("Redemption failed:", err);
       toast.update(toastId, {
@@ -452,7 +459,7 @@ const Scanner = () => {
   const handleCloseErrorDialog = () => {
     setErrorDialogOpen(false);
     setErrorDialogMessage("");
-    navigate("/shopkeeper/interaction-panel"); // Added navigation here
+    navigate("/shopkeeper/interaction-panel");
   };
 
   const handleCloseSuccessDialog = () => {
@@ -481,23 +488,65 @@ const Scanner = () => {
         QR Code Scanner
       </motion.h1>
 
-      {userDetails ? (
-        <motion.div
-          initial={{ scale: 0.8, opacity: 0 }}
-          animate={{ scale: 1, opacity: 1 }}
-          transition={{ delay: 0.4, duration: 0.5 }}
-          className="w-96 h-96 border-4 border-gray-300 rounded-lg overflow-hidden shadow-lg"
-        >
-          <QrScanner
-            delay={100}
-            onScan={handleScan}
-            onError={handleError}
-            style={{ width: "100%", height: "100%" }}
-          />
-        </motion.div>
-      ) : (
-        <p className="text-gray-600 mt-4">Loading ...</p>
+      {/* Camera permission error message */}
+      {!hasCameraPermission && (
+        <div className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded mb-4 max-w-md w-full">
+          <p>Camera permission denied. Please allow camera access in your browser settings.</p>
+        </div>
       )}
+
+      {/* Scanner container with responsive sizing */}
+      <div className="w-full max-w-2xl flex flex-col items-center">
+        {userDetails ? (
+          <motion.div
+            initial={{ scale: 0.8, opacity: 0 }}
+            animate={{ scale: 1, opacity: 1 }}
+            transition={{ delay: 0.4, duration: 0.5 }}
+            className="relative w-full rounded-lg overflow-hidden shadow-lg"
+            style={{ 
+              height: "70vh",
+              maxHeight: "600px",
+              minHeight: "300px"
+            }}
+          >
+            <QrScanner
+              key={cameraFacingMode} // Force re-render when camera changes
+              delay={100}
+              onScan={handleScan}
+              onError={handleError}
+              style={{ width: "100%", height: "100%" }}
+              constraints={{ 
+                video: { // Fixed: wrapped in video object
+                  facingMode: cameraFacingMode,
+                  aspectRatio: 1
+                }
+              }}
+            />
+            {/* Camera toggle button */}
+            <button
+              onClick={toggleCamera}
+              className="absolute bottom-4 right-4 bg-black bg-opacity-50 text-white rounded-full p-3 z-10"
+              aria-label="Switch camera"
+            >
+              <FaSyncAlt className="text-lg" />
+            </button>
+            
+            {/* Scan frame overlay */}
+            <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
+              <div className="border-4 border-yellow-400 rounded-xl w-64 h-64 md:w-72 md:h-72 relative">
+                <div className="absolute -top-1 left-1/4 w-1/2 h-1 bg-yellow-400"></div>
+                <div className="absolute -bottom-1 left-1/4 w-1/2 h-1 bg-yellow-400"></div>
+              </div>
+            </div>
+          </motion.div>
+        ) : (
+          <p className="text-gray-600 mt-4">Loading scanner...</p>
+        )}
+      </div>
+      {/* Camera facing mode indicator */}
+      <div className="mt-3 text-gray-600 text-sm">
+        {cameraFacingMode === "environment" ? "Using back camera" : "Using front camera"}
+      </div>
 
       {/* Customer Details Dialog */}
       <Dialog
@@ -569,9 +618,6 @@ const Scanner = () => {
               type="text"
               value={redeemAmount ? `$${redeemAmount}` : `$`}
               onChange={(e) => {
-                // const value = e.target.value.substring(1).replace(/\D/g, "");
-                // setRedeemAmount(value);
-                // setError("");
                 const raw = e.target.value.substring(1);
                 const value = raw.replace(/[^0-9.]/g, "");
 
@@ -579,20 +625,7 @@ const Scanner = () => {
                   setRedeemAmount(value);
                   setError("");
                 }
-
               }}
-
-              // onChange={(e) => {
-              //   const raw = e.target.value.replace(/^\$/, ""); // remove dollar sign
-              //   const cleaned = raw.replace(/[^0-9.]/g, "");
-
-              //   // Accept numbers like `.5`, `0.5`, `5.25`, etc.
-              //   if (/^(?!.*\.\.)(?!.*\.$)\d*(\.\d{0,4})?$/.test(cleaned)) {
-              //     setRedeemAmount(cleaned);
-              //     setError("");
-              //   }
-              // }}
-
               className={`w-full p-3 border ${
                 error ? "border-red-500" : "border-gray-300"
               } rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500`}
