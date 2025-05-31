@@ -171,7 +171,7 @@ const ReferralManagement = () => {
     const blob = new Blob([csvContent], { type: "text/csv;charset=utf-8;" });
     const link = document.createElement("a");
     link.href = URL.createObjectURL(blob);
-    link.setAttribute("download", "failed_users.csv");
+    link.setAttribute("download", "Referral_failed_users.csv");
     document.body.appendChild(link);
     link.click();
     document.body.removeChild(link);
