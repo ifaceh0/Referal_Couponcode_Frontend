@@ -11,6 +11,7 @@ import { getCurrentUser } from "../../api/signin";
 const ReferralManagement = () => {
   const [codes, setCodes] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
+  const [showFailedModal, setShowFailedModal] = useState(false);
 
   // Individual Registration
   const [name, setName] = useState("");
@@ -27,6 +28,8 @@ const ReferralManagement = () => {
   const [bulkExpiryDate, setBulkExpiryDate] = useState("");
   const [bulkReferralAmount, setBulkReferralAmount] = useState("");
   const [bulkReferrerAmount, setBulkReferrerAmount] = useState("");
+  const [failedUsersPage, setFailedUsersPage] = useState(1);
+  const failedUsersPerPage = 5;
 
   const [type, setType] = useState("R");
   // const shopkeeperId = localStorage.getItem("shopkeeperId");
@@ -113,6 +116,7 @@ const ReferralManagement = () => {
         // closeOnClick: true,
         autoClose: 3000,
       });
+      setShowFailedModal(true);
     } else {
       toast.update(toastId, {
         render: result.message || "Bulk referral codes generated successfully.",
@@ -122,9 +126,9 @@ const ReferralManagement = () => {
       });
     }
     // Add delayed page reload here (10 seconds)
-    setTimeout(() => {
-      window.location.reload();
-    }, 15000);
+    // setTimeout(() => {
+    //   window.location.reload();
+    // }, 15000);
 
   } catch (error) {
     toast.update(toastId, {
@@ -156,6 +160,27 @@ const ReferralManagement = () => {
       setCodes((prev) => prev.filter((code) => !selectedRows.some((row) => row.code === code.code)));
     }
   };
+
+  const handleDownloadCSV = () => {
+  const headers = ["Name", "Email", "Phone", "Reason"];
+  const rows = failedUsers.map(user =>
+    [user.name, user.email, user.phone, user.reason].join(",")
+  );
+  const csvContent = [headers.join(","), ...rows].join("\n");
+
+  const blob = new Blob([csvContent], { type: "text/csv;charset=utf-8;" });
+  const link = document.createElement("a");
+  link.href = URL.createObjectURL(blob);
+  link.setAttribute("download", "failed_users.csv");
+  document.body.appendChild(link);
+  link.click();
+  document.body.removeChild(link);
+};
+const paginatedFailedUsers = failedUsers.slice(
+  (failedUsersPage - 1) * failedUsersPerPage,
+  failedUsersPage * failedUsersPerPage
+);
+const failedUsersTotalPages = Math.ceil(failedUsers.length / failedUsersPerPage);
 
   return (
     <>
@@ -206,33 +231,86 @@ const ReferralManagement = () => {
         </button>
       </section>
 
-      {failedUsers.length > 0 && (
-  <div className="mt-6 border border-red-300 rounded p-4 bg-red-50">
-    <h3 className="text-lg font-semibold text-red-700 mb-3">Failed Users</h3>
-    <div className="overflow-x-auto">
-      <table className="min-w-full text-sm text-left border-collapse">
-        <thead className="bg-red-100 text-red-800">
-          <tr>
-            <th className="border px-4 py-2">Name</th>
-            <th className="border px-4 py-2">Email</th>
-            <th className="border px-4 py-2">Phone</th>
-            <th className="border px-4 py-2">Reason</th>
-          </tr>
-        </thead>
-        <tbody>
-          {failedUsers.map((user, idx) => (
-            <tr key={idx} className="bg-white hover:bg-red-50">
-              <td className="border px-4 py-2">{user.name}</td>
-              <td className="border px-4 py-2">{user.email}</td>
-              <td className="border px-4 py-2">{user.phone}</td>
-              <td className="border px-4 py-2 text-red-600">{user.reason}</td>
+      {showFailedModal && (
+  <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+    <div className="bg-white rounded-xl shadow-lg p-6 max-w-3xl w-full">
+      <h2 className="text-xl font-bold mb-4 text-red-700">Failed Users</h2>
+
+      {/* Paginated Data */}
+      <div className="overflow-x-auto max-h-96 overflow-y-auto mb-4">
+        <table className="min-w-full text-sm border">
+          <thead className="bg-red-100 text-red-800">
+            <tr>
+              <th className="border px-4 py-2">Name</th>
+              <th className="border px-4 py-2">Email</th>
+              <th className="border px-4 py-2">Phone</th>
+              <th className="border px-4 py-2">Reason</th>
             </tr>
-          ))}
-        </tbody>
-      </table>
+          </thead>
+          <tbody>
+            {paginatedFailedUsers.map((user, idx) => (
+              <tr key={idx} className="bg-white hover:bg-red-50">
+                <td className="border px-4 py-2">{user.name}</td>
+                <td className="border px-4 py-2">{user.email}</td>
+                <td className="border px-4 py-2">{user.phone}</td>
+                <td className="border px-4 py-2 text-red-600">{user.reason}</td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
+
+      {/* Pagination Controls */}
+      {failedUsersTotalPages > 1 && (
+        <div className="flex justify-between items-center mb-4 text-sm text-gray-700">
+          <span>
+            Page {failedUsersPage} of {failedUsersTotalPages}
+          </span>
+          <div className="space-x-2">
+            <button
+              onClick={() => setFailedUsersPage((prev) => Math.max(prev - 1, 1))}
+              disabled={failedUsersPage === 1}
+              className="px-3 py-1 border rounded bg-gray-100 hover:bg-gray-200 disabled:opacity-50"
+            >
+              Previous
+            </button>
+            <button
+              onClick={() =>
+                setFailedUsersPage((prev) =>
+                  Math.min(prev + 1, failedUsersTotalPages)
+                )
+              }
+              disabled={failedUsersPage === failedUsersTotalPages}
+              className="px-3 py-1 border rounded bg-gray-100 hover:bg-gray-200 disabled:opacity-50"
+            >
+              Next
+            </button>
+          </div>
+        </div>
+      )}
+
+      {/* Action Buttons */}
+      <div className="flex justify-end space-x-4">
+        <button
+          className="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700"
+          onClick={handleDownloadCSV}
+        >
+          Download CSV
+        </button>
+        <button
+          className="bg-green-600 text-white px-4 py-2 rounded hover:bg-green-700"
+          onClick={() => {
+            setShowFailedModal(false);
+            setTimeout(() => window.location.reload(), 3000);
+          }}
+        >
+          OK
+        </button>
+      </div>
     </div>
   </div>
 )}
+
 
       <section className="bg-white p-6 rounded shadow-md">
         <h2 className="text-xl font-semibold mb-4" style={{ color: colorPalette.primaryDark }}>
