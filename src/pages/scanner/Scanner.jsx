@@ -305,6 +305,8 @@ import { FaArrowLeft, FaSyncAlt } from "react-icons/fa";
 import axios from "axios";
 import { toast, ToastContainer } from "react-toastify";
 import { getCurrentUser } from "../../api/signin";
+import {  userInfo } from "../../api/validateCode";
+
 
 const Scanner = () => {
   const [scannedData, setScannedData] = useState(null);
@@ -335,7 +337,7 @@ const Scanner = () => {
     fetchData();
   }, []);
 
-  const handleScan = (data) => {
+  const handleScan = async (data) => {
     if (data) {
       try {
         console.log(data);
@@ -355,7 +357,17 @@ const Scanner = () => {
           return;
         }
 
-        setScannedData(parsedData);
+        const freshInfo = await userInfo("", parsedData.phone);
+
+      const updatedScannedData = {
+        ...parsedData,
+        availableBalance: freshInfo?.availableBalance ?? parsedData.availableBalance,
+      };
+
+      setScannedData(updatedScannedData);
+
+
+        // setScannedData(parsedData);
         setOpen(true);
         setError("");
       } catch (error) {
@@ -570,7 +582,7 @@ const Scanner = () => {
                 <div className="text-center">
                   <p className="text-lg font-semibold text-gray-700 mb-2">Available Balance</p>
                   <div className="text-4xl font-bold text-blue-600 mb-4">
-                    ${scannedData.availableBalance}
+                    ${scannedData.availableBalance.toFixed(2)}
                   </div>
                   <div className="bg-blue-50 p-4 rounded-lg">
                     <p className="text-sm text-gray-600 mb-1">Coupon Amount: ${scannedData.couponAmount}</p>
