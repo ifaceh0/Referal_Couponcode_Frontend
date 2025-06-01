@@ -7,46 +7,6 @@ import { getAllShopEmployee,
  import { getCurrentUser } from "../../api/signin";
  import { toast, ToastContainer } from "react-toastify";
 
-const initialEmployees = [
-  {
-    id: 1,
-    firstName: "John",
-    lastName: "Doe",
-    phone: "123-456-7890",
-    email: "john.doe@example.com",
-    creationDate: "2023-06-01",
-    updatedDate: "2024-03-15",
-    isNew: false,
-  },
-  {
-    id: 2,
-    firstName: "Jane",
-    lastName: "Smith",
-    phone: "987-654-3210",
-    email: "jane.smith@example.com",
-    creationDate: "2023-07-20",
-    updatedDate: "2024-04-02",
-    isNew: false,
-  },
-];
-
-const initialInvites = [
-  {
-    id: 1,
-    email: "new.user1@example.com",
-    creationDate: "2024-01-10",
-    expiredDate: "2024-02-10",
-    status: "Pending",
-  },
-  {
-    id: 2,
-    email: "new.user2@example.com",
-    creationDate: "2024-03-15",
-    expiredDate: "2024-04-15",
-    status: "Pending",
-  },
-];
-
 const formatDate = (dateStr) => {
   const date = new Date(dateStr);
   const day = String(date.getDate()).padStart(2, '0');
@@ -124,7 +84,7 @@ const Employee = () => {
       console.error("Failed to delete invite", error);
     }
   };
-
+ 
   const handleAdd = () => {
     const newId = employees.length ? Math.max(...employees.map((e) => e.id)) + 1 : 1;
     const today = new Date().toISOString().split("T")[0];
@@ -190,11 +150,60 @@ const Employee = () => {
       type: "error",
       isLoading: false,
       autoClose: 3000,
+      closeOnClick: true,
     });
   } finally {
     setLoading(false);
   }
 };
+
+const handleResendInvite = async (id,inviteEmail) => {
+  // if (!inviteEmail) return;
+  // setLoading(true);
+
+  const toastId = toast.loading("Processing...");
+
+  try {
+    //  Find invite by ID
+    const existingInvite = invites.find(
+      (invite) => invite.id === id && invite.email === inviteEmail
+    );
+
+    if (!existingInvite) {
+      throw new Error("No matching invitation found for this email and ID.");
+    }
+
+    //  Proceed with sending
+    const response = await employeeInvitation(inviteEmail, id);
+    console.log(response);
+
+    const updatedInvites = await getAllInviteEmployee(shopkeeperId);
+    setInvites(updatedInvites);
+
+    toast.update(toastId, {
+      render: response || "Invitation sent successfully!",
+      type: "success",
+      isLoading: false,
+      autoClose: 3000,
+      closeOnClick: true,
+      position: "top-right",
+    });
+
+    setInviteEmail("");
+    setShowInviteModal(false); // Close modal
+  } catch (error) {
+    console.error("Failed to send invite", error);
+    toast.update(toastId, {
+      render: error.message || "Failed to send invitation.",
+      type: "error",
+      isLoading: false,
+      autoClose: 3000,
+    });
+  } finally {
+    setLoading(false);
+  }
+};
+
 
   const handleEdit = (employee) => {
     setEditingEmployee({ ...employee, isNew: false });
@@ -223,6 +232,8 @@ const Employee = () => {
   
 
   return (
+    <>
+     <ToastContainer />
     <div className="px-4 sm:px-6 md:px-8 lg:px-10 py-6 mx-auto">
       {/* Current Employees Table */}
       <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-6">
@@ -315,6 +326,12 @@ const Employee = () => {
                   >
                     Delete
                   </button>
+                  <button
+                    onClick={() => handleResendInvite(invite.id,invite.email)}
+                    className="bg-blue-500 text-white px-3 py-1 rounded hover:bg-blue-600"
+                  >
+                    Resend
+                  </button>
                 </td>
               </tr>
             )))}
@@ -382,7 +399,7 @@ const Employee = () => {
                 onClick={handleSave}
                 className="px-4 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600 transition"
               >
-                ✅ OK
+                 OK
               </button>
             </div>
           </div>
@@ -434,6 +451,7 @@ const Employee = () => {
         </div>
       )}
     </div>
+    </>
   );
 };
 

@@ -3,8 +3,9 @@ import { signupEmployee } from "../../../api/signin";
 import { useNavigate,useLocation } from "react-router-dom";
 import { toast, ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
-import PhoneInput from "react-phone-input-2";
-import "react-phone-input-2/lib/style.css";
+// import PhoneInput from "react-phone-input-2";
+// import "react-phone-input-2/lib/style.css";
+import PhoneInputField from "../../../components/ui/PhoneInputField";
 
 const InputField = ({ label, type, name, value, onChange, error }) => (
   <div className="mb-4 w-full">
@@ -22,29 +23,29 @@ const InputField = ({ label, type, name, value, onChange, error }) => (
   </div>
 );
 
-const PhoneInputField = ({ label, name, value, onChange, error }) => (
-  <div className="mb-4 w-full">
-    <label className="block text-gray-700 mb-2 font-medium">{label}</label>
-    <PhoneInput
-      country={"us"}
-      onlyCountries={["us", "ca"]}
-      value={value}
-      isValid={(inputNumber, country) => ["us", "ca"].includes(country?.iso2)}
-      onChange={(phone, countryData) => {
-        const dialCode = countryData?.dialCode || "";
-        const nationalNumber = phone.startsWith(dialCode)
-          ? phone.slice(dialCode.length)
-          : phone;
+// const PhoneInputField = ({ label, name, value, onChange, error }) => (
+//   <div className="mb-4 w-full">
+//     <label className="block text-gray-700 mb-2 font-medium">{label}</label>
+//     <PhoneInput
+//       country={"us"}
+//       onlyCountries={["us", "ca"]}
+//       value={value}
+//       isValid={(inputNumber, country) => ["us", "ca"].includes(country?.iso2)}
+//       onChange={(phone, countryData) => {
+//         const dialCode = countryData?.dialCode || "";
+//         const nationalNumber = phone.startsWith(dialCode)
+//           ? phone.slice(dialCode.length)
+//           : phone;
 
-        onChange({ target: { name, value: nationalNumber } });
-      }}
-      inputClass="!w-full !h-12 !p-3 !pl-14 !border !border-gray-300 !rounded-lg !focus:outline-none !focus:ring-2 !focus:ring-purple-500 !transition-all"
-      containerClass="w-full"
-      buttonClass="!h-12"
-    />
-    {error && <span className="text-red-500 text-sm">{error}</span>}
-  </div>
-);
+//         onChange({ target: { name, value: nationalNumber } });
+//       }}
+//       inputClass="!w-full !h-12 !p-3 !pl-14 !border !border-gray-300 !rounded-lg !focus:outline-none !focus:ring-2 !focus:ring-purple-500 !transition-all"
+//       containerClass="w-full"
+//       buttonClass="!h-12"
+//     />
+//     {error && <span className="text-red-500 text-sm">{error}</span>}
+//   </div>
+// );
 
 const generateCaptcha = () => {
   const chars = "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ";
@@ -199,7 +200,7 @@ const ShopEmployee = () => {
       <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-purple-500 to-orange-400 p-6">
         <div className="bg-white shadow-2xl rounded-xl p-8 w-full max-w-lg relative">
           <h2 className="text-3xl font-bold mb-6 text-purple-600 text-center">
-            User Sign Up
+            Employee Sign Up
           </h2>
           <InputField
             label="Name"
@@ -217,13 +218,20 @@ const ShopEmployee = () => {
             onChange={handleInputChange}
             error={errors.email}
           />
-          <PhoneInputField
+          {/* <PhoneInputField
             label="Phone"
             name="phoneNumber"
             value={formData.phoneNumber}
             onChange={handleInputChange}
             error={errors.phoneNumber}
-          />
+          /> */}
+          <PhoneInputField
+          label=""
+          name="phoneNumber"
+          value={formData.phoneNumber}
+          onChange={(phone) =>
+          setFormData({ ...formData, phoneNumber: phone.target.value })
+          } />
           <InputField
             label="Password"
             type="password"

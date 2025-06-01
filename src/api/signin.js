@@ -250,6 +250,27 @@ export const signupEmployee = async (formData, invitationToken) => {
   }
 };
 
+// s
+export const checkUserStatus = async (formData) => {
+  const res = await fetch(`${VITE_BACKEND_URL}/api/auth/check-user`, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({
+      email: formData.email,
+      phone: formData.phoneNumber,
+      password: formData.password,
+    }),
+  });
+
+  if (!res.ok) {
+    const errorData = await res.json();
+    throw new Error(errorData.error || "Failed to check user status");
+  }
+
+  return res.json(); // { existingUser: true/false, passwordMatched: true/false }
+};
+
+
 
   
 
