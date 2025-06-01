@@ -73,9 +73,15 @@ export const getAllInviteEmployee = async (shopkeeperId) => {
     }
 };
 
-export const employeeInvitation = async (email) => {
+export const employeeInvitation = async (email,inviteId) => {
     const token = localStorage.getItem("token");
-    const url = `${VITE_BACKEND_URL}/api/shopkeeper/invite?email=${email}`;
+
+    const params = new URLSearchParams({ email });
+  if (inviteId) {
+    params.append("inviteId", inviteId);
+  }
+    // const url = `${VITE_BACKEND_URL}/api/shopkeeper/invite?email=${email}&inviteId=${inviteId}`;
+    const url = `${VITE_BACKEND_URL}/api/shopkeeper/invite?${params.toString()}`;
   
     const response = await fetch(url, {
       method: "POST",
