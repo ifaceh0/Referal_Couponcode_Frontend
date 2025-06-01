@@ -306,6 +306,7 @@ import axios from "axios";
 import { toast, ToastContainer } from "react-toastify";
 import { getCurrentUser } from "../../api/signin";
 import {  userInfo } from "../../api/validateCode";
+import CustomerDetailsDialog from "./CustomerDetailsDialog";
 
 
 const Scanner = () => {
@@ -479,6 +480,16 @@ const Scanner = () => {
     navigate("/shopkeeper/interaction-panel");
   };
 
+  const handleRedeemAmountChange = (e) => {
+    const raw = e.target.value.substring(1);
+    const value = raw.replace(/[^0-9.]/g, "");
+
+    if (/^\d*\.?\d{0,4}$/.test(value)) {
+      setRedeemAmount(value);
+      setError("");
+    }
+  };
+
   return (
     <div className="flex flex-col items-center justify-center min-h-screen p-6 bg-gradient-to-r from-blue-50 to-purple-50">
       <div className="w-full max-w-4xl mb-4">
@@ -561,7 +572,7 @@ const Scanner = () => {
       </div>
 
       {/* Customer Details Dialog */}
-      <Dialog
+      {/* <Dialog
         open={open}
         onClose={handleCloseDialog}
         PaperProps={{
@@ -658,7 +669,19 @@ const Scanner = () => {
             {loading ? "Processing..." : "Redeem"}
           </button>
         </DialogContent>
-      </Dialog>
+      </Dialog> */}
+
+      {/* Customer Details Dialog */}
+      <CustomerDetailsDialog
+        open={open}
+        onClose={handleCloseDialog}
+        scannedData={scannedData}
+        redeemAmount={redeemAmount}
+        onRedeemAmountChange={handleRedeemAmountChange}
+        onRedeemClick={handleRedeemClick}
+        error={error}
+        loading={loading}
+      />
 
       {/* Error Dialog */}
       <Dialog
