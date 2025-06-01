@@ -711,6 +711,9 @@ import { FaEdit, FaTrash, FaSave } from "react-icons/fa";
 import { discountData } from "../../../../utils/demoData";
 import { toast } from 'react-toastify';
 import { getSettingsAction, updateSettingsAction } from "../../../../api/settingPageApi";
+import { getCurrentUser } from "../../../../api/signin";
+
+
 
 const ReferralCodeSettings = ({ shopkeeperId, token }) => {
     const [loading, setLoading] = useState(true);
@@ -722,6 +725,7 @@ const ReferralCodeSettings = ({ shopkeeperId, token }) => {
     const [newCustomerReward, setNewCustomerReward] = useState(false);
     const [discountMapping, setDiscountMapping] = useState(discountData.discountMapping);
     const [milestoneMapping, setMilestoneMapping] = useState(discountData.milestoneMapping);
+    const [userDetails, setUserDetails] = useState(null);
     const [promotion, setPromotion] = useState({
         beginDate: '',
         expiryDate: '',
@@ -740,8 +744,12 @@ const ReferralCodeSettings = ({ shopkeeperId, token }) => {
     useEffect(() => {
         const fetchSettings = async () => {
             try {
+                 const user = await getCurrentUser();
+                console.log("Fetched user:", user);
+                setUserDetails(user);
+                if (user?.id) {
                 setLoading(true);
-                const response = await getSettingsAction(token);
+                const response = await getSettingsAction(user?.id);
                 
                 if (response.settings) {
                     const settings = response.settings.referralSettings || {};
@@ -766,6 +774,7 @@ const ReferralCodeSettings = ({ shopkeeperId, token }) => {
                         limitOfUse: ''
                     });
                 }
+            }
             } catch (error) {
                 toast.error('Failed to load settings');
                 console.error('Error fetching settings:', error);
@@ -775,7 +784,7 @@ const ReferralCodeSettings = ({ shopkeeperId, token }) => {
         };
         
         fetchSettings();
-    }, [shopkeeperId, token]);
+    }, []);
 
     const handleSaveAll = async () => {
         try {

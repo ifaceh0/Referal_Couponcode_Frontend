@@ -1,11 +1,14 @@
 import { VITE_BACKEND_URL } from "../apiConfig";
 
-export const getSettingsAction = async (token) => {
-    const response = await fetch(`${VITE_BACKEND_URL}/api/shopkeeper/get-settings`, {
+
+export const getSettingsAction = async (shopkeeperId) => {
+    const token = localStorage.getItem("token");
+    const response = await fetch(`${VITE_BACKEND_URL}/api/shopkeeper/get-settings?shopkeeperId=${shopkeeperId}`, {
         method: "GET",
-        headers: {
-            Authorization: `Bearer ${token}`,
-        },
+        headers: { 
+                "Content-Type": "application/json",
+                "Authorization": `Bearer ${token}`
+             },
     });
 
     if (!response.ok) {
