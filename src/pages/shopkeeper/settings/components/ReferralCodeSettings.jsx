@@ -750,28 +750,36 @@ const ReferralCodeSettings = ({ shopkeeperId, token }) => {
                 if (user?.id) {
                 setLoading(true);
                 const response = await getSettingsAction(user?.id);
+                console.log(response)
                 
-                if (response.settings) {
-                    const settings = response.settings.referralSettings || {};
-                    
+                if (response) {
+                    // const settings = response.settings.referralSettings || {};
+                    const settings = response
                     setUseCredits(settings.useCredits ?? true);
                     setSignupPoints(settings.signupPoints ?? 100);
-                    setSignupDollars(settings.signupDollars ?? 10);
-                    setExistingCustomerReward(settings.existingCustomerReward ?? false);
-                    setNewCustomerReward(settings.newCustomerReward ?? false);
+                    setSignupDollars(settings.signUpDollars);
+                    setExistingCustomerReward(settings.existingCustomer ?? false);
+                    setNewCustomerReward(settings.newCustomer ?? false);
                     setDiscountMapping(settings.discountMapping ?? discountData.discountMapping);
                     setMilestoneMapping(settings.milestoneMapping ?? discountData.milestoneMapping);
-                    setPromotion(settings.promotion ?? {
-                        beginDate: '',
-                        expiryDate: '',
-                        referralAmount: '',
-                        referrerAmount: ''
+                    // setPromotion(settings.promotion ?? {
+                    //     beginDate: '',
+                    //     expiryDate: '',
+                    //     referralAmount: '',
+                    //     referrerAmount: ''
+                    // });
+                    // Set promotion object properly
+                    setPromotion({
+                        beginDate: settings.referralPromotionBeginDate || '',
+                        expiryDate: settings.referralPromotionEndDate || '',
+                        referralAmount: settings.referralAmount ?? '',
+                        referrerAmount: settings.referrerAmount ?? '',
                     });
-                    setCouponPromotion(settings.couponPromotion ?? {
-                        beginDate: '',
-                        expiryDate: '',
-                        couponAmount: '',
-                        limitOfUse: ''
+                    setCouponPromotion({
+                        beginDate: settings.couponPromotionBeginDate || '',
+                        expiryDate: settings.couponPromotionEndDate || '',
+                        couponAmount: settings.couponAmount ?? '',
+                        limitOfUse: settings.couponUseLimit ?? ''
                     });
                 }
             }
@@ -790,22 +798,25 @@ const ReferralCodeSettings = ({ shopkeeperId, token }) => {
         try {
             setLoading(true);
             const settingsData = {
-                shopkeeperId,
-                useCredits,
-                signupDollars,
-                existingCustomer,
-                newCustomer,
-                referralPromotionBeginDate,
-                referralPromotionEndDate,
-                referralAmount,
-                referrerAmount,
-                couponPromotionBeginDate,
-                couponPromotionEndDate,
-                couponAmount,
-                couponUseLimit,
+            shopkeeperId:userDetails.id,
+            useCredits,
+            signupDollars,
+            // signupPoints,
+            existingCustomer: existingCustomerReward,
+            newCustomer: newCustomerReward,
+            referralPromotionBeginDate: promotion.beginDate,
+            referralPromotionEndDate: promotion.expiryDate,
+            referralAmount: promotion.referralAmount,
+            referrerAmount: promotion.referrerAmount,
+            couponPromotionBeginDate: couponPromotion.beginDate,
+            couponPromotionEndDate: couponPromotion.expiryDate,
+            couponAmount: couponPromotion.couponAmount,
+            couponUseLimit: couponPromotion.limitOfUse,
+            // discountMapping,
+            // milestoneMapping,
             };
 
-            await updateSettingsAction(settingsData, token);
+            await updateSettingsAction(settingsData);
             toast.success('Settings saved successfully');
             setIsEditing(false);
         } catch (error) {
