@@ -74,13 +74,35 @@ const ReferralManagement = () => {
     const userData = { name, email, phone, expiryDate, referralAmount, referrerAmount, type };
     const toastId = toast.loading("Registering user...");
 
+    // try {
+    //   const result = await registerUser(userData, shopkeeperId);
+    //   toast.update(toastId, { render: result.message || "User registered successfully!", type: "success", isLoading: false, autoClose: 3000 });
+    //   // window.location.reload();
+    // } catch (error) {
+    //   toast.update(toastId, { render: error || "Failed to register user.", type: "error", isLoading: false, autoClose: 3000 });
+    // }
     try {
       const result = await registerUser(userData, shopkeeperId);
-      toast.update(toastId, { render: result.message || "User registered successfully!", type: "success", isLoading: false, autoClose: 3000 });
-      window.location.reload();
+      toast.update(toastId, {
+        render: typeof result === "string" ? result : "User registered successfully!",
+        type: "success",
+        isLoading: false,
+        autoClose: 3000,
+      });
+      setTimeout(() => {
+        window.location.reload();
+      }, 3000);
     } catch (error) {
-      toast.update(toastId, { render: error.message || "Failed to register user.", type: "error", isLoading: false, autoClose: 3000 });
+      toast.update(toastId, {
+        render: error.message || "Failed to register user.",
+        type: "error",
+        isLoading: false,
+        autoClose: 3000,
+      });
     }
+    setTimeout(() => {
+      window.location.reload();
+    }, 3000);
   };
 
   const handleBulkUpload = (event) => {

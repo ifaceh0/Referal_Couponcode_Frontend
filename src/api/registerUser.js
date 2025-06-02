@@ -1,28 +1,40 @@
 // export const registerUser = async (userData,shopkeeperId) => {
 export const registerUser = async (userData) => {
-    try {
-        const token = localStorage.getItem("token");
-        //  const shopkeeperId = localStorage.getItem("shopkeeperId");
-        // const response = await fetch(`${import.meta.env.VITE_BACKEND_URL}/api/shopkeeper/register-user?shopkeeperId=${shopkeeperId}`, {
-         const response = await fetch(`${import.meta.env.VITE_BACKEND_URL}/api/shopkeeper/register-user`, {
-            method: "POST",
-            headers: {
-                "Content-Type": "application/json",
-                "Authorization": `Bearer ${token}`,
-            },
-            body: JSON.stringify(userData),
-            //   withCredntials: true,
-            credentials: 'include',
-        });
+  const token = localStorage.getItem("token");
 
-        const result = await response.text(); // Since the backend returns a plain text response
+  const response = await fetch(`${import.meta.env.VITE_BACKEND_URL}/api/shopkeeper/register-user`, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+      Authorization: `Bearer ${token}`,
+    },
+    body: JSON.stringify(userData),
+    credentials: "include",
+  });
 
-        return result; // Returns success or error message
-    } catch (error) {
-        console.error("Error registering user:", error);
-        return "Failed to register user. Please try again.";
+  // Check if response is not OK
+  if (!response.ok) {
+    const contentType = response.headers.get("Content-Type");
+
+    if (contentType && contentType.includes("application/json")) {
+      const errorData = await response.json();
+      const errorMessage = errorData.message || errorData.error || "Failed to register user.";
+      throw new Error(errorMessage);
+    } else {
+      const errorText = await response.text();
+      throw new Error(errorText || "Failed to register user.");
     }
+  }
+
+  // Success: check if it's text or JSON
+  const contentType = response.headers.get("Content-Type");
+  if (contentType && contentType.includes("application/json")) {
+    return await response.json();
+  } else {
+    return await response.text();
+  }
 };
+
 
 
 // export const uploadBulkReferralCodes = async (file, expiryDate, referralAmount, shopkeeperId, type) => {
