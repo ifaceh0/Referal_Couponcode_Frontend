@@ -717,8 +717,8 @@ import { getCurrentUser } from "../../../../api/signin";
 
 const ReferralCodeSettings = ({ shopkeeperId, token }) => {
     const [loading, setLoading] = useState(true);
-    const [useCredits, setUseCredits] = useState(true);
-    const [signupPoints, setSignupPoints] = useState(100);
+    // const [useCredits, setUseCredits] = useState(true);
+    // const [signupPoints, setSignupPoints] = useState(100);
     const [signUpDollars, setSignupDollars] = useState(10);
     const [isEditing, setIsEditing] = useState(false);
     const [existingCustomerReward, setExistingCustomerReward] = useState(false);
@@ -755,8 +755,8 @@ const ReferralCodeSettings = ({ shopkeeperId, token }) => {
                     if (response) {
                         // const settings = response.settings.referralSettings || {};
                         const settings = response
-                        setUseCredits(settings.useCredits ?? true);
-                        setSignupPoints(settings.signupPoints ?? 100);
+                        // setUseCredits(settings.useCredits ?? true);
+                        // setSignupPoints(settings.signupPoints ?? 100);
                         setSignupDollars(settings.signUpDollars);
                         setExistingCustomerReward(settings.existingCustomer ?? false);
                         setNewCustomerReward(settings.newCustomer ?? false);
@@ -799,9 +799,9 @@ const ReferralCodeSettings = ({ shopkeeperId, token }) => {
             // setLoading(true);
             const settingsData = {
                 shopkeeperId: userDetails.id,
-                useCredits,
+                // useCredits,
                 signUpDollars,
-                signupPoints,
+                // signupPoints,
                 existingCustomer: existingCustomerReward,
                 newCustomer: newCustomerReward,
                 referralPromotionBeginDate: promotion.beginDate,
@@ -889,30 +889,33 @@ const ReferralCodeSettings = ({ shopkeeperId, token }) => {
                         {/* Signup for New Users */}
                         <div>
                             <h3 className="font-bold">
-                                Promotion for New Users
+                                Bonus
                                 {/* {useCredits ? "Dollars" : "Points"}  */}
                                 
                             </h3>
                             {isEditing ? (
                                 <input
                                     type="number"
-                                    value={useCredits ? signUpDollars : signupPoints}
-                                    onChange={(e) =>
-                                        useCredits
-                                            ? setSignupDollars(Number(e.target.value))
-                                            : setSignupPoints(Number(e.target.value))
-                                    }
+                                    // value={useCredits ? signUpDollars : signupPoints}
+                                    // onChange={(e) =>
+                                    //     useCredits
+                                    //         ? setSignupDollars(Number(e.target.value))
+                                    //         : setSignupPoints(Number(e.target.value))
+                                    // }
+                                    value={signUpDollars}
+                                    onChange={(e) => setSignupDollars(Number(e.target.value))}
                                     className="border p-2 rounded mt-2 w-32"
                                 />
                             ) : (
                                 <p className="mt-2">
-                                    {useCredits ? `$${signUpDollars}` : `${signupPoints} Points`}
+                                    {/* {useCredits ? `$${signUpDollars}` : `${signupPoints} Points`} */}
+                                    ${signUpDollars}
                                 </p>
                             )}
                         </div>
 
                         <div>
-                            <h3 className="font-bold mb-2">Existing Customer Reward</h3>
+                            <h3 className="font-bold mb-2">Existing Customer</h3>
                             <label className="switch">
                                 <input
                                     type="checkbox"
@@ -927,7 +930,7 @@ const ReferralCodeSettings = ({ shopkeeperId, token }) => {
                         </div>
 
                         <div>
-                            <h3 className="font-bold mb-2">New Customer Reward</h3>
+                            <h3 className="font-bold mb-2">New Customer</h3>
                             <label className="switch">
                                 <input
                                     type="checkbox"
@@ -961,7 +964,7 @@ const ReferralCodeSettings = ({ shopkeeperId, token }) => {
                             )}
                         </div>
                         <div>
-                            <label className="block text-sm font-medium mb-1">Expiry Date</label>
+                            <label className="block text-sm font-medium mb-1">End Date</label>
                             {isEditing ? (
                                 <input
                                     type="date"
@@ -983,7 +986,8 @@ const ReferralCodeSettings = ({ shopkeeperId, token }) => {
                                     className="w-full p-2 border rounded"
                                 />
                             ) : (
-                                <p>{promotion.referralAmount ? (useCredits ? `$${promotion.referralAmount}` : `${promotion.referralAmount} Points`) : 'Not set'}</p>
+                                // <p>{promotion.referralAmount ? (useCredits ? `$${promotion.referralAmount}` : `${promotion.referralAmount} Points`) : 'Not set'}</p>
+                                <p>{promotion.referralAmount ? `$${promotion.referralAmount}` : 'Not set'}</p>
                             )}
                         </div>
                         <div>
@@ -996,7 +1000,8 @@ const ReferralCodeSettings = ({ shopkeeperId, token }) => {
                                     className="w-full p-2 border rounded"
                                 />
                             ) : (
-                                <p>{promotion.referrerAmount ? (useCredits ? `$${promotion.referrerAmount}` : `${promotion.referrerAmount} Points`) : 'Not set'}</p>
+                                // <p>{promotion.referrerAmount ? (useCredits ? `$${promotion.referrerAmount}` : `${promotion.referrerAmount} Points`) : 'Not set'}</p>
+                                <p>{promotion.referrerAmount ? `$${promotion.referrerAmount}` : 'Not set'}</p>
                             )}
                         </div>
                     </div>
@@ -1020,7 +1025,7 @@ const ReferralCodeSettings = ({ shopkeeperId, token }) => {
                             )}
                         </div>
                         <div>
-                            <label className="block text-sm font-medium mb-1">Expiry Date</label>
+                            <label className="block text-sm font-medium mb-1">End Date</label>
                             {isEditing ? (
                                 <input
                                     type="date"
@@ -1042,7 +1047,8 @@ const ReferralCodeSettings = ({ shopkeeperId, token }) => {
                                     className="w-full p-2 border rounded"
                                 />
                             ) : (
-                                <p>{couponPromotion.couponAmount ? (useCredits ? `$${couponPromotion.couponAmount}` : `${couponPromotion.couponAmount} Points`) : 'Not set'}</p>
+                                // <p>{couponPromotion.couponAmount ? (useCredits ? `$${couponPromotion.couponAmount}` : `${couponPromotion.couponAmount} Points`) : 'Not set'}</p>
+                                <p>{couponPromotion.couponAmount ? `$${couponPromotion.couponAmount}` : 'Not set'}</p>
                             )}
                         </div>
                         <div>
@@ -1062,7 +1068,7 @@ const ReferralCodeSettings = ({ shopkeeperId, token }) => {
                 </div>
 
                 {/* Discount Mapping (Credits only) */}
-                {!useCredits && (
+                {/* {!useCredits && ( */}
                     <div className="mb-6">
                         <h3 className="font-bold mb-4">Discount Mapping</h3>
                         {discountMapping.map((mapping, index) => (
@@ -1135,7 +1141,7 @@ const ReferralCodeSettings = ({ shopkeeperId, token }) => {
                             </button>
                         )}
                     </div>
-                )}
+                {/* )} */}
 
                 {/* Milestone Mapping */}
                 <div>
