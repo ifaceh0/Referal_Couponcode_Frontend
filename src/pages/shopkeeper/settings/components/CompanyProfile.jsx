@@ -72,10 +72,11 @@ const CompanyProfile = ({ shopkeeperId }) => {
         shopkeeperId,
         companyName: "",
         companyAddress: "",
+        logo: null,            // For uploading
+        logoPreview: null,     // For live preview of new file
+        logoBase64: null       // From database
     });
 
-    // const [logoPreview, setLogoPreview] = useState(null);
-    // const [selectedLogoFile, setSelectedLogoFile] = useState(null);
     const [loading, setLoading] = useState(true);
     const [isEditing, setIsEditing] = useState(false);
     const [userDetails, setUserDetails] = useState(null);
@@ -97,6 +98,9 @@ const CompanyProfile = ({ shopkeeperId }) => {
                             shopkeeperId,
                             companyName: response.companyName || "",
                             companyAddress: response.companyAddress || "",
+                            logo: null,
+                            logoPreview: null,
+                            logoBase64: response.logoBase64 || null 
                         });
                     }
                 }
@@ -118,26 +122,72 @@ const CompanyProfile = ({ shopkeeperId }) => {
 
     const handleFileChange = (e) => {
         const file = e.target.files[0];
-        setCompanyData({ ...companyData, logo: file });
-    };
 
-    const handleSave = async () => {
-        try{
-            const setCompany = {
-                shopkeeperId: userDetails?.id,
-                companyName: companyData.companyName,
-                companyAddress: companyData.companyAddress,
-            };
-            await updateCompanyProfileAction(setCompany);   
-            toast.success("Company profile updated successfully!");
-            setIsEditing(false);
-        }catch (error) {
-            console.error("Update failed:", error);
-            toast.error(error.message || "Error updating company profile");
-        } finally {
-            setLoading(false);
+        if (file) {
+            const MAX_SIZE_MB = 1; // 1 MB
+            // Convert MB to bytes for comparison
+            const MAX_SIZE_BYTES = MAX_SIZE_MB * 1024 * 1024;
+
+            if (file.size > MAX_SIZE_BYTES) {
+                toast.error(`Image size should not exceed ${MAX_SIZE_MB} MB`);
+                return;
+            }
+            // Clear previous preview if it exists
+            if (companyData.logoPreview) {
+                URL.revokeObjectURL(companyData.logoPreview);
+            }
+
+            setCompanyData((prev) => ({
+                ...prev,
+                logo: file,
+                logoPreview: URL.createObjectURL(file), // preview via blob URL
+            }));
         }
     };
+
+
+    // const handleSave = async () => {
+    //     try{
+    //         const setCompany = {
+    //             shopkeeperId: userDetails?.id,
+    //             companyName: companyData.companyName,
+    //             companyAddress: companyData.companyAddress,
+    //         };
+    //         await updateCompanyProfileAction(setCompany);   
+    //         toast.success("Company profile updated successfully!");
+    //         setIsEditing(false);
+    //     }catch (error) {
+    //         console.error("Update failed:", error);
+    //         toast.error(error.message || "Error updating company profile");
+    //     } finally {
+    //         setLoading(false);
+    //     }
+    // };
+
+
+    const handleSave = async () => {
+    try {
+        // setLoading(true);
+        const formData = new FormData();
+        formData.append("shopkeeperId", userDetails?.id);
+        formData.append("companyName", companyData.companyName);
+        formData.append("companyAddress", companyData.companyAddress);
+
+        if (companyData.logo) {
+            formData.append("logoUpdate", companyData.logo);
+        }
+
+        await updateCompanyProfileAction(formData);   
+        toast.success("Company profile updated successfully!");
+        setIsEditing(false);
+    } catch (error) {
+        console.error("Update failed:", error);
+        toast.error(error.message || "Error updating company profile");
+    } finally {
+        setLoading(false);
+    }
+};
+
 
     if (loading) {
         return <div className="p-6 text-center">Loading company profile...</div>;
@@ -169,12 +219,36 @@ return (
                     )}
                 </div>
             </div>
-
             <div className="mb-4">
-                 <label className="block mb-1">Company Logo</label>
-                 <input type="file" onChange={handleFileChange} className="w-full border p-2" />
-            </div>
+                    <label className="block mb-1 font-medium">Company Logo</label>
 
+                    {/* Show live preview if a new logo is selected */}
+                    {companyData.logoPreview ? (
+                        <img
+                            src={companyData.logoPreview}  
+                            alt="New Logo Preview"
+                            className="w-24 h-24 object-contain mb-2 border rounded"
+                        />
+                    ) : companyData.logoBase64 ? (
+                        <img
+                            src={`data:image/png;base64,${companyData.logoBase64}`} 
+                            alt="Current Logo"
+                            className="w-24 h-24 object-contain mb-2 border rounded"
+                        />
+                    ) : (
+                        <p className="text-gray-500">No logo uploaded</p>
+                    )}
+
+
+                    {isEditing && (
+                        <input
+                            type="file"
+                            accept="image/*"
+                            onChange={handleFileChange}
+                            className="w-full border p-2"
+                        />
+                    )}
+                </div>
             <div className="mb-6">
                 <label className="block mb-1 font-medium">Company Name</label>
                 {isEditing ? (

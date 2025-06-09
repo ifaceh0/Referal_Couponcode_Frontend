@@ -40,6 +40,28 @@ export const updateSettingsAction = async (settingsData) => {
 
 
 // companyprofile changes
+// export const getProfileAction = async (shopkeeperId) => {
+//     const token = localStorage.getItem("token");
+//     if (!token) {
+//         throw new Error("No authentication token found");
+//     }
+
+//     const response = await fetch(`${VITE_BACKEND_URL}/api/shopkeeper/get-profile?shopkeeperId=${shopkeeperId}`, {
+//         method: "GET",
+//         headers: {
+//             "Content-Type": "application/json",
+//             "Authorization": `Bearer ${token}`,
+//         },
+//     });
+
+//     if (!response.ok) {
+//         throw new Error("Failed to retrieve profile");
+//     }
+
+//     return response.json();
+// };
+
+
 export const getProfileAction = async (shopkeeperId) => {
     const token = localStorage.getItem("token");
     if (!token) {
@@ -49,8 +71,7 @@ export const getProfileAction = async (shopkeeperId) => {
     const response = await fetch(`${VITE_BACKEND_URL}/api/shopkeeper/get-profile?shopkeeperId=${shopkeeperId}`, {
         method: "GET",
         headers: {
-            "Content-Type": "application/json",
-            "Authorization": `Bearer ${token}`,
+            Authorization: `Bearer ${token}`,
         },
     });
 
@@ -58,10 +79,44 @@ export const getProfileAction = async (shopkeeperId) => {
         throw new Error("Failed to retrieve profile");
     }
 
-    return response.json();
+    const data = await response.json();
+
+    // Convert Base64 string to image URL for rendering
+    if (data.logoBase64) {
+        data.logoUrl = `data:image/png;base64,${data.logoBase64}`;
+    } else {
+        data.logoUrl = null;
+    }
+
+    return data;
 };
 
-export const updateCompanyProfileAction = async (companyData) => {
+
+
+// export const updateCompanyProfileAction = async (companyData) => {
+//     const token = localStorage.getItem("token");
+//     if (!token) {
+//         throw new Error("No authentication token found");
+//     }
+
+//     const response = await fetch(`${VITE_BACKEND_URL}/api/shopkeeper/update-company`, {
+//         method: "PUT",
+//         headers: {
+//             "Content-Type": "application/json",
+//             Authorization: `Bearer ${token}`,
+//         },
+//         body: JSON.stringify(companyData),
+//     });
+
+//     if (!response.ok) {
+//         throw new Error("Failed to update Company profile");
+//     }
+
+//     return response.json();
+// };
+
+
+export const updateCompanyProfileAction = async (formData) => {
     const token = localStorage.getItem("token");
     if (!token) {
         throw new Error("No authentication token found");
@@ -70,10 +125,9 @@ export const updateCompanyProfileAction = async (companyData) => {
     const response = await fetch(`${VITE_BACKEND_URL}/api/shopkeeper/update-company`, {
         method: "PUT",
         headers: {
-            "Content-Type": "application/json",
             Authorization: `Bearer ${token}`,
         },
-        body: JSON.stringify(companyData),
+        body: formData,
     });
 
     if (!response.ok) {
@@ -82,6 +136,10 @@ export const updateCompanyProfileAction = async (companyData) => {
 
     return response.json();
 };
+
+
+
+
 
 export const updatePersonalProfileAction = async (personalData) => {
     const token = localStorage.getItem("token");

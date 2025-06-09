@@ -44,7 +44,7 @@ const GeneralSettings = () => {
             </div>
 
             {/* Use Credits Setting */}
-            <div className="mb-4">
+            {/* <div className="mb-4">
                 <label className="block mb-1">Use Points or Credits</label>
                 <div className="flex items-center">
                     <input
@@ -55,7 +55,7 @@ const GeneralSettings = () => {
                     />
                     <span>Enable Credits (Dollars) instead of Points</span>
                 </div>
-            </div>
+            </div> */}
 
             {/* Save Button */}
             <button
