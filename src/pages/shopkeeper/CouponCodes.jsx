@@ -6,6 +6,7 @@ import { registerUser, uploadBulkCouponCodes, getAllCouponCodeByShopkeeper } fro
 import PhoneInputField from "../../components/ui/PhoneInputField";
 import { toast, ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
+import { getCurrentUser } from "../../api/signin";
 
 const CouponCodes = () => {
   const [allCodes, setAllCodes] = useState([]);
@@ -40,7 +41,21 @@ const CouponCodes = () => {
   });
 
 
-  const shopkeeperId = 1; // Replace with actual shopkeeper ID
+  const [userDetails, setUserDetails] = useState(null);
+    useEffect(() => {
+      const fetchData = async () => {
+        try {
+          const user = await getCurrentUser();
+          console.log("Fetched user:", user.id);
+          setUserDetails(user);
+        } catch (error) {
+          console.error("Error fetching monthly data:", error);
+        }
+      };
+  
+      fetchData();
+    }, []);
+    const shopkeeperId = userDetails?.id || localStorage.getItem("shopkeeperId"); // Replace with actual shopkeeper ID
 
   useEffect(() => {
     const fetchReferralCodes = async () => {

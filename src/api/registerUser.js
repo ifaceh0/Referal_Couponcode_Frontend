@@ -125,12 +125,22 @@ export const uploadBulkCouponCodes = async (file, expiryDate, referralAmount, us
             }
         );
 
-        const result = await response.json();
-        return result; // Expected response { message: "...", generatedCodes: [...] }
-    } catch (error) {
-        console.error("Error uploading bulk coupon codes:", error);
-        return { message: "Failed to upload coupon codes.", generatedCodes: [] };
+    //     const result = await response.json();
+    //     return result; // Expected response { message: "...", generatedCodes: [...] }
+    // } catch (error) {
+    //     console.error("Error uploading bulk coupon codes:", error);
+    //     return { message: "Failed to upload coupon codes.", generatedCodes: [] };
+    // }
+    const result = await response.json();
+       if (!response.ok) {
+      throw new Error(result.message || "Upload failed.");
     }
+
+    return result;
+  } catch (error) {
+    console.error("Upload error:", error);
+    throw error;
+  }
 };
 
 
