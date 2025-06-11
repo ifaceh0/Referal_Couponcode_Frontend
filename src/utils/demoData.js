@@ -165,7 +165,7 @@ export const emailTemplates = {
             <footer style="margin-top: 20px; font-size: 12px;">
                 Regards,<br />
                 {companyName}<br />
-                <img src="{logo}" alt="Company Logo" style="max-width: 100px;" /><br />
+                <img src="{logo}" alt="Company Logo" style="max-width: 20px; margin: 10px;" /><br />
                 {address}<br />
                 Email: {contactEmail}<br />
                 Phone: {contactNumber}
@@ -189,9 +189,9 @@ export const emailTemplates = {
             <footer style="margin-top: 20px; font-size: 12px; text-align: center; color: #555;">
                 Regards,<br />
                 {companyName}<br />
-                <img src="{logo}" alt="Company Logo" style="max-width: 80px; margin: 10px auto;" /><br />
+                <img src="{logo}" alt="Company Logo" style="max-width: 20px; margin: 10px auto;" /><br />
                 {address}<br />
-                <a href="mailto:{contactEmail}" style="color: {primaryColor};">{contactEmail}</a><br />
+                <a href="mailto:" style="color: {primaryColor};">{contactEmail}</a><br />
                 {contactNumber}
             </footer>
         </div>
@@ -210,7 +210,7 @@ export const emailTemplates = {
             <footer style="border-top: 1px solid #ddd; padding-top: 10px; font-size: 12px;">
                 Regards,<br />
                 {companyName}<br />
-                <img src="{logo}" alt="Company Logo" style="max-width: 100px;" /><br />
+                <img src="{logo}" alt="Company Logo" style="max-width: 20px; margin: 10px;" /><br />
                 {address}<br />
                 Email: {contactEmail} | Phone: {contactNumber}
             </footer>

@@ -111,8 +111,11 @@
 // export default EmailSettings;
 
 
-import React, { useState } from "react";
-import { companyDetails, emailTemplates, referralData, shopkeeperDemoData1 } from "../../../../utils/demoData";
+import React, { useState, useEffect } from "react";
+// import { companyDetails, emailTemplates, referralData, shopkeeperDemoData1 } from "../../../../utils/demoData";
+import { companyDetails as staticCompanyDetails, emailTemplates, referralData, shopkeeperDemoData1 } from "../../../../utils/demoData";
+import { getProfileAction } from "../../../../api/settingPageApi";
+import { getCurrentUser } from "../../../../api/signin";
 
 const EmailSettings = () => {
     const [view, setView] = useState("normal"); // Tracks the current view
@@ -121,6 +124,53 @@ const EmailSettings = () => {
     const [ending, setEnding] = useState(
         "Start sharing your referral code today and earn exciting rewards!"
     );
+
+    const [companyDetails, setCompanyDetails] = useState(staticCompanyDetails); // Dynamic company details
+    const [loading, setLoading] = useState(true);
+    const [userDetails, setUserDetails] = useState(null);
+
+    // Fetch shopkeeper profile using getProfileAction
+    useEffect(() => {
+        const fetchShopkeeperProfile = async () => {
+            try {
+                setLoading(true);
+                // Fetch the current user's details to get the shopkeeperId
+                const user = await getCurrentUser();
+                console.log("getCurrentUser result:", user);
+                setUserDetails(user);
+
+                if (user?.id) {
+                    const response = await getProfileAction(user.id);
+                    console.log("Company profile data:", response);
+                    if (response) {
+                        // Map backend data to companyDetails format
+                        const updatedCompanyDetails = {
+                            name: response.companyName || staticCompanyDetails.name,
+                            logo: response.logoBase64
+                                ? `data:image/png;base64,${response.logoBase64}` // Convert Base64 to data URL
+                                : staticCompanyDetails.logo,
+                            primaryColor: staticCompanyDetails.primaryColor, // Not provided by backend, retain default
+                            address: response.companyAddress || staticCompanyDetails.address,
+                            contactEmail: response.companyEmail || staticCompanyDetails.contactEmail,
+                            contactNumber: response.companyPhone || staticCompanyDetails.contactNumber,
+                        };
+                        setCompanyDetails(updatedCompanyDetails);
+                    }
+                }
+            } catch (error) {
+                console.error("Error fetching profile:", error);
+                // Use static data as fallback
+            } finally {
+                setLoading(false);
+            }
+        };
+
+        fetchShopkeeperProfile();
+    }, []);
+
+
+
+
 
     const handleTemplateChange = (e) => {
         setSelectedTemplate(e.target.value);
