@@ -7,6 +7,8 @@ import { colorPalette } from "../../utils/demoData";
 import { registerUser, uploadBulkReferralCodes, getAllReferralCodeByShopkeeper } from "../../api/registerUser";
 import PhoneInputField from "../../components/ui/PhoneInputField";
 import { getCurrentUser } from "../../api/signin";
+import { getSettingsAction } from "../../api/settingPageApi";
+
 
 const ReferralManagement = () => {
   const [codes, setCodes] = useState([]);
@@ -29,11 +31,18 @@ const ReferralManagement = () => {
   const [bulkReferralAmount, setBulkReferralAmount] = useState("");
   const [bulkReferrerAmount, setBulkReferrerAmount] = useState("");
   const [failedUsersPage, setFailedUsersPage] = useState(1);
+  const [referralAmountReadOnly, setReferralAmountReadOnly] = useState(false);
+  const [referrerAmountReadOnly, setReferrerAmountReadOnly] = useState(false);
+  const [referralPromotionEndDateReadOnly, setReferralPromotionEndDateReadOnly] = useState(false);
+  const [expiryReadOnly, setExpiryReadOnly] = useState(false);
+
+
   const failedUsersPerPage = 5;
 
   const [type, setType] = useState("R");
   // const shopkeeperId = localStorage.getItem("shopkeeperId");
   const [userDetails, setUserDetails] = useState(null);
+  const [settingDetails, setSettingDetails] = useState(null);
   useEffect(() => {
     const fetchData = async () => {
       try {
@@ -48,6 +57,38 @@ const ReferralManagement = () => {
     fetchData();
   }, []);
   const shopkeeperId = userDetails?.id || localStorage.getItem("shopkeeperId"); // Replace with actual shopkeeper ID
+  useEffect(() => {
+    const fetchSettingData = async () => {
+      try {
+        const setting = await getSettingsAction(shopkeeperId);
+        console.log("Fetched user:", shopkeeperId);
+        setSettingDetails(setting);
+        if (setting?.referralAmount != null) {
+          setReferralAmount(setting.referralAmount);
+          setReferralAmountReadOnly(true);
+          setBulkReferralAmount(setting.referralAmount);
+        }
+        if (setting?.referrerAmount != null) {
+          setReferrerAmount(setting.referrerAmount);
+          setReferrerAmountReadOnly(true);
+          setBulkReferrerAmount(setting.referrerAmount);
+        }
+        if (setting?.referralPromotionEndDate != null) {
+          // setReferralPromotionEndDate(setting.referralPromotionEndDate);
+          // setReferralPromotionEndDateReadOnly(true); 
+          const formattedDate = setting.referralPromotionEndDate.split("T")[0]; // ensures YYYY-MM-DD
+          setExpiryDate(formattedDate);
+          setBulkExpiryDate(formattedDate);
+          setExpiryReadOnly(true);
+        }
+      } catch (error) {
+        console.error("Error fetching monthly data:", error);
+      }
+    };
+
+    fetchSettingData();
+  }, []);
+
   useEffect(() => {
     const fetchCodes = async () => {
       setIsLoading(true);
@@ -228,9 +269,17 @@ const ReferralManagement = () => {
               containerClass="w-full"
               inputClass="border rounded p-2 w-full"
             />
-            <input type="date" value={expiryDate} onChange={(e) => setExpiryDate(e.target.value)} className="border rounded p-2" title="Expire Date - mm/dd/yyyy" />
-            <input type="number" placeholder="Referral Amount ($)" value={referralAmount} onChange={(e) => setReferralAmount(e.target.value)} className="border rounded p-2" />
-            <input type="number" placeholder="Referrer Amount ($)" value={referrerAmount} onChange={(e) => setReferrerAmount(e.target.value)} className="border rounded p-2" />
+            <input type="date" value={expiryDate} onChange={(e) => setExpiryDate(e.target.value)} className="border rounded p-2"
+              title="Expire Date - mm/dd/yyyy"
+              readOnly={expiryReadOnly} />
+            <input type="number" placeholder="Referral Amount ($)" value={referralAmount}
+              onChange={(e) => setReferralAmount(e.target.value)}
+              className="border rounded p-2"
+              readOnly={referralAmountReadOnly} />
+            <input type="number" placeholder="Referrer Amount ($)" value={referrerAmount}
+              onChange={(e) => setReferrerAmount(e.target.value)}
+              className="border rounded p-2"
+              readOnly={referrerAmountReadOnly} />
           </div>
           <button onClick={handleRegister} className="px-4 py-2 rounded" style={{ backgroundColor: colorPalette.accent, color: colorPalette.white }}>
             Generate Code
@@ -243,10 +292,20 @@ const ReferralManagement = () => {
             Bulk Referral Code Upload
           </h2>
           <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-4">
-            <input type="file" accept=".csv, .xls, .xlsx" onChange={handleBulkUpload} className="border rounded p-2" />
-            <input type="date" value={bulkExpiryDate} onChange={(e) => setBulkExpiryDate(e.target.value)} className="border rounded p-2" title="Expire Date - mm/dd/yyyy" />
-            <input type="number" placeholder="Referral Amount ($)" value={bulkReferralAmount} onChange={(e) => setBulkReferralAmount(e.target.value)} className="border rounded p-2" />
-            <input type="number" placeholder="Referrer Amount ($)" value={bulkReferrerAmount} onChange={(e) => setBulkReferrerAmount(e.target.value)} className="border rounded p-2" />
+            <input type="file" accept=".csv, .xls, .xlsx"
+              onChange={handleBulkUpload} className="border rounded p-2" />
+            <input type="date" value={bulkExpiryDate}
+              onChange={(e) => setBulkExpiryDate(e.target.value)} className="border rounded p-2"
+              title="Expire Date - mm/dd/yyyy"
+              readOnly={expiryReadOnly} />
+            <input type="number" placeholder="Referral Amount ($)"
+              value={bulkReferralAmount}
+              onChange={(e) => setBulkReferralAmount(e.target.value)}
+              className="border rounded p-2"
+              readOnly={referralAmountReadOnly} />
+            <input type="number" placeholder="Referrer Amount ($)" value={bulkReferrerAmount}
+              onChange={(e) => setBulkReferrerAmount(e.target.value)} className="border rounded p-2"
+              readOnly={referrerAmountReadOnly} />
           </div>
           <button onClick={handleBulkGenerate} className="px-4 py-2 rounded" style={{ backgroundColor: colorPalette.accent, color: colorPalette.white }}>
             Generate Bulk Codes

@@ -7,6 +7,8 @@ import PhoneInputField from "../../components/ui/PhoneInputField";
 import { toast, ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { getCurrentUser } from "../../api/signin";
+import { getSettingsAction } from "../../api/settingPageApi";
+
 
 const CouponCodes = () => {
   const [allCodes, setAllCodes] = useState([]);
@@ -18,6 +20,7 @@ const CouponCodes = () => {
   const [failedUsers, setFailedUsers] = useState([]);
   const [failedUsersPage, setFailedUsersPage] = useState(1);
   const [showFailedModal, setShowFailedModal] = useState(false);
+
   const failedUsersPerPage = 5;
   // const [form, setForm] = useState({
   //   name: "",
@@ -39,23 +42,57 @@ const CouponCodes = () => {
     expiryDate: "",
     type: "C",
   });
-
-
+  const [couponAmountReadOnly, setCouponAmountReadOnly] = useState(false);
+  const [referralAmountReadOnly, setReferralAmountReadOnly] = useState(false);
+  const [couponUseLimitReadOnly, setCouponUseLimitReadOnly] = useState(false);
+  const [expiryReadOnly, setExpiryReadOnly] = useState(false);
+  const [settingDetails, setSettingDetails] = useState(null);
   const [userDetails, setUserDetails] = useState(null);
-    useEffect(() => {
-      const fetchData = async () => {
-        try {
-          const user = await getCurrentUser();
-          console.log("Fetched user:", user.id);
-          setUserDetails(user);
-        } catch (error) {
-          console.error("Error fetching monthly data:", error);
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const user = await getCurrentUser();
+        console.log("Fetched user:", user.id);
+        setUserDetails(user);
+      } catch (error) {
+        console.error("Error fetching monthly data:", error);
+      }
+    };
+
+    fetchData();
+  }, []);
+  const shopkeeperId = userDetails?.id || localStorage.getItem("shopkeeperId"); // Replace with actual shopkeeper ID
+
+  useEffect(() => {
+    const fetchSettingData = async () => {
+      try {
+        const setting = await getSettingsAction(shopkeeperId);
+        console.log("Fetched user:", shopkeeperId);
+        setSettingDetails(setting);
+        if (setting?.couponAmount != null) {
+          setBulkReferralAmount(setting.couponAmount);
+          setForm((prev) => ({ ...prev, referralAmount: setting.couponAmount }));
+          setReferralAmountReadOnly(true);
         }
-      };
-  
-      fetchData();
-    }, []);
-    const shopkeeperId = userDetails?.id || localStorage.getItem("shopkeeperId"); // Replace with actual shopkeeper ID
+        if (setting?.couponUseLimit != null) {
+          setBulkLimit(setting.couponUseLimit);
+          setForm((prev) => ({ ...prev, usageLimit: setting.couponUseLimit }));
+          setCouponUseLimitReadOnly(true);
+        }
+        if (setting?.couponPromotionEndDate != null) {
+          const formattedDate = setting.couponPromotionEndDate.split("T")[0]; // ensures YYYY-MM-DD
+          setBulkExpiryDate(formattedDate);
+          setForm((prev) => ({ ...prev, expiryDate: formattedDate }));
+          setExpiryReadOnly(true);
+        }
+      } catch (error) {
+        console.error("Error fetching monthly data:", error);
+      }
+    };
+
+    fetchSettingData();
+  }, []);
+
 
   useEffect(() => {
     const fetchReferralCodes = async () => {
@@ -180,8 +217,11 @@ const CouponCodes = () => {
         <div className="mb-8 bg-white p-6 rounded shadow-md">
           <h2 className="text-xl font-semibold mb-4" style={{ color: colorPalette.primaryDark }}>Individual Coupon Code Generation</h2>
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 mb-4">
-            <input type="text" placeholder="Name" value={form.name} onChange={(e) => setForm({ ...form, name: e.target.value })} className="border rounded p-2" />
-            <input type="email" placeholder="Email" value={form.email} onChange={(e) => setForm({ ...form, email: e.target.value })} className="border rounded p-2" />
+            <input type="text" placeholder="Name" value={form.name}
+              onChange={(e) => setForm({ ...form, name: e.target.value })}
+              className="border rounded p-2" />
+            <input type="email" placeholder="Email" value={form.email} onChange={(e) =>
+              setForm({ ...form, email: e.target.value })} className="border rounded p-2" />
             {/* <PhoneInputField label="" name="phone" value={form.phone} onChange={(e) => setForm({ ...form, phone: e.target.value })} containerClass="w-full" inputClass="border rounded p-2 w-full" /> */}
             <PhoneInputField
               label=""
@@ -194,9 +234,15 @@ const CouponCodes = () => {
               inputClass="border rounded p-2 w-full"
             />
 
-            <input type="date" value={form.expiryDate} onChange={(e) => setForm({ ...form, expiryDate: e.target.value })} className="border rounded p-2" title="Expire Date" />
-            <input type="number" placeholder="Coupon Amount ($)" value={form.referralAmount} onChange={(e) => setForm({ ...form, referralAmount: e.target.value })} className="border rounded p-2" />
-            <input type="number" placeholder="Limit" value={form.usageLimit} onChange={(e) => setForm({ ...form, usageLimit: e.target.value })} className="border rounded p-2" />
+            <input type="date" value={form.expiryDate}
+              onChange={(e) => setForm({ ...form, expiryDate: e.target.value })}
+              className="border rounded p-2" title="Expire Date" readOnly={expiryReadOnly} />
+            <input type="number" placeholder="Coupon Amount ($)" value={form.referralAmount}
+              onChange={(e) => setForm({ ...form, referralAmount: e.target.value })}
+              className="border rounded p-2" readOnly={referralAmountReadOnly} />
+            <input type="number" placeholder="Limit" value={form.usageLimit}
+              onChange={(e) => setForm({ ...form, usageLimit: e.target.value })}
+              className="border rounded p-2" readOnly={couponUseLimitReadOnly} />
           </div>
           <button onClick={handleGenerateCode} className="px-4 py-2 rounded shadow" style={{ backgroundColor: colorPalette.accent, color: colorPalette.white }}>Generate Code</button>
         </div>
@@ -206,10 +252,14 @@ const CouponCodes = () => {
           <h2 className="text-xl font-semibold mb-4" style={{ color: colorPalette.secondaryDark }}>Bulk Coupon Codes Generation</h2>
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 mb-4">
             <input type="file" accept=".csv, .xls, .xlsx, .txt" onChange={(e) => setBulkFile(e.target.files[0])} className="block text-sm" />
-            <input type="date" value={bulkExpiryDate} onChange={(e) => setBulkExpiryDate(e.target.value)} className="border rounded p-2" title="Expire Date - mm/dd/yyyy" />
+            <input type="date" value={bulkExpiryDate} onChange={(e) => setBulkExpiryDate(e.target.value)}
+              className="border rounded p-2" title="Expire Date - mm/dd/yyyy" readOnly={expiryReadOnly} />
 
-            <input type="number" placeholder="Coupon Amount ($)" value={bulkReferralAmount} onChange={(e) => setBulkReferralAmount(e.target.value)} className="border rounded p-2" />
-            <input type="number" placeholder="Limit" value={bulkLimit} onChange={(e) => setBulkLimit(e.target.value)} className="border rounded p-2" />
+            <input type="number" placeholder="Coupon Amount ($)" value={bulkReferralAmount}
+              onChange={(e) => setBulkReferralAmount(e.target.value)} className="border rounded p-2"
+              readOnly={referralAmountReadOnly} />
+            <input type="number" placeholder="Limit" value={bulkLimit}
+              onChange={(e) => setBulkLimit(e.target.value)} className="border rounded p-2" readOnly={couponUseLimitReadOnly} />
           </div>
           <button onClick={handleBulkGenerate} className="px-4 py-2 rounded shadow" style={{ backgroundColor: colorPalette.secondary, color: colorPalette.white }}>Generate Coupon Codes</button>
         </div>
