@@ -40,6 +40,9 @@ import FeatureDetailPage from "./home/FeatureDetailPage";
 import Shop from "./pages/shop/Shop";
 import Employee from "./pages/Employee/Employee";
 import ShopEmployee from "./pages/shopkeeper/signin/ShopEmployee";
+import ShopOwnerDashboard from "./components/Dashboard/ShopOwnerDashboard";
+import ReferredCustomerDashboard from "./components/Dashboard/referredCustomerDashBoard";
+import ReferrerDashboard from "./components/Dashboard/referrerDashboard";
 
 //import UserSignUp from "./pages/shopkeeper/signin/UserSignUp";
 
@@ -117,6 +120,10 @@ const App = () => {
           <Route path="scanner" element={<Scanner/>} />
           <Route path="shop" element={<Shop/>} />
           <Route path="employee" element={<Employee/>} />
+          <Route path="shopkeeperownerdashboard" element={<ShopOwnerDashboard/>}/>
+          <Route path="referredcustomerdashboard" element={<ReferredCustomerDashboard/>}/>
+          <Route path="referrerdashboard" element={<ReferrerDashboard/>}/>
+
         </Route>
 
         {/* Routes for admin pages with AdminLayout */}
