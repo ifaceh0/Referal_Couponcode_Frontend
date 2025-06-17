@@ -43,6 +43,7 @@ import ShopEmployee from "./pages/shopkeeper/signin/ShopEmployee";
 import ShopOwnerDashboard from "./components/Dashboard/ShopOwnerDashboard";
 import ReferredCustomerDashboard from "./components/Dashboard/referredCustomerDashBoard";
 import ReferrerDashboard from "./components/Dashboard/referrerDashboard";
+import ForgotPassword from "./pages/shopkeeper/signin/ForgotPassword";
 
 //import UserSignUp from "./pages/shopkeeper/signin/UserSignUp";
 
@@ -123,7 +124,7 @@ const App = () => {
           <Route path="shopkeeperownerdashboard" element={<ShopOwnerDashboard/>}/>
           <Route path="referredcustomerdashboard" element={<ReferredCustomerDashboard/>}/>
           <Route path="referrerdashboard" element={<ReferrerDashboard/>}/>
-
+          <Route path="forgotpassword" element={<ForgotPassword/>}/>
         </Route>
 
         {/* Routes for admin pages with AdminLayout */}
