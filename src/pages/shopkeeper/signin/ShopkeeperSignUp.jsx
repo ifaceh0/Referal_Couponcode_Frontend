@@ -3,10 +3,7 @@ import { signupShopkeeper } from "../../../api/signin";
 import { useNavigate } from "react-router-dom";
 import { toast, ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
-// import PhoneInput from 'react-phone-input-2';
-// import 'react-phone-input-2/lib/style.css';
 import PhoneInputField from "../../../components/ui/PhoneInputField";
-
 
 const InputField = ({ label, type, name, value, onChange, error }) => (
   <div className="mb-4 w-full">
@@ -23,35 +20,6 @@ const InputField = ({ label, type, name, value, onChange, error }) => (
     {error && <span className="text-red-500 text-sm">{error}</span>}
   </div>
 );
-
-// To have the front end ph# input to be displayed with Country Code (+1), Area Code (xxx), Ph# (xxx-xxxx) format
-/* const PhoneInputField = ({ label, name, value, onChange, error }) => (
-  <div className="mb-4 w-full">
-    <label className="block text-gray-700 mb-2 font-medium">{label}</label>
-    <div className="relative w-full">
-      <PhoneInput
-        country={"us"}
-        onlyCountries={["us", "ca"]}
-        isValid={(inputNumber, country) => ["us", "ca"].includes(country?.iso2)}
-        countryCodeEditable={false}
-        value={value}
-        onChange={(phone) => {
-          onChange({ target: { name, value: phone } });
-        }}
-        inputProps={{
-          name,
-          required: true
-        }}
-        inputClass="!w-full !h-12 !p-3 !pl-16 !border !border-gray-300 !rounded-lg !focus:outline-none !focus:ring-2 !focus:ring-purple-500"
-        buttonClass="!h-12"
-        containerClass="!w-full"
-        specialLabel="" // Removes default label
-      />
-    </div>
-    {error && <span className="text-red-500 text-sm">{error}</span>}
-  </div>
-); */
-
 
 const ShopkeeperSignUp = () => {
   const [step, setStep] = useState(1);
@@ -71,25 +39,20 @@ const ShopkeeperSignUp = () => {
   const [userCaptchaInput, setUserCaptchaInput] = useState("");
   const navigate = useNavigate();
 
-  // Generate alphanumeric CAPTCHA (6 characters)
   const generateCaptcha = () => {
     const chars = 'ABCDEFGHJKLMNPQRSTUVWXYZabcdefghijkmnpqrstuvwxyz23456789';
     let captcha = '';
     for (let i = 0; i < 6; i++) {
       captcha += chars.charAt(Math.floor(Math.random() * chars.length));
     }
-    
-    // Add slight distortion effect by randomly changing case
-    captcha = captcha.split('').map(char => {
-      return Math.random() > 0.5 ? char.toUpperCase() : char.toLowerCase();
-    }).join('');
-    
+    captcha = captcha.split('').map(char => (
+      Math.random() > 0.5 ? char.toUpperCase() : char.toLowerCase()
+    )).join('');
     setCaptchaText(captcha);
     setUserCaptchaInput("");
     return captcha;
   };
 
-  // Initialize CAPTCHA on component mount
   useEffect(() => {
     generateCaptcha();
   }, []);
@@ -102,34 +65,54 @@ const ShopkeeperSignUp = () => {
 
   const validateFields = (fields) => {
     const fieldErrors = {};
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[a-z]{2,}$/i;
+    const phoneRegex = /^\+?[1-9]\d{9,14}$/;
+
     if (fields.includes("name") && !formData.name.trim()) {
       fieldErrors.name = "Name is required.";
     }
-    if (fields.includes("email") && !/\S+@\S+\.\S+/.test(formData.email)) {
-      fieldErrors.email = "Invalid email address.";
+
+    if (fields.includes("email") && !emailRegex.test(formData.email)) {
+      fieldErrors.email = "Enter a valid email address.";
     }
+
     if (fields.includes("password") && formData.password.length < 6) {
       fieldErrors.password = "Password must be at least 6 characters.";
     }
+
     if (fields.includes("confirmPassword") && formData.confirmPassword !== formData.password) {
       fieldErrors.confirmPassword = "Passwords do not match.";
     }
+
+    if (fields.includes("phone") && !phoneRegex.test(formData.phone)) {
+      fieldErrors.phone = "Enter a valid phone number with country code.";
+    }
+
     if (fields.includes("companyName") && !formData.companyName.trim()) {
       fieldErrors.companyName = "Company name is required.";
     }
+
     if (fields.includes("companyAddress") && !formData.companyAddress.trim()) {
       fieldErrors.companyAddress = "Company address is required.";
     }
-    if (fields.includes("companyEmail") && !/\S+@\S+\.\S+/.test(formData.companyEmail)) {
-      fieldErrors.companyEmail = "Invalid company email address.";
+
+    if (fields.includes("companyEmail") && !emailRegex.test(formData.companyEmail)) {
+      fieldErrors.companyEmail = "Enter a valid company email address.";
     }
+
+    if (fields.includes("companyPhone") && !phoneRegex.test(formData.companyPhone)) {
+      fieldErrors.companyPhone = "Enter a valid company phone number with country code.";
+    }
+
     if (step === 2 && userCaptchaInput !== captchaText) {
       fieldErrors.captcha = "CAPTCHA verification failed. Please try again.";
     }
+
     setErrors(fieldErrors);
     if (Object.keys(fieldErrors).length > 0) {
       Object.values(fieldErrors).forEach((err) => toast.error(err, { autoClose: 10000 }));
     }
+
     return Object.keys(fieldErrors).length === 0;
   };
 
@@ -145,7 +128,7 @@ const ShopkeeperSignUp = () => {
 
   const handleSubmit = async () => {
     if (!validateFields(["companyName", "companyAddress", "companyEmail", "companyPhone"])) return;
-    
+
     const toastId = toast.loading("Signing up...", {
       theme: "colored",
       progressStyle: { background: "#7c3aed" },
@@ -153,9 +136,7 @@ const ShopkeeperSignUp = () => {
 
     try {
       const { confirmPassword, ...submitData } = formData;
-      const responseMessage = await signupShopkeeper({
-        ...submitData
-      });
+      const responseMessage = await signupShopkeeper({ ...submitData });
 
       toast.update(toastId, {
         render: responseMessage || "Signup successful! Redirecting...",
@@ -172,7 +153,6 @@ const ShopkeeperSignUp = () => {
         autoClose: 5000,
         isLoading: false,
       });
-      // Regenerate CAPTCHA on error
       generateCaptcha();
     }
   };
@@ -191,17 +171,15 @@ const ShopkeeperSignUp = () => {
             <>
               <InputField label="Name" type="text" name="name" value={formData.name} onChange={handleInputChange} error={errors.name} />
               <InputField label="Email" type="email" name="email" value={formData.email} onChange={handleInputChange} error={errors.email} />
-              {/* <PhoneInputField label="Phone" name="phone" value={formData.phone} onChange={handleInputChange} error={errors.phone} /> */}
               <PhoneInputField
-              label=""
-              name="phone"
-              value={formData.phone}
-              onChange={(phone) =>
-              setFormData({ ...formData, phone: phone.target.value })
-              }
-              containerClass="w-full"
-              inputClass="border rounded p-2 w-full"
-            />
+                label=""
+                name="phone"
+                value={formData.phone}
+                onChange={(phone) => setFormData({ ...formData, phone: phone.target.value })}
+                containerClass="w-full"
+                inputClass="border rounded p-2 w-full"
+                error={errors.phone}
+              />
               <InputField label="Password" type="password" name="password" value={formData.password} onChange={handleInputChange} error={errors.password} />
               <InputField label="Confirm Password" type="password" name="confirmPassword" value={formData.confirmPassword} onChange={handleInputChange} error={errors.confirmPassword} />
               <button onClick={handleNext} className="bg-blue-600 text-white py-2 px-4 rounded-lg w-full mt-4 hover:bg-blue-700 transition">Next</button>
@@ -211,20 +189,18 @@ const ShopkeeperSignUp = () => {
               <InputField label="Company Name" type="text" name="companyName" value={formData.companyName} onChange={handleInputChange} error={errors.companyName} />
               <InputField label="Company Address" type="text" name="companyAddress" value={formData.companyAddress} onChange={handleInputChange} error={errors.companyAddress} />
               <InputField label="Company Email" type="email" name="companyEmail" value={formData.companyEmail} onChange={handleInputChange} error={errors.companyEmail} />
-              {/* <PhoneInputField label="Company Phone" name="companyPhone" value={formData.companyPhone} onChange={handleInputChange} error={errors.companyPhone} /> */}
               <PhoneInputField
-              label=""
-              name="companyPhone"
-              value={formData.companyPhone}
-              onChange={(phone) =>
-              setFormData({ ...formData, companyPhone: phone.target.value })
-              } />
-              {/* Enhanced Alphanumeric CAPTCHA */}
+                label=""
+                name="companyPhone"
+                value={formData.companyPhone}
+                onChange={(phone) => setFormData({ ...formData, companyPhone: phone.target.value })}
+                error={errors.companyPhone}
+              />
               <div className="my-4">
                 <label className="block text-gray-700 mb-2 font-medium">CAPTCHA Verification</label>
                 <div className="flex items-center gap-2 mb-2">
                   <div className="flex-1 flex items-center justify-center bg-gray-100 p-4 rounded-lg">
-                    <span 
+                    <span
                       className="text-2xl font-bold tracking-wider"
                       style={{
                         fontFamily: "'Courier New', monospace",
@@ -237,8 +213,8 @@ const ShopkeeperSignUp = () => {
                       {captchaText}
                     </span>
                   </div>
-                  <button 
-                    type="button" 
+                  <button
+                    type="button"
                     onClick={refreshCaptcha}
                     className="p-3 bg-gray-800 text-white rounded-lg hover:bg-gray-700 transition"
                     aria-label="Refresh CAPTCHA"
@@ -257,7 +233,7 @@ const ShopkeeperSignUp = () => {
                 />
                 {errors.captcha && <span className="text-red-500 text-sm">{errors.captcha}</span>}
               </div>
-              
+
               <div className="flex justify-between mt-4">
                 <button onClick={handleBack} className="bg-gray-600 text-white py-2 px-4 rounded-lg hover:bg-gray-700 transition">Back</button>
                 <button onClick={handleSubmit} className="bg-green-600 text-white py-2 px-4 rounded-lg hover:bg-green-700 transition">Sign Up</button>
