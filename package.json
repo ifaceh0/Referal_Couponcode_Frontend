@@ -10,7 +10,7 @@
     "preview": "vite preview"
   },
   "dependencies": {
-    "@ant-design/charts": "^2.3.0",
+    "@ant-design/charts": "^2.4.0",
     "@emotion/react": "^11.14.0",
     "@emotion/styled": "^11.14.0",
     "@mui/icons-material": "^6.4.6",
@@ -18,7 +18,7 @@
     "@tanstack/react-table": "^8.21.2",
     "ag-grid-community": "^33.1.1",
     "ag-grid-react": "^33.1.1",
-    "antd": "^5.25.4",
+    "antd": "^5.26.0",
     "axios": "^1.7.9",
     "chart.js": "^4.4.9",
     "framer-motion": "^12.5.0",
