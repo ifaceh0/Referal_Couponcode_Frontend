@@ -275,8 +275,12 @@ const ReferralCodeSettings = ({ shopkeeperId, token }) => {
                             {isEditing ? (
                                 <input
                                     type="number"
+                                    min={0}
                                     value={promotion.referralAmount}
-                                    onChange={(e) => setPromotion({ ...promotion, referralAmount: Number(e.target.value) })}
+                                    onChange={(e) => setPromotion({ ...promotion, referralAmount: Number(e.target.value),
+                                        referralAmount: Math.max(0, Number(e.target.value)),
+                                     })
+                                    }
                                     className="w-full p-2 border rounded"
                                 />
                             ) : (
@@ -289,8 +293,12 @@ const ReferralCodeSettings = ({ shopkeeperId, token }) => {
                             {isEditing ? (
                                 <input
                                     type="number"
+                                    min={0}
                                     value={promotion.referrerAmount}
-                                    onChange={(e) => setPromotion({ ...promotion, referrerAmount: Number(e.target.value) })}
+                                    onChange={(e) => setPromotion({ ...promotion, referrerAmount: Number(e.target.value),
+                                         referrerAmount: Math.max(0, Number(e.target.value)),
+                                        })
+                                    }
                                     className="w-full p-2 border rounded"
                                 />
                             ) : (
@@ -344,8 +352,11 @@ const ReferralCodeSettings = ({ shopkeeperId, token }) => {
                             {isEditing ? (
                                 <input
                                     type="number"
+                                    min={0}
                                     value={couponPromotion.couponAmount}
-                                    onChange={(e) => setCouponPromotion({ ...couponPromotion, couponAmount: Number(e.target.value) })}
+                                    onChange={(e) => setCouponPromotion({ ...couponPromotion, couponAmount: Number(e.target.value),
+                                        couponAmount: Math.max(0, Number(e.target.value)),
+                                     })}
                                     className="w-full p-2 border rounded"
                                 />
                             ) : (
@@ -358,8 +369,11 @@ const ReferralCodeSettings = ({ shopkeeperId, token }) => {
                             {isEditing ? (
                                 <input
                                     type="number"
+                                    min={0}
                                     value={couponPromotion.limitOfUse}
-                                    onChange={(e) => setCouponPromotion({ ...couponPromotion, limitOfUse: Number(e.target.value) })}
+                                    onChange={(e) => setCouponPromotion({ ...couponPromotion, limitOfUse: Number(e.target.value),
+                                        limitOfUse: Math.max(0, Number(e.target.value)),
+                                     })}
                                     className="w-full p-2 border rounded"
                                 />
                             ) : (

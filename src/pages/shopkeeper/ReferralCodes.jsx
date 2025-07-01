@@ -272,12 +272,12 @@ const ReferralManagement = () => {
             <input type="date" value={expiryDate} onChange={(e) => setExpiryDate(e.target.value)} className="border rounded p-2"
               title="Expire Date - mm/dd/yyyy"
               readOnly={expiryReadOnly} />
-            <input type="number" placeholder="Referral Amount ($)" value={referralAmount}
-              onChange={(e) => setReferralAmount(e.target.value)}
+            <input type="number" min={0} placeholder="Referral Amount ($)" value={referralAmount}
+              onChange={(e) => setReferralAmount(Math.max(0, Numberer(e.target.value)))}
               className="border rounded p-2"
               readOnly={referralAmountReadOnly} />
-            <input type="number" placeholder="Referrer Amount ($)" value={referrerAmount}
-              onChange={(e) => setReferrerAmount(e.target.value)}
+            <input type="number" min={0} placeholder="Referrer Amount ($)" value={referrerAmount}
+              onChange={(e) => setReferrerAmount(Math.max(0, Number(e.target.value)))}
               className="border rounded p-2"
               readOnly={referrerAmountReadOnly} />
           </div>
