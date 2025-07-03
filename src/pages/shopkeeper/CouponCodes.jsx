@@ -118,6 +118,12 @@ const CouponCodes = () => {
       toast.error("All fields are required!", { autoClose: 3000 });
       return;
     }
+    // email validation
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+      if (!emailRegex.test(form.email)) {
+        toast.error("Invalid email format.");
+        return;
+      }
 
     const toastId = toast.loading("Generating coupon code...");
     try {
@@ -220,8 +226,20 @@ const CouponCodes = () => {
             <input type="text" placeholder="Name" value={form.name}
               onChange={(e) => setForm({ ...form, name: e.target.value })}
               className="border rounded p-2" />
-            <input type="email" placeholder="Email" value={form.email} onChange={(e) =>
-              setForm({ ...form, email: e.target.value })} className="border rounded p-2" />
+              <div className="flex flex-col">
+            <input 
+            type="email" 
+            placeholder="Email" 
+            value={form.email} 
+            onChange={(e) =>
+              setForm({ ...form, email: e.target.value })} 
+              className={`border rounded p-2 ${
+                form.email && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(form.email) ? "border-red-500" : ""
+              }`} />
+              {form.email && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(form.email) && (
+                <span className="text-sm text-red-600">Please enter a valid email address.</span>
+              )}
+              </div>
             {/* <PhoneInputField label="" name="phone" value={form.phone} onChange={(e) => setForm({ ...form, phone: e.target.value })} containerClass="w-full" inputClass="border rounded p-2 w-full" /> */}
             <PhoneInputField
               label=""
@@ -238,10 +256,22 @@ const CouponCodes = () => {
               onChange={(e) => setForm({ ...form, expiryDate: e.target.value })}
               className="border rounded p-2" title="Expire Date" readOnly={expiryReadOnly} />
             <input type="number" placeholder="Coupon Amount ($)" value={form.referralAmount}
-              onChange={(e) => setForm({ ...form, referralAmount: e.target.value })}
+              onChange={(e) => {
+                const value = Number(e.target.value);
+                setForm((prev) => ({
+                  ...prev,
+                  referralAmount: isNaN(value) ? '' : Math.max(0, value),
+                }));
+              }}  
               className="border rounded p-2" readOnly={referralAmountReadOnly} />
             <input type="number" placeholder="Limit" value={form.usageLimit}
-              onChange={(e) => setForm({ ...form, usageLimit: e.target.value })}
+              onChange={(e) =>{
+                const value = Number(e.target.value);
+                setForm((prev) => ({
+                  ...prev,
+                  usageLimit: isNaN(value) ? '' : Math.max(0, value),
+                }));
+              }}
               className="border rounded p-2" readOnly={couponUseLimitReadOnly} />
           </div>
           <button onClick={handleGenerateCode} className="px-4 py-2 rounded shadow" style={{ backgroundColor: colorPalette.accent, color: colorPalette.white }}>Generate Code</button>
@@ -256,10 +286,16 @@ const CouponCodes = () => {
               className="border rounded p-2" title="Expire Date - mm/dd/yyyy" readOnly={expiryReadOnly} />
 
             <input type="number" placeholder="Coupon Amount ($)" value={bulkReferralAmount}
-              onChange={(e) => setBulkReferralAmount(e.target.value)} className="border rounded p-2"
+              onChange={(e) => {
+                const value = Number(e.target.value);
+                setBulkReferralAmount(isNaN(value) ? '' : Math.max(0, value));
+              }}
               readOnly={referralAmountReadOnly} />
             <input type="number" placeholder="Limit" value={bulkLimit}
-              onChange={(e) => setBulkLimit(e.target.value)} className="border rounded p-2" readOnly={couponUseLimitReadOnly} />
+              onChange={(e) => {
+                const value = Number(e.target.value);
+                setBulkLimit(isNaN(value) ? '' : Math.max(0, value));
+              }} className="border rounded p-2" readOnly={couponUseLimitReadOnly} />
           </div>
           <button onClick={handleBulkGenerate} className="px-4 py-2 rounded shadow" style={{ backgroundColor: colorPalette.secondary, color: colorPalette.white }}>Generate Coupon Codes</button>
         </div>
