@@ -311,6 +311,8 @@ import React, { useState, useEffect } from "react";
 import { colorPalette } from "../../../utils/demoData";
 import { loginShopkeeper } from "../../../api/signin";
 import { useNavigate } from "react-router-dom";
+import { getCurrentUser } from '../../../api/signin';
+
 
 const ShopkeeperSignIn = () => {
   const [formData, setFormData] = useState({ email: "", password: "" });
@@ -380,8 +382,22 @@ const ShopkeeperSignIn = () => {
 
     try {
       const response = await loginShopkeeper(formData);
+      // const role = localStorage.getItem("role");
       console.log("Login successful:", response);
-      navigate("/shopkeeper/dashboard");
+      if(response != null){
+      const user = await getCurrentUser();
+      if(user.role === 'USER'){
+        navigate("/shopkeeper/referredCustomerDashBoard");
+      }
+      else if(user.role === 'SHOPKEEPER'){
+        navigate("/shopkeeper/dashboard");
+      }
+      else if(user.role === 'SHOP_EMPLOYEE'){
+        navigate("/shopkeeper/interaction-panel");
+      }
+      }
+      
+      
     } catch (err) {
       console.error("Login error:", err);
       setError(err.message || "Login failed. Please try again.");

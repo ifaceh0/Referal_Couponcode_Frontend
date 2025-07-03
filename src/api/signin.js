@@ -84,6 +84,7 @@ export const getCurrentUser = async () => {
         const data = await response.json(); // Store parsed JSON
           console.log("Response JSON:", data);
           localStorage.setItem("shopkeeperId", data.id);
+          localStorage.setItem("role",data.role)
 
         return data;
     } catch (error) {

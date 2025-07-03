@@ -8,12 +8,15 @@ const ShopkeeperDashboardLayout = ({ children }) => {
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
   const navigate = useNavigate();
   const [userDetails, setUserDetails] = useState(null);
+  const [role, setRole] = useState(null);
 
   useEffect(() => {
     const fetchUser = async () => {
       try {
         const user = await getCurrentUser();
         setUserDetails(user);
+        console.log("User role:", user.role);
+        setRole(user.role)
       } catch (error) {
         console.error("Error fetching user:", error);
       }
@@ -28,15 +31,29 @@ const ShopkeeperDashboardLayout = ({ children }) => {
   const handleLogout = () => {
     localStorage.removeItem('token');
     localStorage.removeItem('user');
+    // localStorage.removeItem('role');
     setUserDetails(null);
     navigate('/signin');
   };
 
- const navItems = [
+ const navItems = userDetails  ? [
+  // {
+  //   to: "/shopkeeper/dashboard",
+  //   label: "Dashboard",
+  //   roles: ["SHOPKEEPER", "SHOP_EMPLOYEE", "USER"],
+  // },
   {
-    to: "/shopkeeper/dashboard",
-    label: "Dashboard",
-    roles: ["SHOPKEEPER", "SHOP_EMPLOYEE", "USER"],
+        to:
+          userDetails.role === "USER"
+            ? "/shopkeeper/referredcustomerdashboard"
+            : "/shopkeeper/dashboard",
+        label: "Dashboard",
+        roles: ["SHOPKEEPER", "USER"],
+      },
+      {
+    to: "/shopkeeper/referrerdashboard",
+    label: "Referrer Dashboard",
+    roles: ["USER"],
   },
   {
     to: "/shopkeeper/referral-codes",
@@ -85,7 +102,9 @@ const ShopkeeperDashboardLayout = ({ children }) => {
     label: "Employee",
     roles: ["SHOPKEEPER"], // excluded from USER
   },
-];
+]
+: [];
+
 
 
   const filteredNavItems = navItems.filter(item => {
