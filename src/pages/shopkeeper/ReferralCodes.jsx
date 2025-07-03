@@ -111,6 +111,12 @@ const ReferralManagement = () => {
       toast.warn("Please fill in all fields.");
       return;
     }
+    // email validation
+      const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+      if (!emailRegex.test(email)) {
+        toast.error("Invalid email format.");
+        return;
+       }
 
     const userData = { name, email, phone, expiryDate, referralAmount, referrerAmount, type };
     const toastId = toast.loading("Registering user...");
@@ -259,7 +265,23 @@ const ReferralManagement = () => {
           </h2>
           <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-4">
             <input type="text" placeholder="Full Name" value={name} onChange={(e) => setName(e.target.value)} className="border rounded p-2" />
-            <input type="email" placeholder="Email" value={email} onChange={(e) => setEmail(e.target.value)} className="border rounded p-2" />
+            <div className="relative">
+            <input 
+              type="email" 
+              placeholder="Email" 
+              value={email} 
+              onChange={(e) => setEmail(e.target.value)} 
+              className={`border rounded p-2 w-full ${
+                email && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email) ? 'border-red-500' : ''
+              }`} 
+            />
+            {email && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email) && (
+              <p className="text-sm text-red-600 mt-1">Please enter a valid email address.</p>
+              )}
+            </div>
+            
+
+
             {/* <input type="tel" placeholder="Phone" value={phone} onChange={(e) => setPhone(e.target.value)} className="border rounded p-2" /> */}
             <PhoneInputField
               label=""
@@ -273,11 +295,17 @@ const ReferralManagement = () => {
               title="Expire Date - mm/dd/yyyy"
               readOnly={expiryReadOnly} />
             <input type="number" min={0} placeholder="Referral Amount ($)" value={referralAmount}
-              onChange={(e) => setReferralAmount(Math.max(0, Numberer(e.target.value)))}
+              onChange={(e) => {
+                const value = Number(e.target.value);
+                setReferralAmount(isNaN(value) ? '' : Math.max(0, value));
+              }}
               className="border rounded p-2"
               readOnly={referralAmountReadOnly} />
             <input type="number" min={0} placeholder="Referrer Amount ($)" value={referrerAmount}
-              onChange={(e) => setReferrerAmount(Math.max(0, Number(e.target.value)))}
+              onChange={(e) => {
+                const value = Number(e.target.value);
+                setReferrerAmount(isNaN(value) ? '' : Math.max(0, value));
+              }}
               className="border rounded p-2"
               readOnly={referrerAmountReadOnly} />
           </div>
@@ -298,14 +326,30 @@ const ReferralManagement = () => {
               onChange={(e) => setBulkExpiryDate(e.target.value)} className="border rounded p-2"
               title="Expire Date - mm/dd/yyyy"
               readOnly={expiryReadOnly} />
-            <input type="number" placeholder="Referral Amount ($)"
+            <input
+              type="number"
+              placeholder="Referral Amount ($)"
               value={bulkReferralAmount}
-              onChange={(e) => setBulkReferralAmount(e.target.value)}
+              onChange={(e) => {
+                const value = Number(e.target.value);
+                setBulkReferralAmount(isNaN(value) ? '' : Math.max(0, value));
+              }}
               className="border rounded p-2"
-              readOnly={referralAmountReadOnly} />
-            <input type="number" placeholder="Referrer Amount ($)" value={bulkReferrerAmount}
-              onChange={(e) => setBulkReferrerAmount(e.target.value)} className="border rounded p-2"
-              readOnly={referrerAmountReadOnly} />
+              readOnly={referralAmountReadOnly}
+            />
+
+            <input
+            type="number"
+            placeholder="Referrer Amount ($)"
+            value={bulkReferrerAmount}
+            onChange={(e) => {
+              const value = Number(e.target.value);
+              setBulkReferrerAmount(isNaN(value) ? '' : Math.max(0, value));
+            }}
+            className="border rounded p-2"
+            readOnly={referrerAmountReadOnly}
+          />
+
           </div>
           <button onClick={handleBulkGenerate} className="px-4 py-2 rounded" style={{ backgroundColor: colorPalette.accent, color: colorPalette.white }}>
             Generate Bulk Codes
