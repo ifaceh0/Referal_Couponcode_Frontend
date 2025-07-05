@@ -47,7 +47,7 @@ const PhoneInputField = ({
           {label}
         </label>
       )}
-      <div className={`relative w-full ${wrapperClass}`}>
+      <div className={`flex flex-col ${wrapperClass}`}>
         <PhoneInput
           country={"us"} 
           onlyCountries={["us", "ca"]} // ✅ Limit to US and Canada

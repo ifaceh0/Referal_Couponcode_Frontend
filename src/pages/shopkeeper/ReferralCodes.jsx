@@ -265,7 +265,7 @@ const ReferralManagement = () => {
           </h2>
           <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-4">
             <input type="text" placeholder="Full Name" value={name} onChange={(e) => setName(e.target.value)} className="border rounded p-2" />
-            <div className="relative">
+            <div className="flex flex-col">
             <input 
               type="email" 
               placeholder="Email" 
@@ -289,6 +289,7 @@ const ReferralManagement = () => {
               value={phone}
               onChange={(e) => setPhone(e.target.value)}
               containerClass="w-full"
+              wrapperClass="flex flex-col"
               inputClass="border rounded p-2 w-full"
             />
             <input type="date" value={expiryDate} onChange={(e) => setExpiryDate(e.target.value)} className="border rounded p-2"
