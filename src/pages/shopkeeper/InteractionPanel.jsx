@@ -636,7 +636,7 @@ const InteractionPanel = () => {
     fetchData();
   }, []);
 
-  const shopkeeperId = userDetails?.id || localStorage.getItem("shopkeeperId");
+  const shopkeeperId = userDetails?.shopkeeperId || localStorage.getItem("shopkeeperId");
   const navigate = useNavigate();
 
   const handleVerifyPhone = async () => {
@@ -952,7 +952,7 @@ const InteractionPanel = () => {
       </Dialog>
 
       {/* Back Button */}
-      <div className="w-full max-w-6xl mb-4">
+      {/* <div className="w-full max-w-6xl mb-4">
         <button
           onClick={() => navigate(-1)}
           className="flex items-center text-blue-600 hover:text-blue-800 transition mb-4"
@@ -960,7 +960,7 @@ const InteractionPanel = () => {
           <FaArrowLeft className="mr-2" />
           Back
         </button>
-      </div>
+      </div> */}
 
       {/* Header Section */}
       <div className="w-full max-w-6xl flex justify-center items-center mb-6 bg-white p-4 rounded shadow">
