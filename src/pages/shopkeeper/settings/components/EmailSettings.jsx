@@ -114,10 +114,10 @@
 import React, { useState, useEffect } from "react";
 import ReactQuill, { Quill } from "react-quill";
 import "react-quill/dist/quill.snow.css";
+import axios from "axios";
 
 import {
   companyDetails as staticCompanyDetails,
-  emailTemplates,
   referralData,
   shopkeeperDemoData1,
 } from "../../../../utils/demoData";
@@ -132,6 +132,33 @@ Quill.register(Font, true);
 const Size = Quill.import("formats/size");
 Size.whitelist = ["small", "normal", "large", "huge"];
 Quill.register(Size, true);
+
+// ✅ Inline API functions
+const getEmailTemplate = async (shopkeeperId, templateType = "default") => {
+  try {
+    const response = await axios.get(`http://localhost:9999/refer/api/emails/get-template`, {
+      params: {
+        shopkeeperId,
+        templateType,
+        type: "email",
+      },
+    });
+    return response.data;
+  } catch (error) {
+    console.error("Error fetching template:", error);
+    return null;
+  }
+};
+
+const saveEmailTemplate = async (payload) => {
+  try {
+    const response = await axios.post(`http://localhost:9999/refer/api/emails/save-template`, payload);
+    return response.data;
+  } catch (error) {
+    console.error("Error saving template:", error);
+    throw error;
+  }
+};
 
 const EmailSettings = () => {
   const [view, setView] = useState("normal");
@@ -169,11 +196,13 @@ const EmailSettings = () => {
               contactEmail: response.companyEmail || staticCompanyDetails.contactEmail,
               contactNumber: response.companyPhone || staticCompanyDetails.contactNumber,
             });
+
+            const templateResponse = await getEmailTemplate(user.id, "default");
+            if (templateResponse?.template) {
+              setDefaultTemplateHTML(templateResponse.template);
+            }
           }
         }
-
-        // ✅ TODO: Replace with backend-fetched default template
-        setDefaultTemplateHTML(emailTemplates["Minimal Template"]);
       } catch (err) {
         console.error("Error fetching profile/template:", err);
       } finally {
@@ -203,10 +232,12 @@ const EmailSettings = () => {
         : savedEnding;
 
     return baseTemplate
-      .replace("{username}", referralData.username)
-      .replace("{password}", referralData.password)
-      .replace("{referralCode}", referralData.referralCode)
-      .replace("{referralLink}", referralData.referralLink)
+      .replace("{{name}}", referralData.username)
+      .replace("{{password}}", referralData.password)
+      .replace("{{referralCode}}", referralData.referralCode)
+      .replace("{{referralLink}}", referralData.referralLink)
+      .replace("{{referral}}", referralData.referralLink)
+      .replace("{{coupon}}", referralData.referralCode)
       .replace("{intro}", usedIntro)
       .replace("{ending}", usedEnding)
       .replace("{companyName}", companyDetails.name)
@@ -224,6 +255,38 @@ const EmailSettings = () => {
     } else {
       setSelectedTemplate(value);
       setView("normal");
+    }
+  };
+
+  const handleSaveCustomTemplate = async () => {
+    if (!customTemplateName.trim()) {
+      alert("Please provide a name for your custom template.");
+      return;
+    }
+
+    try {
+      const payload = {
+        shopkeeper: { shopkeeperId: userDetails.id },
+        type: "email",
+        title: customTemplateName,
+        template: renderTemplatePreview(),
+        referralCondition: "{{referral}}",
+        couponCondition: "{{coupon}}",
+        templateType: "custom",
+        status: true,
+      };
+
+      await saveEmailTemplate(payload);
+
+      setSavedIntro(intro);
+      setSavedEnding(ending);
+      setCustomTemplateSaved(true);
+      setSelectedTemplate(customTemplateName);
+      setView("normal");
+
+      alert(`Custom template "${customTemplateName}" saved!`);
+    } catch (err) {
+      alert("Failed to save custom template.");
     }
   };
 
@@ -301,20 +364,7 @@ const EmailSettings = () => {
 
             <div className="flex gap-4">
               <button
-                onClick={() => {
-                  if (!customTemplateName.trim()) {
-                    alert("Please provide a name for your custom template.");
-                    return;
-                  }
-
-                  setSavedIntro(intro);
-                  setSavedEnding(ending);
-                  setCustomTemplateSaved(true);
-                  setSelectedTemplate(customTemplateName);
-                  setView("normal");
-
-                  alert(`Custom template "${customTemplateName}" saved!`);
-                }}
+                onClick={handleSaveCustomTemplate}
                 className="py-2 px-4 bg-green-600 text-white rounded-md hover:bg-green-700 transition"
               >
                 Save Custom Template
