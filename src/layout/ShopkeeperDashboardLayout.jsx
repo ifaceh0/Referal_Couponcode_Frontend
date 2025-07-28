@@ -43,16 +43,16 @@ const ShopkeeperDashboardLayout = ({ children }) => {
   //   roles: ["SHOPKEEPER", "SHOP_EMPLOYEE", "USER"],
   // },
   {
-        to:
-          userDetails.role === "USER"
-            ? "/shopkeeper/referredcustomerdashboard"
-            : "/shopkeeper/dashboard",
-        label: "Dashboard",
-        roles: ["SHOPKEEPER", "USER"],
-      },
-      {
-    to: "/shopkeeper/referrerdashboard",
-    label: "Referrer Dashboard",
+    to:
+      userDetails.role === "USER"
+        ? "/shopkeeper/referrerdashboard"
+        : "/shopkeeper/dashboard",
+    label: "Dashboard",
+    roles: ["SHOPKEEPER", "USER"],
+  },
+  {
+    to: "/shopkeeper/referredcustomerdashboard",
+    label: "Referred Dashboard",
     roles: ["USER"],
   },
   {
