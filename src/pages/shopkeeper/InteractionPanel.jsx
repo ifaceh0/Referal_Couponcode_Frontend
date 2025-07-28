@@ -800,15 +800,44 @@ const InteractionPanel = () => {
         <p className="text-sm text-gray-500">Shop ID: {userDetails?.id || shopkeeperId}</p>
       </div>
 
-      {/* Verification Dialog */}
-      <Dialog open={verificationDialogOpen} onClose={handleCloseVerificationDialog} maxWidth="md" fullWidth>
-        <DialogTitle className="bg-gradient-to-r from-blue-600 to-purple-600 text-white text-xl text-center py-4">
-          Customer Details
-        </DialogTitle>
-        <DialogContent className="bg-white p-6">
-          {/* ... verification content ... */}
-        </DialogContent>
-      </Dialog>
+      {/* Inline Customer Details Section */}
+{verificationDialogOpen && verificationData && (
+  <div className="max-w-6xl w-full bg-white mt-6 p-6 rounded shadow">
+    <h2 className="text-xl font-semibold mb-4 text-gray-700">Customer Details</h2>
+    <div className="grid grid-cols-1 md:grid-cols-2 gap-4 text-gray-800">
+      <p><strong>Name:</strong> {verificationData.name}</p>
+      <p><strong>Phone:</strong> {verificationData.phone}</p>
+      <p><strong>Email:</strong> {verificationData.email}</p>
+      <p><strong>Customer ID:</strong> {verificationData.customerId}</p>
+      <p><strong>Available Balance:</strong> ₹{verificationData.availableBalance}</p>
+      <p><strong>Coupon Amount:</strong> ₹{verificationData.couponAmount}</p>
+      <p><strong>Coupon Usage Limit:</strong> {verificationData.couponUsageLimit}</p>
+      <p><strong>Referral Code:</strong> {verificationData.referralCode}</p>
+    </div>
+
+    <div className="mt-6">
+      <h3 className="font-semibold mb-2">Redeem Discount</h3>
+      <div className="flex items-center gap-2">
+        <input
+          type="number"
+          value={redeemAmount}
+          onChange={(e) => setRedeemAmount(e.target.value)}
+          placeholder="Enter amount"
+          className="p-2 border rounded w-40"
+        />
+        <button
+          onClick={handleRedeemClick}
+          className="bg-green-500 text-white px-4 py-2 rounded"
+          disabled={loading}
+        >
+          {loading ? "Processing..." : "Redeem"}
+        </button>
+      </div>
+      {error && <p className="text-red-500 mt-2">{error}</p>}
+    </div>
+  </div>
+)}
+
 
       {/* Main Form */}
       <div className="max-w-6xl w-full grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
