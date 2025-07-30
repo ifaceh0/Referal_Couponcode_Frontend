@@ -254,7 +254,8 @@ const CouponCodes = () => {
 
             <input type="date" value={form.expiryDate}
               onChange={(e) => setForm({ ...form, expiryDate: e.target.value })}
-              className="border rounded p-2" title="Expire Date" readOnly={expiryReadOnly} />
+              className="border rounded p-2" title="Expire Date" readOnly={expiryReadOnly}
+              min={new Date().toISOString().split("T")[0]} />
             <input type="number" placeholder="Coupon Amount ($)" value={form.referralAmount}
               onChange={(e) => {
                 const value = Number(e.target.value);
@@ -281,15 +282,16 @@ const CouponCodes = () => {
         <div className="mb-8 bg-white p-6 rounded shadow-md">
           <h2 className="text-xl font-semibold mb-4" style={{ color: colorPalette.secondaryDark }}>Bulk Coupon Codes Generation</h2>
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 mb-4">
-            <input type="file" accept=".csv, .xls, .xlsx, .txt" onChange={(e) => setBulkFile(e.target.files[0])} className="block text-sm" />
+            <input type="file" accept=".csv, .xls, .xlsx, .txt" onChange={(e) => setBulkFile(e.target.files[0])} className="block text-sm border rounded p-2" />
             <input type="date" value={bulkExpiryDate} onChange={(e) => setBulkExpiryDate(e.target.value)}
-              className="border rounded p-2" title="Expire Date - mm/dd/yyyy" readOnly={expiryReadOnly} />
+              className="border rounded p-2" title="Expire Date - mm/dd/yyyy" readOnly={expiryReadOnly} 
+              min={new Date().toISOString().split("T")[0]} />
 
             <input type="number" placeholder="Coupon Amount ($)" value={bulkReferralAmount}
               onChange={(e) => {
                 const value = Number(e.target.value);
                 setBulkReferralAmount(isNaN(value) ? '' : Math.max(0, value));
-              }}
+              }} className="border rounded p-2"
               readOnly={referralAmountReadOnly} />
             <input type="number" placeholder="Limit" value={bulkLimit}
               onChange={(e) => {

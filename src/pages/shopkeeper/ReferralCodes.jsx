@@ -294,7 +294,7 @@ const ReferralManagement = () => {
             />
             <input type="date" value={expiryDate} onChange={(e) => setExpiryDate(e.target.value)} className="border rounded p-2"
               title="Expire Date - mm/dd/yyyy"
-              readOnly={expiryReadOnly} />
+              readOnly={expiryReadOnly} min={new Date().toISOString().split("T")[0]} />
             <input type="number" min={0} placeholder="Referral Amount ($)" value={referralAmount}
               onChange={(e) => {
                 const value = Number(e.target.value);
@@ -326,7 +326,7 @@ const ReferralManagement = () => {
             <input type="date" value={bulkExpiryDate}
               onChange={(e) => setBulkExpiryDate(e.target.value)} className="border rounded p-2"
               title="Expire Date - mm/dd/yyyy"
-              readOnly={expiryReadOnly} />
+              readOnly={expiryReadOnly} min={new Date().toISOString().split("T")[0]} />
             <input
               type="number"
               placeholder="Referral Amount ($)"
