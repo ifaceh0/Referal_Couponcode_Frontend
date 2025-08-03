@@ -296,6 +296,240 @@
 
 // export default Scanner;
 
+// import React, { useState, useEffect } from "react";
+// import QrScanner from "react-qr-scanner";
+// import { Dialog, DialogTitle, DialogContent, DialogActions, Button } from "@mui/material";
+// import { motion } from "framer-motion";
+// import { FaArrowLeft, FaSyncAlt } from "react-icons/fa";
+// import axios from "axios";
+// import { toast, ToastContainer } from "react-toastify";
+// import { getCurrentUser } from "../../api/signin";
+// import { userInfo } from "../../api/validateCode";
+// import CustomerDetailsDialog from "./CustomerDetailsDialog";
+
+// const Scanner = () => {
+//   const [scannedData, setScannedData] = useState(null);
+//   const [open, setOpen] = useState(false);
+//   const [redeemAmount, setRedeemAmount] = useState("");
+//   const [error, setError] = useState("");
+//   const [loading, setLoading] = useState(false);
+//   const [userDetails, setUserDetails] = useState(null);
+//   const [errorDialogOpen, setErrorDialogOpen] = useState(false);
+//   const [errorDialogMessage, setErrorDialogMessage] = useState("");
+//   const [successDialogOpen, setSuccessDialogOpen] = useState(false);
+//   const [successMessage, setSuccessMessage] = useState("");
+//   const [cameraFacingMode, setCameraFacingMode] = useState("environment");
+//   const [hasCameraPermission, setHasCameraPermission] = useState(true);
+
+//   useEffect(() => {
+//     const fetchData = async () => {
+//       try {
+//         const user = await getCurrentUser();
+//         setUserDetails(user);
+//       } catch (error) {
+//         console.error("Error fetching user:", error);
+//       }
+//     };
+
+//     fetchData();
+//   }, []);
+
+//   const handleScan = async (data) => {
+//     if (data) {
+//       try {
+//         const parsedData = JSON.parse(data.text);
+
+//         if (!userDetails) {
+//           toast.error("User details not loaded yet. Please try again.");
+//           return;
+//         }
+
+//         if (String(parsedData.shopID) !== String(userDetails.id)) {
+//           setErrorDialogMessage("Invalid scan code. This customer does not belong to your shop.");
+//           setErrorDialogOpen(true);
+//           return;
+//         }
+
+//         const freshInfo = await userInfo("", parsedData.phone);
+
+//         const updatedScannedData = {
+//           ...parsedData,
+//           availableBalance: freshInfo?.availableBalance ?? parsedData.availableBalance,
+//         };
+
+//         setScannedData(updatedScannedData);
+//         setOpen(true);
+//         setError("");
+//       } catch (error) {
+//         console.error("Invalid JSON data:", error);
+//       }
+//     }
+//   };
+
+//   const handleError = (err) => {
+//     console.error("QR Scan Error:", err);
+//     if (err.name === 'NotAllowedError') {
+//       setHasCameraPermission(false);
+//     }
+//   };
+
+//   const toggleCamera = () => {
+//     setCameraFacingMode(prev => (prev === "environment" ? "user" : "environment"));
+//   };
+
+//   const handleRedeemClick = async () => {
+//     if (!redeemAmount) {
+//       setError("Please enter an amount.");
+//       return;
+//     }
+
+//     const amount = parseFloat(redeemAmount);
+//     const availableBalance = parseFloat(scannedData?.availableBalance || 0);
+
+//     if (amount > availableBalance) {
+//       setError("Amount cannot exceed available balance.");
+//       return;
+//     }
+
+//     const token = localStorage.getItem("token");
+//     if (!token) {
+//       setError("Authentication token not found.");
+//       return;
+//     }
+
+//     const payload = {
+//       customerId: scannedData.customerId,
+//       referralCode: scannedData.referralCode,
+//       discountAmount: amount,
+//     };
+
+//     setLoading(true);
+//     const toastId = toast.loading("Processing redemption...");
+
+//     try {
+//       await axios.post(`${import.meta.env.VITE_BACKEND_URL}/api/shopkeeper/redeem-discount`, payload, {
+//         headers: { Authorization: `Bearer ${token}` },
+//       });
+
+//       toast.update(toastId, {
+//         render: "Discount redeemed successfully!",
+//         type: "success",
+//         isLoading: false,
+//         autoClose: true,
+//         closeOnClick: true,
+//         position: "top-right",
+//       });
+
+//       setSuccessMessage(`$${amount} redeemed successfully!`);
+//       setSuccessDialogOpen(true);
+//       setOpen(false);
+//       setScannedData(null);
+//       setRedeemAmount("");
+//       setError("");
+//     } catch (err) {
+//       toast.update(toastId, {
+//         render: err.response?.data || "Redemption failed. Please try again.",
+//         type: "error",
+//         isLoading: false,
+//         autoClose: true,
+//         closeOnClick: true,
+//         position: "top-right",
+//       });
+//       setError(err.response?.data || "Redemption failed. Please try again.");
+//     } finally {
+//       setLoading(false);
+//     }
+//   };
+
+//   const handleCloseDialog = () => {
+//     setOpen(false);
+//     setScannedData(null);
+//     setRedeemAmount("");
+//     setError("");
+//   };
+
+//   const handleCloseErrorDialog = () => {
+//     setErrorDialogOpen(false);
+//     setErrorDialogMessage("");
+//   };
+
+//   const handleCloseSuccessDialog = () => {
+//     setSuccessDialogOpen(false);
+//   };
+
+//   const handleRedeemAmountChange = (e) => {
+//     const raw = e.target.value.substring(1);
+//     const value = raw.replace(/[^0-9.]/g, "");
+//     if (/^\d*\.?\d{0,4}$/.test(value)) {
+//       setRedeemAmount(value);
+//       setError("");
+//     }
+//   };
+
+//   return (
+//     <div className="flex flex-col items-center justify-center min-h-screen p-6 bg-gradient-to-r from-blue-50 to-purple-50">
+//       <motion.h1 initial={{ y: -50, opacity: 0 }} animate={{ y: 0, opacity: 1 }} transition={{ delay: 0.2, duration: 0.5 }} className="text-3xl font-bold mb-8 text-gray-800">
+//         QR Code Scanner
+//       </motion.h1>
+
+//       {!hasCameraPermission && (
+//         <div className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded mb-4 max-w-md w-full">
+//           <p>Camera permission denied. Please allow camera access in your browser settings.</p>
+//         </div>
+//       )}
+
+//       <div className="w-full max-w-2xl flex flex-col items-center">
+//         {userDetails ? (
+//           <motion.div initial={{ scale: 0.8, opacity: 0 }} animate={{ scale: 1, opacity: 1 }} transition={{ delay: 0.4, duration: 0.5 }} className="relative w-full rounded-lg overflow-hidden shadow-lg" style={{ height: "70vh", maxHeight: "600px", minHeight: "300px" }}>
+//             <QrScanner key={cameraFacingMode} delay={100} onScan={handleScan} onError={handleError} style={{ width: "100%", height: "100%" }} constraints={{ video: { facingMode: cameraFacingMode, aspectRatio: 1 } }} />
+//             <button onClick={toggleCamera} className="absolute bottom-4 right-4 bg-black bg-opacity-50 text-white rounded-full p-3 z-10" aria-label="Switch camera">
+//               <FaSyncAlt className="text-lg" />
+//             </button>
+//             <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
+//               <div className="border-4 border-yellow-400 rounded-xl w-64 h-64 md:w-72 md:h-72 relative">
+//                 <div className="absolute -top-1 left-1/4 w-1/2 h-1 bg-yellow-400"></div>
+//                 <div className="absolute -bottom-1 left-1/4 w-1/2 h-1 bg-yellow-400"></div>
+//               </div>
+//             </div>
+//           </motion.div>
+//         ) : (
+//           <p className="text-gray-600 mt-4">Loading scanner...</p>
+//         )}
+//       </div>
+
+//       <div className="mt-3 text-gray-600 text-sm">
+//         {cameraFacingMode === "environment" ? "Using back camera" : "Using front camera"}
+//       </div>
+
+//       <CustomerDetailsDialog open={open} onClose={handleCloseDialog} scannedData={scannedData} redeemAmount={redeemAmount} onRedeemAmountChange={handleRedeemAmountChange} onRedeemClick={handleRedeemClick} error={error} loading={loading} />
+
+//       <Dialog open={errorDialogOpen} onClose={handleCloseErrorDialog} PaperProps={{ style: { borderRadius: "12px", width: "400px", maxWidth: "90%" } }}>
+//         <DialogTitle className="bg-red-500 text-white text-center text-xl font-bold py-4">Error</DialogTitle>
+//         <DialogContent className="p-6 bg-white">
+//           <p className="text-gray-700">{errorDialogMessage}</p>
+//         </DialogContent>
+//         <DialogActions className="p-4 bg-gray-50">
+//           <Button onClick={handleCloseErrorDialog} variant="contained" color="primary" fullWidth className="bg-blue-600 hover:bg-blue-700">OK</Button>
+//         </DialogActions>
+//       </Dialog>
+
+//       <Dialog open={successDialogOpen} onClose={handleCloseSuccessDialog} PaperProps={{ style: { borderRadius: "12px", width: "400px", maxWidth: "90%" } }}>
+//         <DialogTitle className="bg-green-500 text-white text-center text-xl font-bold py-4">Success</DialogTitle>
+//         <DialogContent className="p-6 bg-white">
+//           <p className="text-gray-700 text-center">{successMessage}</p>
+//         </DialogContent>
+//         <DialogActions className="p-4 bg-gray-50">
+//           <Button onClick={handleCloseSuccessDialog} variant="contained" color="primary" fullWidth className="bg-green-600 hover:bg-green-700">OK</Button>
+//         </DialogActions>
+//       </Dialog>
+
+//       <ToastContainer position="top-right" autoClose={3000} />
+//     </div>
+//   );
+// };
+
+// export default Scanner;  
+
 import React, { useState, useEffect } from "react";
 import QrScanner from "react-qr-scanner";
 import { motion } from "framer-motion";
