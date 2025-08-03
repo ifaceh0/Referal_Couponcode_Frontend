@@ -298,9 +298,8 @@
 
 import React, { useState, useEffect } from "react";
 import QrScanner from "react-qr-scanner";
-import { Dialog, DialogTitle, DialogContent, DialogActions, Button } from "@mui/material";
 import { motion } from "framer-motion";
-import { FaArrowLeft, FaSyncAlt } from "react-icons/fa";
+import { FaSyncAlt } from "react-icons/fa";
 import axios from "axios";
 import { toast, ToastContainer } from "react-toastify";
 import { getCurrentUser } from "../../api/signin";
@@ -330,7 +329,6 @@ const Scanner = () => {
         console.error("Error fetching user:", error);
       }
     };
-
     fetchData();
   }, []);
 
@@ -368,13 +366,13 @@ const Scanner = () => {
 
   const handleError = (err) => {
     console.error("QR Scan Error:", err);
-    if (err.name === 'NotAllowedError') {
+    if (err.name === "NotAllowedError") {
       setHasCameraPermission(false);
     }
   };
 
   const toggleCamera = () => {
-    setCameraFacingMode(prev => (prev === "environment" ? "user" : "environment"));
+    setCameraFacingMode((prev) => (prev === "environment" ? "user" : "environment"));
   };
 
   const handleRedeemClick = async () => {
@@ -407,9 +405,13 @@ const Scanner = () => {
     const toastId = toast.loading("Processing redemption...");
 
     try {
-      await axios.post(`${import.meta.env.VITE_BACKEND_URL}/api/shopkeeper/redeem-discount`, payload, {
-        headers: { Authorization: `Bearer ${token}` },
-      });
+      await axios.post(
+        `${import.meta.env.VITE_BACKEND_URL}/api/shopkeeper/redeem-discount`,
+        payload,
+        {
+          headers: { Authorization: `Bearer ${token}` },
+        }
+      );
 
       toast.update(toastId, {
         render: "Discount redeemed successfully!",
@@ -468,7 +470,12 @@ const Scanner = () => {
 
   return (
     <div className="flex flex-col items-center justify-center min-h-screen p-6 bg-gradient-to-r from-blue-50 to-purple-50">
-      <motion.h1 initial={{ y: -50, opacity: 0 }} animate={{ y: 0, opacity: 1 }} transition={{ delay: 0.2, duration: 0.5 }} className="text-3xl font-bold mb-8 text-gray-800">
+      <motion.h1
+        initial={{ y: -50, opacity: 0 }}
+        animate={{ y: 0, opacity: 1 }}
+        transition={{ delay: 0.2, duration: 0.5 }}
+        className="text-3xl font-bold mb-8 text-gray-800"
+      >
         QR Code Scanner
       </motion.h1>
 
@@ -480,9 +487,26 @@ const Scanner = () => {
 
       <div className="w-full max-w-2xl flex flex-col items-center">
         {userDetails ? (
-          <motion.div initial={{ scale: 0.8, opacity: 0 }} animate={{ scale: 1, opacity: 1 }} transition={{ delay: 0.4, duration: 0.5 }} className="relative w-full rounded-lg overflow-hidden shadow-lg" style={{ height: "70vh", maxHeight: "600px", minHeight: "300px" }}>
-            <QrScanner key={cameraFacingMode} delay={100} onScan={handleScan} onError={handleError} style={{ width: "100%", height: "100%" }} constraints={{ video: { facingMode: cameraFacingMode, aspectRatio: 1 } }} />
-            <button onClick={toggleCamera} className="absolute bottom-4 right-4 bg-black bg-opacity-50 text-white rounded-full p-3 z-10" aria-label="Switch camera">
+          <motion.div
+            initial={{ scale: 0.8, opacity: 0 }}
+            animate={{ scale: 1, opacity: 1 }}
+            transition={{ delay: 0.4, duration: 0.5 }}
+            className="relative w-full rounded-lg overflow-hidden shadow-lg"
+            style={{ height: "70vh", maxHeight: "600px", minHeight: "300px" }}
+          >
+            <QrScanner
+              key={cameraFacingMode}
+              delay={100}
+              onScan={handleScan}
+              onError={handleError}
+              style={{ width: "100%", height: "100%" }}
+              constraints={{ video: { facingMode: cameraFacingMode, aspectRatio: 1 } }}
+            />
+            <button
+              onClick={toggleCamera}
+              className="absolute bottom-4 right-4 bg-black bg-opacity-50 text-white rounded-full p-3 z-10"
+              aria-label="Switch camera"
+            >
               <FaSyncAlt className="text-lg" />
             </button>
             <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
@@ -501,27 +525,49 @@ const Scanner = () => {
         {cameraFacingMode === "environment" ? "Using back camera" : "Using front camera"}
       </div>
 
-      <CustomerDetailsDialog open={open} onClose={handleCloseDialog} scannedData={scannedData} redeemAmount={redeemAmount} onRedeemAmountChange={handleRedeemAmountChange} onRedeemClick={handleRedeemClick} error={error} loading={loading} />
+      {/* Customer Details */}
+      <CustomerDetailsDialog
+        open={open}
+        onClose={handleCloseDialog}
+        scannedData={scannedData}
+        redeemAmount={redeemAmount}
+        onRedeemAmountChange={handleRedeemAmountChange}
+        onRedeemClick={handleRedeemClick}
+        error={error}
+        loading={loading}
+      />
 
-      <Dialog open={errorDialogOpen} onClose={handleCloseErrorDialog} PaperProps={{ style: { borderRadius: "12px", width: "400px", maxWidth: "90%" } }}>
-        <DialogTitle className="bg-red-500 text-white text-center text-xl font-bold py-4">Error</DialogTitle>
-        <DialogContent className="p-6 bg-white">
-          <p className="text-gray-700">{errorDialogMessage}</p>
-        </DialogContent>
-        <DialogActions className="p-4 bg-gray-50">
-          <Button onClick={handleCloseErrorDialog} variant="contained" color="primary" fullWidth className="bg-blue-600 hover:bg-blue-700">OK</Button>
-        </DialogActions>
-      </Dialog>
+      {/* Error Modal */}
+      {errorDialogOpen && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-sm">
+          <div className="bg-white rounded-2xl max-w-[400px] w-full p-6 border border-red-300 shadow-xl">
+            <h2 className="text-xl font-bold text-center text-red-600 mb-4">Error</h2>
+            <p className="text-gray-700 text-center">{errorDialogMessage}</p>
+            <button
+              onClick={handleCloseErrorDialog}
+              className="mt-6 w-full py-2 px-4 bg-blue-600 hover:bg-blue-700 text-white rounded-lg font-semibold"
+            >
+              OK
+            </button>
+          </div>
+        </div>
+      )}
 
-      <Dialog open={successDialogOpen} onClose={handleCloseSuccessDialog} PaperProps={{ style: { borderRadius: "12px", width: "400px", maxWidth: "90%" } }}>
-        <DialogTitle className="bg-green-500 text-white text-center text-xl font-bold py-4">Success</DialogTitle>
-        <DialogContent className="p-6 bg-white">
-          <p className="text-gray-700 text-center">{successMessage}</p>
-        </DialogContent>
-        <DialogActions className="p-4 bg-gray-50">
-          <Button onClick={handleCloseSuccessDialog} variant="contained" color="primary" fullWidth className="bg-green-600 hover:bg-green-700">OK</Button>
-        </DialogActions>
-      </Dialog>
+      {/* Success Modal */}
+      {successDialogOpen && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-sm">
+          <div className="bg-white rounded-2xl max-w-[400px] w-full p-6 border border-green-300 shadow-xl">
+            <h2 className="text-xl font-bold text-center text-green-600 mb-4">Success</h2>
+            <p className="text-gray-700 text-center">{successMessage}</p>
+            <button
+              onClick={handleCloseSuccessDialog}
+              className="mt-6 w-full py-2 px-4 bg-green-600 hover:bg-green-700 text-white rounded-lg font-semibold"
+            >
+              OK
+            </button>
+          </div>
+        </div>
+      )}
 
       <ToastContainer position="top-right" autoClose={3000} />
     </div>
