@@ -3,7 +3,6 @@ import PhoneInput from "react-phone-input-2";
 import "react-phone-input-2/lib/style.css";
 
 const PhoneInputField = ({
-
   label,
   name,
   value = "",
@@ -19,7 +18,6 @@ const PhoneInputField = ({
   const [touched, setTouched] = useState(false);
 
   const handlePhoneChange = (phone) => {
-    // Send full phone number (with + and country code) to parent
     onChange?.({
       target: {
         name,
@@ -28,17 +26,20 @@ const PhoneInputField = ({
     });
   };
 
-  // Validate phone number length (min 10 digits excluding country code)
   const validatePhone = (inputValue, country) => {
-    const digitsOnly = inputValue.replace(/\D/g, ""); // Remove non-digit characters
-     const nationalNumber = digitsOnly.replace(country.dialCode, ""); // Remove country code (e.g. '1' for US/CA)
-    // ✅ Show error only if user has typed something and it's wrong
+    const digitsOnly = inputValue.replace(/\D/g, "");
+    const nationalNumber = digitsOnly.replace(country.dialCode, "");
+
     if (nationalNumber.length > 0 && nationalNumber.length < 10) {
       return "Phone number must be at least 10 digits";
     }
-    return true; // ✅ Return true if valid or untouched
-  };
 
+    if (nationalNumber.startsWith("0")) {
+      return "Area code cannot start with zero";
+    }
+
+    return true;
+  };
 
   return (
     <div className={`mb-4 w-full ${containerClass}`}>
@@ -49,15 +50,15 @@ const PhoneInputField = ({
       )}
       <div className={`flex flex-col ${wrapperClass}`}>
         <PhoneInput
-          country={"us"} 
-          onlyCountries={["us", "ca"]} // ✅ Limit to US and Canada
-          value={value.replace("+", "")} // Remove '+' for internal PhoneInput formatting
+          country={"us"}
+          onlyCountries={["us", "ca"]}
+          value={value.replace("+", "")}
           onChange={handlePhoneChange}
           disableCountryCode={false}
           countryCodeEditable={false}
-          enableSearch={true} // ✅ enable dropdown search
-          onBlur={() => setTouched(true)} // ✅ Mark as touched
-          isValid={validatePhone} // ✅ custom validation
+          enableSearch={true}
+          onBlur={() => setTouched(true)}
+          isValid={validatePhone}
           inputExtraProps={{
             name,
             required: true,

@@ -141,6 +141,22 @@ const [checkInProgress, setCheckInProgress] = useState(false);
     if (userCaptchaInput !== captchaText) {
       fieldErrors.captcha = "CAPTCHA verification failed. Please try again.";
     }
+
+    if (!formData.phoneNumber || !/^\+\d{10,15}$/.test(formData.phoneNumber)) {
+      fieldErrors.phoneNumber = "Enter a valid phone number.";
+      } else {
+      const dialCodeMatch = formData.phoneNumber.match(/^\+(\d{1,4})/);
+      if (dialCodeMatch) {
+        const dialCode = dialCodeMatch[1];
+        const nationalNumber = formData.phoneNumber.replace(`+${dialCode}`, "");
+
+        if (nationalNumber.startsWith("0")) {
+          fieldErrors.phoneNumber =
+          "Phone number's area code cannot start with 0.";
+        }
+      }
+    }
+
     setErrors(fieldErrors);
     return Object.keys(fieldErrors).length === 0;
   };
@@ -267,15 +283,31 @@ const [checkInProgress, setCheckInProgress] = useState(false);
             error={errors.phoneNumber}
           /> */}
            <PhoneInputField
-            label=""
-            name="phoneNumber"
-            value={formData.phoneNumber}
-            onChange={(phone) =>
-            setFormData({ ...formData, phoneNumber: phone.target.value })
-            }
-            containerClass="w-full"
-            inputClass="border rounded p-2 w-full"
-          />
+  label="Phone"
+  name="phoneNumber"
+  value={formData.phoneNumber}
+  onChange={({ target, areaCodeInvalid }) => {
+    setFormData((prev) => ({
+      ...prev,
+      phoneNumber: target.value,
+    }));
+
+    // If area code is invalid
+    if (areaCodeInvalid) {
+      setErrors((prev) => ({
+        ...prev,
+        phoneNumber: "Phone number's area code cannot start with 0.",
+      }));
+    } else {
+      setErrors((prev) => ({
+        ...prev,
+        phoneNumber: "",
+      }));
+    }
+  }}
+  error={errors.phoneNumber}
+/>
+
           <InputField
             label="Password"
             type="password"
