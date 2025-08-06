@@ -16,12 +16,21 @@ const PhoneInputField = ({
   errorClass = "",
 }) => {
   const [touched, setTouched] = useState(false);
+  const [fullPhone, setFullPhone] = useState(""); // full phone with +1 prefix
 
-  const handlePhoneChange = (phone) => {
+  const handlePhoneChange = (phone, country) => {
+    const digitsOnly = phone.replace(/\D/g, "");
+    const nationalNumber = digitsOnly.replace(country.dialCode, "");
+
+    // Update local state for displaying full value (required by react-phone-input-2)
+    setFullPhone(phone);
+
+    // Send only clean 10-digit number to form state
+    const cleanNumber = nationalNumber.slice(0, 10); // Limit to 10 digits
     onChange?.({
       target: {
         name,
-        value: `+${phone}`,
+        value: cleanNumber,
       },
     });
   };
@@ -52,7 +61,7 @@ const PhoneInputField = ({
         <PhoneInput
           country={"us"}
           onlyCountries={["us", "ca"]}
-          value={value.replace("+", "")}
+          value={fullPhone} // use internal state to store full number
           onChange={handlePhoneChange}
           disableCountryCode={false}
           countryCodeEditable={false}

@@ -66,7 +66,7 @@ const ShopkeeperSignUp = () => {
   const validateFields = (fields) => {
     const fieldErrors = {};
     const emailRegex = /^[^\s@]+@[^\s@]+\.[a-z]{2,}$/i;
-    const phoneRegex = /^\+?[1-9]\d{9,14}$/;
+    const phoneRegex = /^\d{10}$/;
 
     if (fields.includes("name") && !formData.name.trim()) {
       fieldErrors.name = "Name is required.";
