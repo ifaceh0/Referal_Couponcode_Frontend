@@ -250,7 +250,8 @@ import { getCurrentUser } from '../api/signin';
 const navLinks = [
   { name: 'Home', path: '/' },
   { name: 'Features', path: '/features' },
-  { name: 'Subscription', path: '/subscriptions' },
+  // 👇 Subscription ke liye external link
+  { name: 'Subscription', path: 'https://subscription-frontend-psi.vercel.app/subscription' },
   { name: 'Resources', path: '/resources' },
   { name: 'Contact', path: '/contact' },
 ];
@@ -267,12 +268,11 @@ export default function Navbar() {
       try {
         const user = await getCurrentUser();
         setUserDetails(user);
-        console.dir(user)
+        console.dir(user);
       } catch (error) {
         console.error("Error fetching user:", error);
       }
     };
-    
     fetchUser();
   }, []);
 
@@ -306,22 +306,39 @@ export default function Navbar() {
           <div className="flex justify-between h-16 items-center">
             <Link to="/" className="text-xl font-bold text-purple-600">MyApp</Link>
             
+            {/* Desktop menu */}
             <div className="hidden sm:flex space-x-6">
-              {navLinks.map(({ name, path }) => (
-                <Link
-                  key={path}
-                  to={path}
-                  className={`px-3 py-2 text-sm font-medium rounded-md transition-all duration-200 ${
-                    isActive(path)
-                      ? 'text-white bg-purple-600 shadow-lg'
-                      : 'text-gray-700 hover:text-purple-600'
-                  }`}
-                >
-                  {name}
-                </Link>
-              ))}
+              {navLinks.map(({ name, path }) => {
+                if (name === 'Subscription') {
+                  return (
+                    <a
+                      key={path}
+                      href={path}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className={`px-3 py-2 text-sm font-medium rounded-md transition-all duration-200 text-gray-700 hover:text-purple-600`}
+                    >
+                      {name}
+                    </a>
+                  );
+                }
+                return (
+                  <Link
+                    key={path}
+                    to={path}
+                    className={`px-3 py-2 text-sm font-medium rounded-md transition-all duration-200 ${
+                      isActive(path)
+                        ? 'text-white bg-purple-600 shadow-lg'
+                        : 'text-gray-700 hover:text-purple-600'
+                    }`}
+                  >
+                    {name}
+                  </Link>
+                );
+              })}
             </div>
             
+            {/* Right side buttons */}
             <div className="hidden sm:flex items-center space-x-4">
               {userDetails?.name ? (
                 <div className="relative dropdown-container">
@@ -391,6 +408,7 @@ export default function Navbar() {
               )}
             </div>
             
+            {/* Mobile menu toggle */}
             <button onClick={toggleMenu} className="sm:hidden p-2 text-gray-600 focus:outline-none">
               {isOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
             </button>
@@ -400,25 +418,42 @@ export default function Navbar() {
       
       <div className="h-16"></div>
       
+      {/* Mobile menu */}
       <div className={`sm:hidden transition-all duration-500 ease-in-out ${
         isOpen ? 'max-h-screen opacity-100 transform scale-100' : 'max-h-0 opacity-0 transform scale-95'
       } overflow-hidden`}
       >
         <div className="bg-white shadow-md space-y-2 p-4">
-          {navLinks.map(({ name, path }) => (
-            <Link
-              key={path}
-              to={path}
-              onClick={toggleMenu}
-              className={`block px-4 py-2 rounded-md text-lg ${
-                isActive(path)
-                  ? 'bg-purple-500 text-white'
-                  : 'text-gray-700 hover:bg-gray-200'
-              }`}
-            >
-              {name}
-            </Link>
-          ))}
+          {navLinks.map(({ name, path }) => {
+            if (name === 'Subscription') {
+              return (
+                <a
+                  key={path}
+                  href={path}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="block px-4 py-2 rounded-md text-lg text-gray-700 hover:bg-gray-200"
+                >
+                  {name}
+                </a>
+              );
+            }
+            return (
+              <Link
+                key={path}
+                to={path}
+                onClick={toggleMenu}
+                className={`block px-4 py-2 rounded-md text-lg ${
+                  isActive(path)
+                    ? 'bg-purple-500 text-white'
+                    : 'text-gray-700 hover:bg-gray-200'
+                }`}
+              >
+                {name}
+              </Link>
+            );
+          })}
+
           {userDetails ? (
             <>
               <div className="px-4 py-2 border-t border-gray-200">
