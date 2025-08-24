@@ -59,11 +59,13 @@ const ShopkeeperDashboardLayout = ({ children }) => {
     to: "/shopkeeper/referral-codes",
     label: "Referral Codes",
     roles: ["SHOPKEEPER"],
+    appCondition: "Referral",
   },
   {
     to: "/shopkeeper/coupon-codes",
     label: "Coupon Codes",
     roles: ["SHOPKEEPER"],
+    appCondition: "Coupon",
   },
   {
     to: "/shopkeeper/interaction-panel",
@@ -109,7 +111,22 @@ const ShopkeeperDashboardLayout = ({ children }) => {
 
   const filteredNavItems = navItems.filter(item => {
     if (!item.roles) return true; // visible to all if roles not defined
-    return item.roles.includes(userDetails?.role); // only show if role matches
+    // return item.roles.includes(userDetails?.role); // only show if role matches
+    // return item.roles.includes(userDetails?.role); // only show if role matches
+    if (!userDetails) return false;
+
+  //  check role
+  const roleMatch = item.roles.includes(userDetails.role);
+
+  // if subscription = "no", show all
+  if (userDetails.subscription === "no") return roleMatch;
+
+  //  if subscription = "yes", filter by application_name
+  if (item.appCondition) {
+    return roleMatch && item.appCondition === userDetails.application_name;
+  }
+
+  return roleMatch;
   });
 
   return (
