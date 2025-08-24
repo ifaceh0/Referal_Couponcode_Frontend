@@ -285,7 +285,7 @@ const DashboardGraphs = ({ shopkeeperId }) => {
     }, [selectedYear, selectedMonth, shopkeeperId,userDetails]);
 
     if (!userDetails) {
-    return <p className="text-gray-500">Loading user details....</p>;
+    return <p className="text-gray-500">Loading user details...</p>;
   }
 
     return (
