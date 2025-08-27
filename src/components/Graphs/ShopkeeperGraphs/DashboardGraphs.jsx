@@ -178,6 +178,11 @@ const DashboardGraphs = ({ shopkeeperId }) => {
         fetchUser();
       }, []);
 
+       const normalizeApps = (apps) => {
+        if (!apps) return [];
+        return Array.isArray(apps) ? apps : [apps]; // always return array
+        };
+
     useEffect(() => {
          if (!userDetails) return;
         const fetchData = async () => {
@@ -185,14 +190,16 @@ const DashboardGraphs = ({ shopkeeperId }) => {
                 const referralCodes = await getAllReferralCodeByShopkeeper(shopkeeperId);
                 const couponCodes = await getAllCouponCodeByShopkeeper(shopkeeperId);
 
-                // ✅ Apply filtering based on user subscription/application
+                const apps = normalizeApps(userDetails.application_name);
+
+                //  Apply filtering based on user subscription/application
                 let filteredReferrals = referralCodes;
                 let filteredCoupons = couponCodes;
 
-                if (userDetails.subscription === "yes") {
-                    if (userDetails.application_name === "Referral") filteredCoupons = [];
-                    if (userDetails.application_name === "Coupon") filteredReferrals = [];
-                }
+               if (userDetails.subscription === "yes") {
+          if (!apps.includes("Referral")) filteredReferrals = [];
+          if (!apps.includes("Coupon")) filteredCoupons = [];
+        }
 
                 processGraphData(filteredReferrals, filteredCoupons);
             } catch (error) {
@@ -270,10 +277,14 @@ const DashboardGraphs = ({ shopkeeperId }) => {
                 let filteredReferrals = referralCodes;
                 let filteredCoupons = couponCodes;
 
-                if (userDetails.subscription === "yes") {
-                    if (userDetails.application_name === "Referral") filteredCoupons = [];
-                    if (userDetails.application_name === "Coupon") filteredReferrals = [];
-                }
+                // if (userDetails.subscription === "yes") {
+                //     if (userDetails.application_name === "Referral") filteredCoupons = [];
+                //     if (userDetails.application_name === "Coupon") filteredReferrals = [];
+                // }
+                 if (userDetails.subscription === "yes") {
+          if (!apps.includes("Referral")) filteredReferrals = [];
+          if (!apps.includes("Coupon")) filteredCoupons = [];
+        }
 
                 processMonthlyData(filteredReferrals, filteredCoupons, selectedYear, selectedMonth);
             } catch (error) {
@@ -285,18 +296,23 @@ const DashboardGraphs = ({ shopkeeperId }) => {
     }, [selectedYear, selectedMonth, shopkeeperId,userDetails]);
 
     if (!userDetails) {
-    return <p className="text-gray-500">Loading user details....</p>;
+    return <p className="text-gray-500">Loading...</p>;
   }
+
+    const apps = normalizeApps(userDetails.application_name);
+
 
     return (
         <div className="p-5">
             <h2 className="text-xl font-bold text-gray-800 mb-4">
-                {userDetails.application_name === "Referral"
-                    ? "Referral Code Generation"
-                    : userDetails.application_name === "Coupon"
-                        ? "Coupon Code Generation"
-                        : "Referral vs Coupon Code Generation"}
-            </h2>
+        {apps.includes("Referral") && apps.includes("Coupon")
+          ? "Referral vs Coupon Code Generation"
+          : apps.includes("Referral")
+          ? "Referral Code Generation"
+          : apps.includes("Coupon")
+          ? "Coupon Code Generation"
+          : "No Application"}
+      </h2>
 
             {/* Yearly Graph */}
             <div className="bg-white p-4 shadow-md rounded-lg mb-6">
@@ -307,10 +323,10 @@ const DashboardGraphs = ({ shopkeeperId }) => {
                         <YAxis />
                         <Tooltip />
                         <Legend />
-                        {(userDetails.subscription === "no" || userDetails.application_name === "Referral") && (
+                        {(userDetails.subscription === "no" || apps.includes("Referral")) && (
                             <Bar dataKey="referralCodes" fill="#7c3aed" name="Referral Codes" />
                         )}
-                        {(userDetails.subscription === "no" || userDetails.application_name === "Coupon") && (
+                        {(userDetails.subscription === "no" || apps.includes("Coupon")) && (
                             <Bar dataKey="couponCodes" fill="#fb923c" name="Coupon Codes" />
                         )}
                     </BarChart>
@@ -351,10 +367,10 @@ const DashboardGraphs = ({ shopkeeperId }) => {
                         <YAxis />
                         <Tooltip />
                         <Legend />
-                        {(userDetails.subscription === "no" || userDetails.application_name === "Referral") && (
+                        {(userDetails.subscription === "no" || apps.includes("Referral")) && (
                             <Line type="monotone" dataKey="referralCodes" stroke="#7c3aed" name="Referral Codes" />
                         )}
-                        {(userDetails.subscription === "no" || userDetails.application_name === "Coupon") && (
+                        {(userDetails.subscription === "no" || apps.includes("Coupon")) && (
                             <Line type="monotone" dataKey="couponCodes" stroke="#fb923c" name="Coupon Codes" />
                         )}
                     </LineChart>

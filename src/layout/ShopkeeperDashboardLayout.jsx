@@ -122,8 +122,12 @@ const ShopkeeperDashboardLayout = ({ children }) => {
   if (userDetails.subscription === "no") return roleMatch;
 
   //  if subscription = "yes", filter by application_name
-  if (item.appCondition) {
-    return roleMatch && item.appCondition === userDetails.application_name;
+   if (item.appCondition) {
+    const apps = Array.isArray(userDetails.application_name)
+      ? userDetails.application_name
+      : [userDetails.application_name]; // fallback if it's a string
+
+    return roleMatch && apps.includes(item.appCondition);
   }
 
   return roleMatch;

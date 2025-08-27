@@ -161,6 +161,8 @@ ChartJS.register(CategoryScale, LinearScale, BarElement, Title, Tooltip, Legend)
 const DashboardHome = () => {
   const { subscription } = shopkeeperDemoData;
   const [userDetails, setUserDetails] = useState(null);
+   const [applications, setApplications] = useState([]);
+
   const [stats, setStats] = useState({
     totalUsers: 0,
     referralCodes: 0,
@@ -176,6 +178,13 @@ const DashboardHome = () => {
         const user = await getCurrentUser();
         console.log("Fetched user:", user.id);
         setUserDetails(user);
+
+        // check applications returned from backend
+        if (user.application_name && Array.isArray(user.application_name)) {
+          setApplications(user.application_name);
+        } else if (user.application_name) {
+          setApplications([user.application_name]);
+        }
 
         const shopkeeperId = localStorage.getItem("shopkeeperId");
 
@@ -295,6 +304,7 @@ const DashboardHome = () => {
           <h3 className="text-xl font-semibold">Total Users</h3>
           <p className="text-4xl font-bold mt-2">{stats.totalUsers}</p>
         </div>
+        {applications.includes("Referral") && (
         <div
           className="p-6 rounded-lg shadow-lg text-white transform hover:scale-105 transition-transform duration-200"
           style={{ backgroundColor: colorPalette.secondary }}
@@ -302,6 +312,8 @@ const DashboardHome = () => {
           <h3 className="text-xl font-semibold">Total Referral Codes Generated</h3>
           <p className="text-4xl font-bold mt-2">{stats.referralCodes}</p>
         </div>
+        )}
+        {applications.includes("Coupon") && (
         <div
           className="p-6 rounded-lg shadow-lg text-white transform hover:scale-105 transition-transform duration-200"
           style={{ backgroundColor: colorPalette.accent }}
@@ -309,6 +321,7 @@ const DashboardHome = () => {
           <h3 className="text-xl font-semibold">Total Coupons Codes Generated</h3>
           <p className="text-4xl font-bold mt-2">{stats.couponCodesGenerated}</p>
         </div>
+        )}
       </section>
 
       <section className="mb-8">
@@ -321,6 +334,7 @@ const DashboardHome = () => {
 
       {/* Graphs Area */}
       <section className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
+         {applications.includes("Referral") && (
         <div className="p-6 rounded-lg shadow-lg bg-white">
           <h3 className="text-xl font-semibold mb-4 text-gray-800">
             Total Referral Codes vs New Users
@@ -341,6 +355,9 @@ const DashboardHome = () => {
             />
           </div>
         </div>
+         )}
+
+         {applications.includes("Coupon") && (
         <div className="p-6 rounded-lg shadow-lg bg-white">
           <h3 className="text-xl font-semibold mb-4 text-gray-800">
             Total Coupon Codes vs Redeemed vs Unique Users
@@ -361,7 +378,9 @@ const DashboardHome = () => {
             />
           </div>
         </div>
+         )}
       </section>
+      
 
       {/* Subscription Overview */}
       <section className="mb-8">
@@ -387,6 +406,7 @@ const DashboardHome = () => {
       <section>
         <h2 className="text-xl font-semibold mb-4 text-gray-800">Quick Actions</h2>
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+          {applications.includes("Referral") && (
           <Link
             to="/shopkeeper/referral-codes"
             className="block p-4 rounded-lg text-white text-center font-medium transition-transform transform hover:scale-105"
@@ -394,6 +414,16 @@ const DashboardHome = () => {
           >
             Manage Referral Codes
           </Link>
+          )}
+          {applications.includes("Coupon") && (
+          <Link
+            to="/shopkeeper/coupon-codes"
+            className="block p-4 rounded-lg text-white text-center font-medium transition-transform transform hover:scale-105"
+            style={{ backgroundColor: colorPalette.primary }}
+          >
+            Manage Coupon Codes
+          </Link>
+          )}
           <Link
             to="/shopkeeper/interaction-panel"
             className="block p-4 rounded-lg text-white text-center font-medium transition-transform transform hover:scale-105"
