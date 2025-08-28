@@ -296,6 +296,7 @@ const DashboardHome = () => {
       <h1 className="text-3xl font-bold mb-8 text-gray-800">Shopkeeper Dashboard</h1>
 
       {/* Tiles Area */}
+      {userDetails && (
       <section className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
         <div
           className="p-6 rounded-lg shadow-lg text-white transform hover:scale-105 transition-transform duration-200"
@@ -323,6 +324,7 @@ const DashboardHome = () => {
         </div>
         )}
       </section>
+      )}
 
       <section className="mb-8">
         {userDetails?.id ? (
