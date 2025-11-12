@@ -193,6 +193,9 @@ const ReferralManagement = () => {
           isLoading: false,
           autoClose: 3000,
         });
+        setTimeout(() => {
+      window.location.reload();
+    }, 3000);
       }
       // Add delayed page reload here (10 seconds)
       // setTimeout(() => {

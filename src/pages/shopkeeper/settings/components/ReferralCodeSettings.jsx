@@ -18,6 +18,7 @@ const ReferralCodeSettings = ({ shopkeeperId, token }) => {
     const [discountMapping, setDiscountMapping] = useState(discountData.discountMapping);
     const [milestoneMapping, setMilestoneMapping] = useState(discountData.milestoneMapping);
     const [userDetails, setUserDetails] = useState(null);
+    const [applications, setApplications] = useState([]);
     const [promotion, setPromotion] = useState({
         beginDate: '',
         expiryDate: '',
@@ -39,6 +40,12 @@ const ReferralCodeSettings = ({ shopkeeperId, token }) => {
                 const user = await getCurrentUser();
                 console.log("Fetched user:", user);
                 setUserDetails(user);
+                 // check applications returned from backend
+                    if (user.application_name && Array.isArray(user.application_name)) {
+                    setApplications(user.application_name);
+                    } else if (user.application_name) {
+                    setApplications([user.application_name]);
+                    }
                 if (user?.id) {
                     // setLoading(true);
                     const response = await getSettingsAction(user?.id);
@@ -239,6 +246,7 @@ const ReferralCodeSettings = ({ shopkeeperId, token }) => {
                 </div>
 
                 {/* Current Referral Promotion */}
+                {applications.includes("Referral") && (
                 <div className="mb-6 border-t pt-6">
                     <h3 className="font-bold mb-4">Current Referral Promotion</h3>
                     <div className="grid grid-cols-2 gap-4">
@@ -308,8 +316,9 @@ const ReferralCodeSettings = ({ shopkeeperId, token }) => {
                         </div>
                     </div>
                 </div>
-
+                )}
                 {/* Current Coupon Promotion */}
+                {applications.includes("Coupon") && (
                 <div className="mb-6 border-t pt-6">
                     <h3 className="font-bold mb-4">Current Coupon Promotion</h3>
                     <div className="grid grid-cols-2 gap-4">
@@ -382,7 +391,7 @@ const ReferralCodeSettings = ({ shopkeeperId, token }) => {
                         </div>
                     </div>
                 </div>
-
+                )}
                 {/* Discount Mapping (Credits only) */}
                 {/* {!useCredits && ( */}
                     <div className="mb-6">
