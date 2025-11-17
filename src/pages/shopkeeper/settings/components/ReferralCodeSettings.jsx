@@ -394,81 +394,11 @@ const ReferralCodeSettings = ({ shopkeeperId, token }) => {
                 )}
                 {/* Discount Mapping (Credits only) */}
                 {/* {!useCredits && ( */}
-                    <div className="mb-6">
-                        <h3 className="font-bold mb-4">Discount Mapping</h3>
-                        {discountMapping.map((mapping, index) => (
-                            <div
-                                key={index}
-                                className="flex items-center space-x-4 mb-4 border p-4 rounded-md"
-                            >
-                                <input
-                                    type="text"
-                                    placeholder="Name"
-                                    value={mapping.name}
-                                    onChange={(e) =>
-                                        setDiscountMapping((prev) => {
-                                            const updated = [...prev];
-                                            updated[index].name = e.target.value;
-                                            return updated;
-                                        })
-                                    }
-                                    className="w-1/4 p-2 border rounded"
-                                    disabled={!isEditing}
-                                />
-                                <input
-                                    type="number"
-                                    placeholder="Points"
-                                    value={mapping.points}
-                                    onChange={(e) =>
-                                        setDiscountMapping((prev) => {
-                                            const updated = [...prev];
-                                            updated[index].points = e.target.value;
-                                            return updated;
-                                        })
-                                    }
-                                    className="w-1/4 p-2 border rounded"
-                                    disabled={!isEditing}
-                                />
-                                <input
-                                    type="text"
-                                    placeholder="Discount"
-                                    value={mapping.discount}
-                                    onChange={(e) =>
-                                        setDiscountMapping((prev) => {
-                                            const updated = [...prev];
-                                            updated[index].discount = e.target.value;
-                                            return updated;
-                                        })
-                                    }
-                                    className="w-1/4 p-2 border rounded"
-                                    disabled={!isEditing}
-                                />
-                                {isEditing && (
-                                    <button
-                                        onClick={() =>
-                                            setDiscountMapping((prev) =>
-                                                prev.filter((_, i) => i !== index)
-                                            )
-                                        }
-                                        className="flex items-center px-4 py-2 bg-red-500 text-white rounded hover:bg-red-600"
-                                    >
-                                        <FaTrash />
-                                    </button>
-                                )}
-                            </div>
-                        ))}
-                        {isEditing && (
-                            <button
-                                onClick={handleAddDiscount}
-                                className="py-2 px-4 bg-blue-500 text-white rounded hover:bg-blue-600"
-                            >
-                                Add Discount
-                            </button>
-                        )}
-                    </div>
+                
                 {/* )} */}
 
                 {/* Milestone Mapping */}
+                {applications.includes("Referral") && (
                 <div>
                     <h3 className="font-bold mb-4">Milestone Rewards</h3>
                     {milestoneMapping.map((milestone, index) => (
@@ -557,6 +487,7 @@ const ReferralCodeSettings = ({ shopkeeperId, token }) => {
                         </button>
                     )}
                 </div>
+                )}
             </div>
         </>
     );
