@@ -317,85 +317,6 @@ const ReferralCodeSettings = ({ shopkeeperId, token }) => {
                     </div>
                 </div>
                 )}
-                {/* Current Coupon Promotion */}
-                {applications.includes("Coupon") && (
-                <div className="mb-6 border-t pt-6">
-                    <h3 className="font-bold mb-4">Current Coupon Promotion</h3>
-                    <div className="grid grid-cols-2 gap-4">
-                        <div>
-                            <label className="block text-sm font-medium mb-1">Begin Date</label>
-                            {isEditing ? (
-                                <input
-                                type="date"
-                                value={couponPromotion.beginDate}
-                                onChange={(e) =>
-                                    setCouponPromotion({ ...couponPromotion, beginDate: e.target.value, expiryDate: '' }) // Clear endDate if beginDate changes
-                                }
-                                className="w-full p-2 border rounded"
-                                min={new Date().toISOString().split("T")[0]} // today
-                                />
-                            ) : (
-                                <p>{couponPromotion.beginDate || "Not set"}</p>
-                            )}
-                        </div>
-
-                        <div>
-                            <label className="block text-sm font-medium mb-1">End Date</label>
-                            {isEditing ? (
-                                <input
-                                type="date"
-                                value={couponPromotion.expiryDate}
-                                onChange={(e) =>
-                                    setCouponPromotion({ ...couponPromotion, expiryDate: e.target.value })
-                                }
-                                className="w-full p-2 border rounded"
-                                min={couponPromotion.beginDate || new Date().toISOString().split("T")[0]} // endDate ≥ beginDate
-                                />
-                            ) : (
-                                <p>{couponPromotion.expiryDate || "Not set"}</p>
-                            )}
-                        </div>
-
-                        <div>
-                            <label className="block text-sm font-medium mb-1">Coupon Amount</label>
-                            {isEditing ? (
-                                <input
-                                    type="number"
-                                    min={0}
-                                    value={couponPromotion.couponAmount}
-                                    onChange={(e) => setCouponPromotion({ ...couponPromotion, couponAmount: Number(e.target.value),
-                                        couponAmount: Math.max(0, Number(e.target.value)),
-                                     })}
-                                    className="w-full p-2 border rounded"
-                                />
-                            ) : (
-                                // <p>{couponPromotion.couponAmount ? (useCredits ? `$${couponPromotion.couponAmount}` : `${couponPromotion.couponAmount} Points`) : 'Not set'}</p>
-                                <p>{couponPromotion.couponAmount ? `$${couponPromotion.couponAmount}` : 'Not set'}</p>
-                            )}
-                        </div>
-                        <div>
-                            <label className="block text-sm font-medium mb-1">Limit of Use</label>
-                            {isEditing ? (
-                                <input
-                                    type="number"
-                                    min={0}
-                                    value={couponPromotion.limitOfUse}
-                                    onChange={(e) => setCouponPromotion({ ...couponPromotion, limitOfUse: Number(e.target.value),
-                                        limitOfUse: Math.max(0, Number(e.target.value)),
-                                     })}
-                                    className="w-full p-2 border rounded"
-                                />
-                            ) : (
-                                <p>{couponPromotion.limitOfUse || 'Not set'}</p>
-                            )}
-                        </div>
-                    </div>
-                </div>
-                )}
-                {/* Discount Mapping (Credits only) */}
-                {/* {!useCredits && ( */}
-                
-                {/* )} */}
 
                 {/* Milestone Mapping */}
                 {applications.includes("Referral") && (
@@ -488,6 +409,87 @@ const ReferralCodeSettings = ({ shopkeeperId, token }) => {
                     )}
                 </div>
                 )}
+                {/* Current Coupon Promotion */}
+                {applications.includes("Coupon") && (
+                <div className="mb-6 border-t pt-6">
+                    <h3 className="font-bold mb-4">Current Coupon Promotion</h3>
+                    <div className="grid grid-cols-2 gap-4">
+                        <div>
+                            <label className="block text-sm font-medium mb-1">Begin Date</label>
+                            {isEditing ? (
+                                <input
+                                type="date"
+                                value={couponPromotion.beginDate}
+                                onChange={(e) =>
+                                    setCouponPromotion({ ...couponPromotion, beginDate: e.target.value, expiryDate: '' }) // Clear endDate if beginDate changes
+                                }
+                                className="w-full p-2 border rounded"
+                                min={new Date().toISOString().split("T")[0]} // today
+                                />
+                            ) : (
+                                <p>{couponPromotion.beginDate || "Not set"}</p>
+                            )}
+                        </div>
+
+                        <div>
+                            <label className="block text-sm font-medium mb-1">End Date</label>
+                            {isEditing ? (
+                                <input
+                                type="date"
+                                value={couponPromotion.expiryDate}
+                                onChange={(e) =>
+                                    setCouponPromotion({ ...couponPromotion, expiryDate: e.target.value })
+                                }
+                                className="w-full p-2 border rounded"
+                                min={couponPromotion.beginDate || new Date().toISOString().split("T")[0]} // endDate ≥ beginDate
+                                />
+                            ) : (
+                                <p>{couponPromotion.expiryDate || "Not set"}</p>
+                            )}
+                        </div>
+
+                        <div>
+                            <label className="block text-sm font-medium mb-1">Coupon Amount</label>
+                            {isEditing ? (
+                                <input
+                                    type="number"
+                                    min={0}
+                                    value={couponPromotion.couponAmount}
+                                    onChange={(e) => setCouponPromotion({ ...couponPromotion, couponAmount: Number(e.target.value),
+                                        couponAmount: Math.max(0, Number(e.target.value)),
+                                     })}
+                                    className="w-full p-2 border rounded"
+                                />
+                            ) : (
+                                // <p>{couponPromotion.couponAmount ? (useCredits ? `$${couponPromotion.couponAmount}` : `${couponPromotion.couponAmount} Points`) : 'Not set'}</p>
+                                <p>{couponPromotion.couponAmount ? `$${couponPromotion.couponAmount}` : 'Not set'}</p>
+                            )}
+                        </div>
+                        <div>
+                            <label className="block text-sm font-medium mb-1">Limit of Use</label>
+                            {isEditing ? (
+                                <input
+                                    type="number"
+                                    min={0}
+                                    value={couponPromotion.limitOfUse}
+                                    onChange={(e) => setCouponPromotion({ ...couponPromotion, limitOfUse: Number(e.target.value),
+                                        limitOfUse: Math.max(0, Number(e.target.value)),
+                                     })}
+                                    className="w-full p-2 border rounded"
+                                />
+                            ) : (
+                                <p>{couponPromotion.limitOfUse || 'Not set'}</p>
+                            )}
+                        </div>
+                    </div>
+                </div>
+                )}
+                {/* Discount Mapping (Credits only) */}
+                {/* {!useCredits && ( */}
+                
+                {/* )} */}
+
+                
             </div>
         </>
     );
