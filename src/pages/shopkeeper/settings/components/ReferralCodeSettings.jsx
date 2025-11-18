@@ -417,7 +417,7 @@ const ReferralCodeSettings = ({ shopkeeperId, token }) => {
                 <div className="mb-6 border-t pt-6">
                     {/* <h2 className="text-xl font-bold">Current Coupon Promotion</h2> */}
                     <div className="p-6 max-w-4xl mx-auto bg-gray-50 shadow-md rounded-lg border border-gray-200">
-                    <h3 className="font-bold mb-4">Current Referral Promotion</h3>
+                    <h3 className="font-bold mb-4">Current Coupon Promotion</h3>
                     <div className="grid grid-cols-2 gap-4">
                         <div>
                             <label className="block text-sm font-medium mb-1">Begin Date</label>
