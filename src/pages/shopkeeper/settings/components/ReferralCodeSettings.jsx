@@ -148,7 +148,8 @@ const ReferralCodeSettings = ({ shopkeeperId, token }) => {
         <>
             <ToastContainer />
             <div className="p-6 max-w-4xl mx-auto bg-white shadow-md rounded-lg">
-                <div className="flex justify-between items-center mb-6">
+                <div className="p-6 max-w-4xl mx-auto bg-gray-50 shadow-md rounded-lg border border-gray-200">
+                 <div className="flex justify-between items-center mb-6">
                     <h2 className="text-2xl font-bold">Promotion Settings</h2>
                     <div className="flex space-x-2">
                         {isEditing ? (
@@ -409,10 +410,12 @@ const ReferralCodeSettings = ({ shopkeeperId, token }) => {
                     )}
                 </div>
                 )}
+                </div>
                 {/* Current Coupon Promotion */}
                 {applications.includes("Coupon") && (
                 <div className="mb-6 border-t pt-6">
-                    <h3 className="font-bold mb-4">Current Coupon Promotion</h3>
+                    <h2 className="text-2xl font-bold">Current Coupon Promotion</h2>
+                    <div className="p-6 max-w-4xl mx-auto bg-gray-50 shadow-md rounded-lg border border-gray-200">
                     <div className="grid grid-cols-2 gap-4">
                         <div>
                             <label className="block text-sm font-medium mb-1">Begin Date</label>
@@ -481,6 +484,7 @@ const ReferralCodeSettings = ({ shopkeeperId, token }) => {
                                 <p>{couponPromotion.limitOfUse || 'Not set'}</p>
                             )}
                         </div>
+                    </div>
                     </div>
                 </div>
                 )}
