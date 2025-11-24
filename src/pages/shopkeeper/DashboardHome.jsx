@@ -385,7 +385,7 @@ const DashboardHome = () => {
       
 
       {/* Subscription Overview */}
-      <section className="mb-8">
+      {/* <section className="mb-8">
         <h2 className="text-xl font-semibold mb-4 text-gray-800">Subscription</h2>
         <div
           className="p-6 rounded-lg shadow-lg"
@@ -402,7 +402,7 @@ const DashboardHome = () => {
             Expiry: <span className="font-semibold">{subscription.expiry}</span>
           </p>
         </div>
-      </section>
+      </section> */}
 
       {/* Navigation Links */}
       <section>
