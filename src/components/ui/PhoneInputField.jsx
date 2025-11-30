@@ -76,7 +76,7 @@ const PhoneInputField = ({
             pattern: "[0-9]*",
           }}
           containerClass="w-full"
-          inputClass={`!w-full !h-12 !p-3 !pl-14 !border !rounded-lg !focus:outline-none !focus:ring-2 ${inputClass}`}
+          inputClass={`!w-full !h-12 !p-3 !pl-14 !border !rounded !focus:outline-none !focus:ring-2 ${inputClass}`}
           buttonClass={`!h-12 ${buttonClass}`}
         />
       </div>

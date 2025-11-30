@@ -873,39 +873,48 @@ const ReferralCodeSettings = ({ shopkeeperId, token }) => {
                             className="flex items-center space-x-4 mb-4 border p-4 rounded-md"
                         >
                             {/* Threshold (Number of Referrals) */}
-                            <input
-                            type="number"
-                            min="0"
-                            placeholder="No of Referrals"
-                            value={milestone.milestoneValue || ""}
-                            onChange={(e) => {
-                                const updated = [...milestoneMapping];
-                                updated[index].milestoneValue = e.target.value;
-                                updated[index].thresholdRefer = Number(e.target.value); // Map to backend field
-                                setMilestoneMapping(updated);
-                            }}
-                            className="w-1/4 p-2 border rounded"
-                            disabled={!isEditing}
-                            />
+                            <div className="w-1/4">
+                                <label className="block text-sm font-medium text-gray-700 mb-1">
+                                No of Referrals
+                                </label>
+                                <input
+                                type="number"
+                                min="0"
+                                placeholder="e.g. 5"
+                                value={milestone.milestoneValue || ""}
+                                onChange={(e) => {
+                                    const updated = [...milestoneMapping];
+                                    updated[index].milestoneValue = e.target.value;
+                                    updated[index].thresholdRefer = Number(e.target.value);
+                                    setMilestoneMapping(updated);
+                                }}
+                                className="w-full p-2 border rounded"
+                                disabled={!isEditing}
+                                />
+                            </div>
 
                             {/* Hidden field to match backend: thresholdRefer */}
                             <input type="hidden" value={milestone.thresholdRefer || 0} />
 
-                            <select
+                            <div className="w-1/4">
+                                <label className="block text-sm font-medium text-gray-700 mb-1">
+                                Milestone Type
+                                </label>
+                                <select
                                 value={milestone.milestoneType}
                                 onChange={(e) =>
                                     setMilestoneMapping((prev) => {
-                                        const updated = [...prev];
-                                        updated[index].milestoneType = e.target.value;
-                                        return updated;
+                                    const updated = [...prev];
+                                    updated[index].milestoneType = e.target.value;
+                                    return updated;
                                     })
                                 }
-                                className="w-1/4 p-2 border rounded"
+                                className="w-full p-2 border rounded"
                                 disabled={!isEditing}
-                            >
+                                >
                                 <option value="Referrals">Referrals</option>
-                                {/* <option value="Points">Points</option> */}
-                            </select>
+                                </select>
+                            </div>
                             {/* <select
                                 value={milestone.rewardType}
                                 onChange={(e) =>
@@ -922,20 +931,25 @@ const ReferralCodeSettings = ({ shopkeeperId, token }) => {
                                 <option value="Item">Item</option>
                             </select> */}
                             {/* Reward Amount */}
-                            <input
-                            type="number"
-                            min="0"
-                            placeholder="Reward Amount ($)"
-                            value={milestone.reward || ""}
-                            onChange={(e) => {
-                                const updated = [...milestoneMapping];
-                                updated[index].reward = e.target.value;
-                                updated[index].amount = Number(e.target.value); // Map to backend "amount"
-                                setMilestoneMapping(updated);
-                            }}
-                            className="w-1/4 p-2 border rounded"
-                            disabled={!isEditing}
-                            />
+                            <div className="w-1/4">
+                                <label className="block text-sm font-medium text-gray-700 mb-1">
+                                Reward Amount ($)
+                                </label>
+                                <input
+                                type="number"
+                                min="0"
+                                placeholder="e.g. 50.00"
+                                value={milestone.reward || ""}
+                                onChange={(e) => {
+                                    const updated = [...milestoneMapping];
+                                    updated[index].reward = e.target.value;
+                                    updated[index].amount = Number(e.target.value);
+                                    setMilestoneMapping(updated);
+                                }}
+                                className="w-full p-2 border rounded"
+                                disabled={!isEditing}
+                                />
+                            </div>
                             {isEditing && (
                                 <button
                                     onClick={() =>

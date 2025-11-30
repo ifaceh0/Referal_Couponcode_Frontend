@@ -266,9 +266,25 @@ const ReferralManagement = () => {
           <h2 className="text-xl font-semibold mb-4" style={{ color: colorPalette.primaryDark }}>
             Individual Referral Code Generation
           </h2>
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-4">
-            <input type="text" placeholder="Full Name" value={name} onChange={(e) => setName(e.target.value)} className="border rounded p-2" />
-            <div className="flex flex-col">
+          {/* <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-6"> */}
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-6">
+            {/* <input type="text" placeholder="Full Name" value={name} onChange={(e) => setName(e.target.value)} className="border rounded p-2" /> */}
+
+            {/* Full Name */}
+            <div>
+              <label htmlFor="name" className="block text-sm font-medium text-gray-700 mb-1">
+                Full Name <span className="text-red-500">*</span>
+              </label>
+              <input
+                id="name"
+                type="text"
+                placeholder="Enter full name"
+                value={name}
+                onChange={(e) => setName(e.target.value)}
+                className="w-full border rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
+              />
+            </div>
+            {/* <div className="flex flex-col">
             <input 
               type="email" 
               placeholder="Email" 
@@ -281,12 +297,32 @@ const ReferralManagement = () => {
             {email && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email) && (
               <p className="text-sm text-red-600 mt-1">Please enter a valid email address.</p>
               )}
+            </div> */}
+
+            {/* Email */}
+            <div>
+              <label htmlFor="email" className="block text-sm font-medium text-gray-700 mb-1">
+                Email Address <span className="text-red-500">*</span>
+              </label>
+              <input
+                id="email"
+                type="email"
+                placeholder="example@domain.com"
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+                className={`w-full border rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500 ${
+                  email && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email) ? 'border-red-500' : ''
+                }`}
+              />
+              {email && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email) && (
+                <p className="text-xs text-red-600 mt-1">Please enter a valid email address.</p>
+              )}
             </div>
             
 
 
             {/* <input type="tel" placeholder="Phone" value={phone} onChange={(e) => setPhone(e.target.value)} className="border rounded p-2" /> */}
-            <PhoneInputField
+            {/* <PhoneInputField
               label=""
               name="phone"
               value={phone}
@@ -294,27 +330,109 @@ const ReferralManagement = () => {
               containerClass="w-full"
               wrapperClass="flex flex-col"
               inputClass="border rounded p-2 w-full"
-            />
-            <input type="date" value={expiryDate} onChange={(e) => setExpiryDate(e.target.value)} className="border rounded p-2"
+            /> */}
+            
+            {/* Phone */}
+            <div>
+              <label htmlFor="phone" className="block text-sm font-medium text-gray-700 mb-1">
+                Phone Number <span className="text-red-500">*</span>
+              </label>
+              <PhoneInputField
+                id="phone"
+                name="phone"
+                value={phone}
+                onChange={(e) => setPhone(e.target.value)}
+                containerClass="w-full"
+                inputClass="w-full border rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
+              />
+            </div>
+
+            {/* <input type="date" value={expiryDate} onChange={(e) => setExpiryDate(e.target.value)} className="border rounded p-2"
               title="Expire Date - mm/dd/yyyy"
-              readOnly={expiryReadOnly} min={new Date().toISOString().split("T")[0]} />
-            <input type="number" min={0} placeholder="Referral Amount ($)" value={referralAmount}
+              readOnly={expiryReadOnly} min={new Date().toISOString().split("T")[0]} /> */}
+
+            {/* Expiry Date */}
+            <div>
+              <label htmlFor="expiryDate" className="block text-sm font-medium text-gray-700 mb-1">
+                Expiry Date <span className="text-red-500">*</span>
+              </label>
+              <input
+                id="expiryDate"
+                type="date"
+                value={expiryDate}
+                onChange={(e) => setExpiryDate(e.target.value)}
+                min={new Date().toISOString().split("T")[0]}
+                readOnly={expiryReadOnly}
+                className="w-full border rounded px-3 py-2 bg-gray-50 focus:outline-none focus:ring-2 focus:ring-blue-500"
+              />
+            </div>  
+
+            {/* <input type="number" min={0} placeholder="Referral Amount ($)" value={referralAmount}
               onChange={(e) => {
                 const value = Number(e.target.value);
                 setReferralAmount(isNaN(value) ? '' : Math.max(0, value));
               }}
               className="border rounded p-2"
-              readOnly={referralAmountReadOnly} />
-            <input type="number" min={0} placeholder="Referrer Amount ($)" value={referrerAmount}
+              readOnly={referralAmountReadOnly} /> */}
+
+            {/* Referral Amount */}
+            <div>
+              <label htmlFor="referralAmount" className="block text-sm font-medium text-gray-700 mb-1">
+                Referral Amount ($) <span className="text-red-500">*</span>
+              </label>
+              <input
+                id="referralAmount"
+                type="number"
+                min="0"
+                placeholder="0.00"
+                value={referralAmount}
+                onChange={(e) => {
+                  const value = Number(e.target.value);
+                  setReferralAmount(isNaN(value) ? '' : Math.max(0, value));
+                }}
+                readOnly={referralAmountReadOnly}
+                className="w-full border rounded px-3 py-2 bg-gray-50 focus:outline-none focus:ring-2 focus:ring-blue-500"
+              />
+            </div>
+
+
+            {/* <input type="number" min={0} placeholder="Referrer Amount ($)" value={referrerAmount}
               onChange={(e) => {
                 const value = Number(e.target.value);
                 setReferrerAmount(isNaN(value) ? '' : Math.max(0, value));
               }}
               className="border rounded p-2"
-              readOnly={referrerAmountReadOnly} />
+              readOnly={referrerAmountReadOnly} /> */}
+
+            {/* Referrer Amount */}
+            <div>
+              <label htmlFor="block text-sm font-medium text-gray-700 mb-1">
+                Referrer Amount ($) <span className="text-red-500">*</span>
+              </label>
+              <input
+                id="referrerAmount"
+                type="number"
+                min="0"
+                placeholder="0.00"
+                value={referrerAmount}
+                onChange={(e) => {
+                  const value = Number(e.target.value);
+                  setReferrerAmount(isNaN(value) ? '' : Math.max(0, value));
+                }}
+                readOnly={referrerAmountReadOnly}
+                className="w-full border rounded px-3 py-2 bg-gray-50 focus:outline-none focus:ring-2 focus:ring-blue-500"
+              />
+            </div>  
           </div>
-          <button onClick={handleRegister} className="px-4 py-2 rounded" style={{ backgroundColor: colorPalette.accent, color: colorPalette.white }}>
+          {/* <button onClick={handleRegister} className="px-4 py-2 rounded" style={{ backgroundColor: colorPalette.accent, color: colorPalette.white }}>
             Generate Code
+          </button> */}
+          <button
+            onClick={handleRegister}
+            className="px-4 py-2 rounded text-white transition"
+            style={{ backgroundColor: colorPalette.accent }}
+          >
+            Generate Referral Code
           </button>
         </section>
 
@@ -323,14 +441,49 @@ const ReferralManagement = () => {
           <h2 className="text-xl font-semibold mb-4" style={{ color: colorPalette.primaryDark }}>
             Bulk Referral Code Upload
           </h2>
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-4">
-            <input type="file" accept=".csv, .xls, .xlsx"
-              onChange={handleBulkUpload} className="border rounded p-2" />
-            <input type="date" value={bulkExpiryDate}
+          {/* <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-4"> */}
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-6">
+            {/* <input type="file" accept=".csv, .xls, .xlsx"
+              onChange={handleBulkUpload} className="border rounded p-2" /> */}
+
+            {/* File Upload */}
+            <div>
+              <label htmlFor="bulkFile" className="block text-sm font-medium text-gray-700 mb-1">
+                Upload CSV/Excel File <span className="text-red-500">*</span>
+              </label>
+              <input
+                id="bulkFile"
+                type="file"
+                accept=".csv, .xls, .xlsx"
+                onChange={handleBulkUpload}
+                className="w-full text-sm text-gray-600 file:mr-4 file:py-2 file:px-4 file:rounded file:border-0 file:text-sm file:font-semibold file:bg-blue-50 file:text-blue-700 hover:file:bg-blue-100"
+              />
+              {bulkFile && <p className="text-xs text-green-600 mt-1">Selected: {bulkFile.name}</p>}
+            </div> 
+
+            {/* <input type="date" value={bulkExpiryDate}
               onChange={(e) => setBulkExpiryDate(e.target.value)} className="border rounded p-2"
               title="Expire Date - mm/dd/yyyy"
-              readOnly={expiryReadOnly} min={new Date().toISOString().split("T")[0]} />
-            <input
+              readOnly={expiryReadOnly} min={new Date().toISOString().split("T")[0]} /> */}
+
+            {/* Bulk Expiry Date */}
+            <div>
+              <label htmlFor="bulkExpiryDate" className="block text-sm font-medium text-gray-700 mb-1">
+                Expiry Date <span className="text-red-500">*</span>
+              </label>
+              <input
+                id="bulkExpiryDate"
+                type="date"
+                value={bulkExpiryDate}
+                onChange={(e) => setBulkExpiryDate(e.target.value)}
+                min={new Date().toISOString().split("T")[0]}
+                readOnly={expiryReadOnly}
+                className="w-full border rounded px-3 py-2 bg-gray-50"
+              />
+            </div>  
+
+
+            {/* <input
               type="number"
               placeholder="Referral Amount ($)"
               value={bulkReferralAmount}
@@ -340,9 +493,29 @@ const ReferralManagement = () => {
               }}
               className="border rounded p-2"
               readOnly={referralAmountReadOnly}
-            />
+            /> */}
 
-            <input
+            {/* Bulk Referral Amount */}
+            <div>
+              <label htmlFor="bulkReferralAmount" className="block text-sm font-medium text-gray-700 mb-1">
+                Referral Amount ($) <span className="text-red-500">*</span>
+              </label>
+              <input
+                id="bulkReferralAmount"
+                type="number"
+                min="0"
+                placeholder="0.00"
+                value={bulkReferralAmount}
+                onChange={(e) => {
+                  const value = Number(e.target.value);
+                  setBulkReferralAmount(isNaN(value) ? '' : Math.max(0, value));
+                }}
+                readOnly={referralAmountReadOnly}
+                className="w-full border rounded px-3 py-2 bg-gray-50"
+              />
+            </div>
+
+            {/* <input
             type="number"
             placeholder="Referrer Amount ($)"
             value={bulkReferrerAmount}
@@ -352,10 +525,37 @@ const ReferralManagement = () => {
             }}
             className="border rounded p-2"
             readOnly={referrerAmountReadOnly}
-          />
+          /> */}
+          {/* Bulk Referrer Amount */}
+          <div>
+            <label htmlFor="bulkReferrerAmount" className="block text-sm font-medium text-gray-700 mb-1">
+              Referrer Amount ($) <span className="text-red-500">*</span>
+            </label>
+            <input
+              id="bulkReferrerAmount"
+              type="number"
+              min="0"
+              placeholder="0.00"
+              value={bulkReferrerAmount}
+              onChange={(e) => {
+                const value = Number(e.target.value);
+                setBulkReferrerAmount(isNaN(value) ? '' : Math.max(0, value));
+              }}
+              readOnly={referrerAmountReadOnly}
+              className="w-full border rounded px-3 py-2 bg-gray-50"
+            />
+          </div>
 
           </div>
-          <button onClick={handleBulkGenerate} className="px-4 py-2 rounded" style={{ backgroundColor: colorPalette.accent, color: colorPalette.white }}>
+          {/* <button onClick={handleBulkGenerate} className="px-4 py-2 rounded" style={{ backgroundColor: colorPalette.accent, color: colorPalette.white }}>
+            Generate Bulk Codes
+          </button> */}
+
+          <button
+            onClick={handleBulkGenerate}
+            className="px-4 py-2 rounded text-white transition"
+            style={{ backgroundColor: colorPalette.accent }}
+          >
             Generate Bulk Codes
           </button>
         </section>
