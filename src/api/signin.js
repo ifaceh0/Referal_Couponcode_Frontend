@@ -93,11 +93,70 @@ export const getCurrentUser = async () => {
     }
 };
 
+// added multi role code
+//get roles
+export const getRoles = async (credentials) => {
+    const url = `${VITE_BACKEND_URL}/api/auth/get-roles`;
+
+    const response = await fetch(url, {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json",
+        },
+        body: JSON.stringify(credentials), // {email, password}
+    });
+
+    if (!response.ok) {
+        const error = await response.json();
+        throw new Error(error.message || "Failed to get roles.");
+    }
+
+    return response.json(); // array of strings, e.g., ["USER", "SHOPKEEPER"]
+};
+
 
 // import Cookies from "js-cookie"; // Install js-cookie package using `npm install js-cookie`
 
+
+// working original code
+
 // Login API
-export const loginShopkeeper = async (credentials) => {
+// export const loginShopkeeper = async (credentials) => {
+//     const url = `${VITE_BACKEND_URL}/api/auth/login`;
+
+//     const response = await fetch(url, {
+//         method: "POST",
+//         headers: {
+//             "Content-Type": "application/json",
+//         },
+//         body: JSON.stringify(credentials),
+//         withCredntials: true,
+//         credentials: 'include',
+//     });
+
+//     if (!response.ok) {
+//         const error = await response.json();
+//         throw new Error(error.message || "Login failed. Invalid credentials.");
+//     }
+
+//     const data = await response.json();
+//     console.log(data)
+//     // Store token in cookie (e.g., expires in 7 days)
+//     // Cookies.set("token", data.token, { expires: 7 });
+
+//     // Store both shopkeeper data and token in localStorage
+//     localStorage.setItem("shopkeeper", JSON.stringify(data.shopkeeper));
+//     localStorage.setItem("data", JSON.stringify(data));
+//     localStorage.setItem("token", data.token);
+    
+
+//     return data;
+// };
+
+
+// multi role login code
+
+export const loginShopkeeper = async ({ email, password, role }) => {
     const url = `${VITE_BACKEND_URL}/api/auth/login`;
 
     const response = await fetch(url, {
@@ -105,8 +164,7 @@ export const loginShopkeeper = async (credentials) => {
         headers: {
             "Content-Type": "application/json",
         },
-        body: JSON.stringify(credentials),
-        withCredntials: true,
+        body: JSON.stringify({ email, password, role }),
         credentials: 'include',
     });
 
@@ -117,14 +175,10 @@ export const loginShopkeeper = async (credentials) => {
 
     const data = await response.json();
     console.log(data)
-    // Store token in cookie (e.g., expires in 7 days)
-    // Cookies.set("token", data.token, { expires: 7 });
 
-    // Store both shopkeeper data and token in localStorage
     localStorage.setItem("shopkeeper", JSON.stringify(data.shopkeeper));
     localStorage.setItem("data", JSON.stringify(data));
     localStorage.setItem("token", data.token);
-    
 
     return data;
 };
