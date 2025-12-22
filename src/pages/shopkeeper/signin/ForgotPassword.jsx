@@ -69,19 +69,26 @@ const ForgotPassword = () => {
     setError(null);
 
     try {
-      // Replace with your actual reset password API call
-      // const response = await resetPasswordAPI({
-      //   token: resetToken,
-      //   newPassword: formData.newPassword
-      // });
-      
-      // Simulating API call for now
-      await new Promise(resolve => setTimeout(resolve, 2000));
-      
-      // Show success message and redirect to login
-      alert("Password has been reset successfully!");
-      navigate("/shopkeeper/signin");
-      
+      const response = await fetch("https://referral-couponcode-backend.onrender.com/refer/api/auth/reset-password", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          token: resetToken,
+          newPassword: formData.newPassword,
+          confirmPassword: formData.confirmPassword
+        }),
+      });
+
+      const data = await response.json();
+
+      if (!response.ok) {
+        throw new Error(data.error || "Failed to reset password");
+      }
+
+      alert(data.message || "Password successfully reset! This is your new password for all role");
+      navigate("/signin");
     } catch (err) {
       console.error("Reset password error:", err);
       setError(err.message || "Failed to reset password. Please try again.");
@@ -233,7 +240,7 @@ const ForgotPassword = () => {
         {/* Back to Sign In Link */}
         <div className="text-center">
           <button
-            onClick={() => navigate("/shopkeeper/signin")}
+            onClick={() => navigate("/signin")}
             className="text-purple-600 hover:text-purple-800 font-medium text-sm underline"
           >
             Back to Sign In

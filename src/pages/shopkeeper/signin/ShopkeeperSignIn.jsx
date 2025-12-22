@@ -792,6 +792,41 @@ const ShopkeeperSignIn = () => {
     setSelectedRole("");
   };
 
+  const handleForgotPassword = async () => {
+    if (!forgotPasswordEmail || !/\S+@\S+\.\S+/.test(forgotPasswordEmail)) {
+      setForgotPasswordMessage("Please enter a valid email address");
+      return;
+    }
+
+    setForgotPasswordLoading(true);
+    setForgotPasswordMessage("");
+
+    try {
+      const response = await fetch("https://referral-couponcode-backend.onrender.com/refer/api/auth/forgot-password", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ email: forgotPasswordEmail }),
+      });
+
+      const data = await response.json();
+
+      if (!response.ok) {
+        throw new Error(data.error || "Failed to send reset link");
+      }
+
+      setForgotPasswordMessage(data.message || "Password reset link has been sent to your email!");
+      setTimeout(() => {
+        toggleForgotPassword();
+      }, 3000);
+    } catch (err) {
+      setForgotPasswordMessage(err.message || "Failed to send reset link. Please try again.");
+    } finally {
+      setForgotPasswordLoading(false);
+    }
+  };
+
   if (showForgotPassword) {
     return (
       <div className="min-h-screen flex items-center justify-center bg-gray-100">
