@@ -44,10 +44,10 @@ const ForgotPassword = () => {
       return false;
     }
     
-    if (!/(?=.*[a-z])(?=.*[A-Z])(?=.*\d)/.test(formData.newPassword)) {
-      setError("Password must contain at least one uppercase letter, one lowercase letter, and one number");
-      return false;
-    }
+    // if (!/(?=.*[a-z])(?=.*[A-Z])(?=.*\d)/.test(formData.newPassword)) {
+    //   setError("Password must contain at least one uppercase letter, one lowercase letter, and one number");
+    //   return false;
+    // }
     
     if (!formData.confirmPassword) {
       setError("Please confirm your password");

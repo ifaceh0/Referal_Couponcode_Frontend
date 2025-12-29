@@ -377,7 +377,7 @@ const ShopOwnerDashboard = () => {
               dataSource={topReferrersData}
               pagination={false}
               size="small"
-              scroll={{ y: 250 }}
+              scroll={{ y: 210 }}
             />
           </Card>
         </Col>

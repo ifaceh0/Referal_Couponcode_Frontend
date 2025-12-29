@@ -754,7 +754,7 @@ const ShopkeeperSignIn = () => {
 
   const navigateBasedOnRole = (role) => {
     if (role === 'USER') {
-      navigate("/shopkeeper/referredCustomerDashBoard");
+      navigate("/shopkeeper/referrerdashboard");
     } else if (role === 'SHOPKEEPER') {
       navigate("/shopkeeper/dashboard");
     } else if (role === 'SHOP_EMPLOYEE') {

@@ -276,9 +276,8 @@
 
 
 
-
 import React, { useState, useEffect } from "react";
-import { Loader2, Settings, ExternalLink } from "lucide-react";
+import { Loader2, Zap, ArrowRight } from "lucide-react";
 import { getCurrentUser } from "../../api/signin";
 
 const SubscriptionDashboard = () => {
@@ -300,67 +299,81 @@ const SubscriptionDashboard = () => {
     loadUser();
   }, []);
 
-  const subscriptionUrl = companyEmail && !companyEmail.includes("Not found") && !companyEmail.includes("Unable")
+  const isValidEmail = companyEmail && !companyEmail.includes("Not found") && !companyEmail.includes("Unable");
+  const subscriptionUrl = isValidEmail
     ? `https://subscription-frontend-psi.vercel.app/subscription-dashboard?email=${encodeURIComponent(companyEmail)}`
     : "#";
 
   if (loading) {
     return (
-      <div className="flex items-center justify-center min-h-screen p-6">
-        <div className="text-center">
-          <Loader2 className="h-12 w-12 animate-spin text-indigo-600 mx-auto mb-4" />
-          <p className="text-gray-600 font-medium">Loading your subscription...</p>
+      <div className="flex items-center justify-center min-h-screen bg-gray-50">
+        <div className="text-center p-8 bg-white rounded-lg shadow-lg">
+          <Loader2 className="h-10 w-10 animate-spin text-teal-600 mx-auto mb-4" />
+          <p className="text-gray-700 font-semibold">Loading your subscription data...</p>
         </div>
       </div>
     );
   }
 
-  return (
-    <div className="min-h-screen flex items-center justify-center p-6">
-      {/* Main Card */}
-      <div className="relative bg-white rounded-md shadow-2xl overflow-hidden max-w-3xl w-full border border-indigo-200">
-        {/* Subtle Gradient Top Bar */}
-        <div className="h-2 bg-gradient-to-r from-indigo-500 via-purple-500 to-pink-500"></div>
+  const isButtonDisabled = !isValidEmail;
 
-        <div className="p-10 text-center">
-          {/* Icon */}
-          <div className="mx-auto w-24 h-24 bg-gradient-to-br from-indigo-500 to-purple-600 rounded-full flex items-center justify-center shadow-xl mb-8 transform hover:scale-105 transition">
-            <Settings className="h-12 w-12 text-white" />
+  return (
+    <div className="min-h-screen flex items-center justify-center p-6 bg-gray-50">
+      {/* Main Card - Sleek and Minimalist */}
+      <div className="bg-white rounded-xl shadow-2xl max-w-xl w-full border border-gray-200">
+        <div className="p-10 sm:p-12">
+          
+          {/* Header */}
+          <div className="flex items-center space-x-4 mb-8 border-b pb-4">
+            <div className="w-12 h-12 bg-teal-100 rounded-lg flex items-center justify-center">
+              <Zap className="h-6 w-6 text-teal-600" />
+            </div>
+            <h2 className="text-2xl font-extrabold text-gray-900">
+              Subscription Portal
+            </h2>
           </div>
 
-          {/* Title */}
-          <h2 className="text-3xl font-bold text-gray-800 mb-3">
-            Subscription Management
-          </h2>
-
-          {/* Email */}
-          <div className="mb-10">
-            <p className="text-sm text-gray-500 uppercase tracking-wider">Logged in as</p>
-            <p className="text-xl font-bold text-indigo-700 mt-2 break-all">
+          {/* Email Information Block */}
+          <div className="bg-gray-50 p-6 rounded-lg mb-10 border border-gray-200">
+            <p className="text-sm font-medium text-gray-500 mb-1">
+              Currently Managing
+            </p>
+            <p className={`text-lg font-mono break-all ${isValidEmail ? 'text-gray-800' : 'text-red-600'}`}>
               {companyEmail}
             </p>
           </div>
+
+          {/* Descriptive Text */}
+          <p className="text-gray-600 mb-8 leading-relaxed">
+            Access your dedicated subscription dashboard to view billing history, manage payment methods, and make changes to your plan.
+          </p>
 
           {/* Action Button */}
           <a
             href={subscriptionUrl}
             target="_blank"
             rel="noopener noreferrer"
-            className="group inline-flex items-center gap-4 bg-gradient-to-r from-indigo-600 to-purple-600 text-white font-bold text-lg px-10 py-5 rounded-md shadow-xl hover:shadow-2xl hover:from-indigo-700 hover:to-purple-700 transition-all transform hover:scale-105"
+            // Conditional styling for disabled state
+            className={`group inline-flex items-center justify-center w-full space-x-3 font-semibold text-lg py-3 rounded-lg transition-all shadow-md
+              ${isButtonDisabled
+                ? 'bg-gray-300 text-gray-500 cursor-not-allowed'
+                : 'bg-teal-600 text-white hover:bg-teal-700 hover:shadow-lg'
+              }`}
+            aria-disabled={isButtonDisabled}
+            onClick={(e) => isButtonDisabled && e.preventDefault()}
           >
-            <Settings className="h-6 w-6" />
-            Manage My Subscription
-            <ExternalLink className="h-5 w-5 opacity-80 group-hover:opacity-100 transition" />
+            <span>Go to Dashboard</span>
+            <ArrowRight className="h-5 w-5 ml-2 group-hover:translate-x-1 transition-transform" />
           </a>
-
+          
           {/* Footer Text */}
-          <p className="mt-8 text-sm text-gray-500">
-            Opens in a new tab
+          <p className="mt-4 text-xs text-center text-gray-500">
+            {isButtonDisabled ? "Subscription link is unavailable without a valid email." : "Opens in a new, secure tab."}
           </p>
         </div>
 
-        {/* Bottom Accent */}
-        <div className="h-1 bg-gradient-to-r from-indigo-400 to-purple-400 opacity-50"></div>
+        {/* Subtle Accent Bottom */}
+        <div className="h-1 bg-teal-200 opacity-70 rounded-b-xl"></div>
       </div>
     </div>
   );

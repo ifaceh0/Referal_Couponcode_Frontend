@@ -409,13 +409,24 @@ const DashboardHome = () => {
         <h2 className="text-xl font-semibold mb-4 text-gray-800">Quick Actions</h2>
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           {applications.includes("Referral") && (
-          <Link
-            to="/shopkeeper/referral-codes"
-            className="block p-4 rounded-lg text-white text-center font-medium transition-transform transform hover:scale-105"
-            style={{ backgroundColor: colorPalette.primary }}
-          >
-            Manage Referral Codes
-          </Link>
+          <>
+            <Link
+              to="/shopkeeper/referral-codes"
+              className="block p-6 rounded-lg text-white text-center font-medium transition-transform transform hover:scale-105"
+              style={{ backgroundColor: colorPalette.primary }}
+            >
+              Manage Referral Codes
+            </Link>
+
+            <Link
+              to="/shopkeeper/shopkeeperownerdashboard"
+              className="block p-4 rounded-lg text-white text-center font-medium transition-all transform hover:scale-105 shadow-lg flex flex-col items-center justify-center"
+              style={{ backgroundColor: '#722ed1' }} 
+            >
+              <span className="font-bold">📊 View Detailed Referral Dashboard</span>
+              <span className="text-sm mt-1 opacity-90">Trends, Funnel, Top Referrers & More</span>
+            </Link>
+          </>
           )}
           {applications.includes("Coupon") && (
           <Link

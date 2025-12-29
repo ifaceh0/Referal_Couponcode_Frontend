@@ -50,10 +50,16 @@ const ShopkeeperDashboardLayout = ({ children }) => {
     label: "Dashboard",
     roles: ["SHOPKEEPER", "USER"],
   },
+  //  {
+  //   to: "/shopkeeper/referredcustomerdashboard",
+  //   label: "Referred Dashboard",
+  //   roles: ["USER"],
+  // },
   {
-    to: "/shopkeeper/referredcustomerdashboard",
-    label: "Referred Dashboard",
-    roles: ["USER"],
+    to: "/shopkeeper/shopkeeperownerdashboard",
+    label: "Referral Dashboard",
+    roles: ["SHOPKEEPER"],
+    appCondition: "Referral",
   },
   {
     to: "/shopkeeper/referral-codes",

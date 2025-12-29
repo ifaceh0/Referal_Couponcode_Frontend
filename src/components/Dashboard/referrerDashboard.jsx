@@ -305,21 +305,21 @@ const ReferrerDashboard = () => {
         totalReferred: data.totalFriendsReferred,
         friendsReferredThisWeek: data.friendsReferredThisWeek,
         successfulReferrals: data.successfulReferrals,
-        totalRewardsEarned: data.totalRewardsEarned,
-        pendingRewards: data.pendingRewards,
+        totalRewardsEarned: data.totalRewardsEarned ?? 0,
+        pendingRewards: data.pendingRewards ?? 0,
         conversionRate: data.conversionRate,
         rewardHistory: data.rewardHistory.map((item) => ({
           id: item.date.toString(), // Use date as a unique key or add an ID in DTO
           date: new Date(item.date).toISOString().split('T')[0], // Format date
           friend: item.name,
           status: item.status,
-          amount: item.amount,
+          amount: item.amount ?? 0,
         })),
         redemptionHistory: data.rewardRedemptions.map((item) => ({
           id: item.date.toString(), // Use date as a unique key or add an ID in DTO
           date: new Date(item.date).toISOString().split('T')[0], // Format date
           order: item.orderId,
-          amount: item.amountUsed,
+          amount: item.amountUsed ?? 0,
           description: item.description || `${item.amountUsed} off used`, // Add description if not provided
         })),
         shareLink: data.shareLink || 'https://example.com/refer?code=REF12345', // Adjust based on backend
@@ -499,10 +499,10 @@ const ReferrerDashboard = () => {
 
         <div className="bg-white rounded-xl shadow-sm p-6 border-l-4 border-amber-500">
           <h3 className="text-gray-500 text-sm font-medium mb-1">Total Rewards Earned</h3>
-          <p className="text-3xl font-bold text-gray-800">${dashboardData.totalRewardsEarned.toFixed(2)}</p>
+          <p className="text-3xl font-bold text-gray-800">${(dashboardData.totalRewardsEarned ?? 0).toFixed(2)}</p>
           <p className="text-amber-600 text-sm mt-1 flex items-center">
             <span className="bg-amber-100 px-2 py-1 rounded mr-2">
-              Pending: ${dashboardData.pendingRewards.toFixed(2)}
+              Pending: ${(dashboardData.pendingRewards ?? 0).toFixed(2)}
             </span>
           </p>
         </div>
@@ -559,7 +559,7 @@ const ReferrerDashboard = () => {
                         {item.status}
                       </span>
                     </td>
-                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">${item.amount.toFixed(2)}</td>
+                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">${(item.amount ?? 0).toFixed(2)}</td>
                   </tr>
                 ))}
               </tbody>
@@ -588,7 +588,7 @@ const ReferrerDashboard = () => {
                   <tr key={item.id} className="hover:bg-gray-50">
                     <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{item.date}</td>
                     <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-indigo-600">{item.order}</td>
-                    <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">${item.amount.toFixed(2)}</td>
+                    <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">${(item.amount ?? 0).toFixed(2)}</td>
                     {/* <td className="px-6 py-4 text-sm text-gray-500">{item.description}</td> */}
                   </tr>
                 ))}
