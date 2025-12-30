@@ -89,12 +89,12 @@ const ShopEmployee = () => {
     if (!/\S+@\S+\.\S+/.test(formData.email)) {
       fieldErrors.email = "Invalid email address.";
     }
-    if (formData.password.length < 6) {
-      fieldErrors.password = "Password must be at least 6 characters.";
-    }
-    if (formData.confirmPassword !== formData.password) {
-      fieldErrors.confirmPassword = "Passwords do not match.";
-    }
+    // if (formData.password.length < 6) {
+    //   fieldErrors.password = "Password must be at least 6 characters.";
+    // }
+    // if (formData.confirmPassword !== formData.password) {
+    //   fieldErrors.confirmPassword = "Passwords do not match.";
+    // }
     if (userCaptchaInput !== captchaText) {
       fieldErrors.captcha = "CAPTCHA verification failed. Please try again.";
     }
