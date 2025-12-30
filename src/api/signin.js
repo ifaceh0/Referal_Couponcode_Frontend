@@ -114,6 +114,17 @@ export const getRoles = async (credentials) => {
     return response.json(); // array of strings, e.g., ["USER", "SHOPKEEPER"]
 };
 
+export const getEmployeeShops = async (email) => {
+  const response = await fetch(`${VITE_BACKEND_URL}/api/auth/get-employee-shops`, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ email }),
+  });
+
+  if (!response.ok) throw new Error("Failed to fetch shops");
+  return response.json(); // array of { shopkeeperId, shopName }
+};
+
 
 // import Cookies from "js-cookie"; // Install js-cookie package using `npm install js-cookie`
 
@@ -156,15 +167,20 @@ export const getRoles = async (credentials) => {
 
 // multi role login code
 
-export const loginShopkeeper = async ({ email, password, role }) => {
+export const loginShopkeeper = async ({ email, password, role, shopkeeperId }) => {
     const url = `${VITE_BACKEND_URL}/api/auth/login`;
+
+    const payload = { email, password, role };
+    if (shopkeeperId !== undefined && shopkeeperId !== null) {
+      payload.shopkeeperId = shopkeeperId;
+    }
 
     const response = await fetch(url, {
         method: "POST",
         headers: {
             "Content-Type": "application/json",
         },
-        body: JSON.stringify({ email, password, role }),
+        body: JSON.stringify(payload),
         credentials: 'include',
     });
 

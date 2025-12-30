@@ -379,7 +379,7 @@ const ReferrerDashboard = () => {
 
   if (isLoading) {
     return (
-      <div className="max-w-6xl mx-auto px-4 py-8 bg-gray-50 min-h-screen">
+      <div className="max-w-full mx-auto px-4 py-8 bg-gray-50 min-h-screen">
         <p className="text-gray-700 font-semibold">Loading dashboard...</p>
       </div>
     );
@@ -387,7 +387,7 @@ const ReferrerDashboard = () => {
 
   if (error) {
     return (
-      <div className="max-w-6xl mx-auto px-4 py-8 bg-gray-50 min-h-screen">
+      <div className="max-w-full mx-auto px-4 py-8 bg-gray-50 min-h-screen">
         <p className="text-red-600 font-semibold">{error}</p>
       </div>
     );
@@ -395,14 +395,14 @@ const ReferrerDashboard = () => {
 
   if (!dashboardData) {
     return (
-      <div className="max-w-6xl mx-auto px-4 py-8 bg-gray-50 min-h-screen">
+      <div className="max-w-full mx-auto px-4 py-8 bg-gray-50 min-h-screen">
         <p className="text-gray-700 font-semibold">No dashboard data available.</p>
       </div>
     );
   }
 
   return (
-    <div className="max-w-6xl mx-auto px-4 py-8 bg-gray-50 min-h-screen">
+    <div className="max-w-full mx-auto px-4 py-8 bg-gray-50 min-h-screen">
       <div className="flex flex-col md:flex-row justify-between items-start md:items-center mb-8">
         <div>
           <h1 className="text-3xl font-bold text-gray-800">Referral Dashboard</h1>
