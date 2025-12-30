@@ -226,13 +226,16 @@ const ShopEmployee = () => {
             error={errors.phoneNumber}
           /> */}
           <PhoneInputField
-          label=""
+          label="Phone"
           name="phoneNumber"
           value={formData.phoneNumber}
           onChange={(phone) =>
           setFormData({ ...formData, phoneNumber: phone.target.value })
           } />
-          <InputField
+          <p className="text-xs text-gray-500 mt-1">
+            🔐 This phone number will be used as your initial password. You can change it after login.
+          </p>
+          {/* <InputField
             label="Password"
             type="password"
             name="password"
@@ -247,7 +250,7 @@ const ShopEmployee = () => {
             value={formData.confirmPassword}
             onChange={handleInputChange}
             error={errors.confirmPassword}
-          />
+          /> */}
 
           {/* CAPTCHA */}
           <div className="my-4">
@@ -306,6 +309,15 @@ const ShopEmployee = () => {
           >
             Sign Up
           </button>
+          <p className="text-center text-gray-600 text-sm mt-6">
+            Already have an account?{" "}
+            <span
+              onClick={() => navigate("/signin")}
+              className="text-purple-600 font-semibold hover:underline cursor-pointer"
+            >
+              Sign In
+            </span>
+          </p>
         </div>
       </div>
       {/* {showPopup && (
