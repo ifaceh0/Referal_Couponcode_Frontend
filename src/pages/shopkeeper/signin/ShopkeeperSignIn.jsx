@@ -863,7 +863,98 @@ const ShopkeeperSignIn = () => {
     }
   };
 
+  // const handleLogin = async () => {
+  //   if (step === 1) {
+  //     if (!validateFields()) return;
+
+  //     setLoading(true);
+  //     setError(null);
+
+  //     try {
+  //       const roles = await getRoles({
+  //         email: formData.email,
+  //         password: formData.password
+  //       });
+
+  //       if (roles.length === 1) {
+  //         // ← ADDED: Handle single SHOP_EMPLOYEE role with auto shop selection
+  //         if (roles[0] === "SHOP_EMPLOYEE") {
+  //           setSelectedRole(roles[0]);
+  //           const shops = await getEmployeeShops(formData.email);
+  //           setEmployeeShops(shops);
+  //           if (shops.length === 1) {
+  //             await performLogin(shops[0].shopkeeperId);
+  //           } else {
+  //             setStep(3);
+  //           }
+  //           return;
+  //         }
+
+  //         // Existing single role logic (USER or SHOPKEEPER)
+  //         await loginShopkeeper({
+  //           email: formData.email,
+  //           password: formData.password,
+  //           role: roles[0]
+  //         });
+  //         const user = await getCurrentUser();
+  //         navigateBasedOnRole(user.role);
+  //       } else if (roles.length > 1) {
+  //         // Existing multi-role logic
+  //         setPossibleRoles(roles);
+  //         setStep(2);
+  //       } else {
+  //         setError("No roles found for this account");
+  //       }
+  //     } catch (err) {
+  //       console.error("Get roles error:", err);
+  //       setError(err.message || "Invalid email or password");
+  //       generateCaptcha();
+  //     } finally {
+  //       setLoading(false);
+  //     }
+  //   }
+
+  //   if (step === 2) {
+  //     if (!selectedRole) {
+  //       setError("Please select a role");
+  //       return;
+  //     }
+
+  //     // ← ADDED: If SHOP_EMPLOYEE selected → go to shop selection
+  //     if (selectedRole === "SHOP_EMPLOYEE") {
+  //       setLoading(true);
+  //       try {
+  //         const shops = await getEmployeeShops(formData.email);
+  //         setEmployeeShops(shops);
+  //         if (shops.length === 1) {
+  //           await performLogin(shops[0].shopkeeperId);
+  //         } else {
+  //           setStep(3);
+  //         }
+  //       } catch (err) {
+  //         setError("Failed to load your shops");
+  //       } finally {
+  //         setLoading(false);
+  //       }
+  //       return;
+  //     }
+
+  //     // Existing normal role login
+  //     await performLogin();
+  //   }
+
+  //   // ← ADDED FOR MULTI-SHOP EMPLOYEE SUPPORT: Shop selection step
+  //   if (step === 3) {
+  //     if (!selectedShop) {
+  //       setError("Please select a shop");
+  //       return;
+  //     }
+  //     await performLogin(selectedShop.shopkeeperId);
+  //   }
+  // };
+
   const handleLogin = async () => {
+    // STEP 1: Email + Password entered
     if (step === 1) {
       if (!validateFields()) return;
 
@@ -876,37 +967,72 @@ const ShopkeeperSignIn = () => {
           password: formData.password
         });
 
+        // Case 1: Only ONE role exists
         if (roles.length === 1) {
-          // ← ADDED: Handle single SHOP_EMPLOYEE role with auto shop selection
-          if (roles[0] === "SHOP_EMPLOYEE") {
-            setSelectedRole(roles[0]);
+          const role = roles[0];
+
+          // Special handling only for SHOP_EMPLOYEE
+          if (role === "SHOP_EMPLOYEE") {
+            setSelectedRole(role);
+
+            // // FIRST: Login with role only → creates session/token
+            // await loginShopkeeper({
+            //   email: formData.email,
+            //   password: formData.password,
+            //   role: role
+            // });
+
+            // SECOND: Now fetch shops (session exists)
             const shops = await getEmployeeShops(formData.email);
             setEmployeeShops(shops);
+
+            // If only ONE shop → auto login with shopId and redirect
             if (shops.length === 1) {
-              await performLogin(shops[0].shopkeeperId);
-            } else {
-              setStep(3);
+              await loginShopkeeper({
+                email: formData.email,
+                password: formData.password,
+                role: role,
+                shopkeeperId: shops[0].shopkeeperId
+              });
+
+              const user = await getCurrentUser();
+              navigateBasedOnRole(user.role);
+              return;
             }
+
+            // If multiple shops → go to shop selection screen
+            if (shops.length > 1) {
+              setStep(3);
+              return;
+            }
+
+            // No shops
+            setError("No shops assigned to this employee");
             return;
           }
 
-          // Existing single role logic (USER or SHOPKEEPER)
+          // For single USER or SHOPKEEPER → direct login
           await loginShopkeeper({
             email: formData.email,
             password: formData.password,
-            role: roles[0]
+            role: role
           });
+
           const user = await getCurrentUser();
           navigateBasedOnRole(user.role);
-        } else if (roles.length > 1) {
-          // Existing multi-role logic
+          return;
+        }
+
+        // Case 2: Multiple roles → show role selection
+        if (roles.length > 1) {
           setPossibleRoles(roles);
           setStep(2);
-        } else {
-          setError("No roles found for this account");
+          return;
         }
+
+        setError("No roles found for this account");
       } catch (err) {
-        console.error("Get roles error:", err);
+        console.error(err);
         setError(err.message || "Invalid email or password");
         generateCaptcha();
       } finally {
@@ -1197,7 +1323,7 @@ const ShopkeeperSignIn = () => {
                         relative p-2 rounded border-2 transition-all duration-300 cursor-pointer
                         shadow-lg hover:shadow-2xl transform hover:-translate-y-1
                         ${isSelected
-                          ? "border-cyan-500 bg-cyan-50 ring-4 ring-cyan-100"
+                          ? "border-blue-500 bg-blue-50 ring-4 ring-blue-100"
                           : "border-gray-200 bg-white hover:border-gray-300"
                         }
                       `}
@@ -1217,7 +1343,7 @@ const ShopkeeperSignIn = () => {
 
                         {isSelected && (
                           <div className="absolute top-5 right-4">
-                            <div className="bg-cyan-600 text-white rounded-full p-1 shadow-lg">
+                            <div className="bg-blue-600 text-white rounded-full p-1 shadow-lg">
                               <svg className="h-6 w-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={3} d="M5 13l4 4L19 7" />
                               </svg>
@@ -1238,7 +1364,7 @@ const ShopkeeperSignIn = () => {
                 w-full py-2 px-6 rounded font-bold text-lg shadow-xl transition-all duration-300
                 ${loading || !selectedRole
                   ? "bg-gray-400 cursor-not-allowed"
-                  : "bg-gradient-to-r from-cyan-600 to-blue-600 hover:from-cyan-700 hover:to-blue-700 text-white"
+                  : "bg-gradient-to-r from-purple-600 to-purple-600 hover:from-purple-700 hover:to-purple-700 text-white"
                 }
               `}
             >
@@ -1247,7 +1373,7 @@ const ShopkeeperSignIn = () => {
 
             <button
               onClick={() => setStep(1)}
-              className="w-full text-center text-cyan-600 hover:text-cyan-800 font-medium mt-5"
+              className="w-full text-center text-blue-600 hover:text-blue-800 font-medium mt-5"
             >
               ← Change email or password
             </button>
@@ -1283,14 +1409,14 @@ const ShopkeeperSignIn = () => {
                         relative p-2 rounded border-2 transition-all duration-300 cursor-pointer
                         shadow-xl hover:shadow-2xl transform hover:-translate-y-2 text-center
                         ${isSelected
-                          ? "border-cyan-500 bg-gradient-to-br from-cyan-50 to-blue-50 ring-4 ring-cyan-100"
+                          ? "border-blue-500 bg-gradient-to-br from-blue-50 to-purple-50 ring-4 ring-blue-100"
                           : "border-gray-200 bg-white hover:border-gray-300"
                         }
                       `}
                     >
                       {/* Shop Icon */}
                       <div className="mb-1 mt-1">
-                        <div className={`inline-flex p-2 rounded ${isSelected ? "bg-cyan-600" : "bg-gray-300"} text-white shadow-lg`}>
+                        <div className={`inline-flex p-2 rounded ${isSelected ? "bg-green-600" : "bg-gray-300"} text-white shadow-lg`}>
                           <svg className="h-6 w-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4" />
                           </svg>
@@ -1306,7 +1432,7 @@ const ShopkeeperSignIn = () => {
 
                       {isSelected && (
                         <div className="absolute -top-3 -right-3">
-                          <div className="bg-cyan-600 text-white rounded-full p-2 shadow-2xl">
+                          <div className="bg-blue-600 text-white rounded-full p-2 shadow-2xl">
                             <svg className="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={4} d="M5 13l4 4L19 7" />
                             </svg>
@@ -1326,7 +1452,7 @@ const ShopkeeperSignIn = () => {
                 w-full py-2 px-8 rounded font-bold text-xl shadow-2xl transition-all duration-300
                 ${loading || !selectedShop
                   ? "bg-gray-400 cursor-not-allowed"
-                  : "bg-gradient-to-r from-cyan-600 to-blue-600 hover:from-cyan-700 hover:to-blue-700 text-white"
+                  : "bg-gradient-to-r from-purple-600 to-purple-600 hover:from-purple-700 hover:to-purple-700 text-white"
                 }
               `}
             >
@@ -1335,14 +1461,14 @@ const ShopkeeperSignIn = () => {
 
             <button
               onClick={() => setStep(2)}
-              className="w-full text-center text-cyan-600 hover:text-cyan-800 font-medium mt-5"
+              className="w-full text-center text-blue-600 hover:text-blue-800 font-medium mt-5"
             >
               ← Back to account type
             </button>
           </>
         )}
         {/* Forgot Password Link */}
-        <div className="text-center mt-6">
+        <div className="text-center mt-3">
           <button
             onClick={toggleForgotPassword}
             className="text-purple-600 hover:text-purple-800 font-medium text-sm underline"
