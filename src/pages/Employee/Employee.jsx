@@ -3,7 +3,8 @@ import {
   getAllShopEmployee,
   getAllInviteEmployee,
   deleteInvitation,
-  employeeInvitation
+  employeeInvitation,
+  toggleEmployeeStatus
 } from "../../api/employee";
 import { getCurrentUser } from "../../api/signin";
 import { toast, ToastContainer } from "react-toastify";
@@ -230,6 +231,39 @@ const Employee = () => {
     setEditingEmployee(null);
   };
 
+  const handleToggleStatus = async (userId, currentStatus) => {
+    const confirmMsg = currentStatus === "ACTIVE" 
+      ? "Deactivate this employee? They will no longer be able to access the system."
+      : "Activate this employee? They will regain access.";
+
+    if (!window.confirm(confirmMsg)) return;
+
+    const toastId = toast.loading("Updating status...");
+
+    try {
+      const result = await toggleEmployeeStatus(userId);
+      
+      // Update employees list with new status
+      setEmployees(prev => prev.map(emp => 
+        emp.userId === userId ? { ...emp, status: result.newStatus } : emp
+      ));
+
+      toast.update(toastId, {
+        render: `Employee ${result.newStatus === "ACTIVE" ? "activated" : "deactivated"} successfully!`,
+        type: "success",
+        isLoading: false,
+        autoClose: 3000,
+      });
+    } catch (error) {
+      toast.update(toastId, {
+        render: error.message || "Failed to update status",
+        type: "error",
+        isLoading: false,
+        autoClose: 3000,
+      });
+    }
+  };
+
 
 
   return (
@@ -251,6 +285,7 @@ const Employee = () => {
                 <th className="px-4 py-2 text-left">Email Address</th>
                 <th className="px-4 py-2 text-left">Created</th>
                 {/* <th className="px-4 py-2 text-left">Expired</th> */}
+                <th className="px-4 py-2 text-left">Status</th>
                 <th className="px-4 py-2 text-left">Actions</th>
               </tr>
             </thead>
@@ -279,6 +314,29 @@ const Employee = () => {
                     Delete
                   </button>
                 </td> */}
+                  <td className="px-4 py-2">
+                    <span className={`inline-flex items-center px-3 py-1 rounded-full text-xs font-medium ${
+                      emp.status === "ACTIVE" 
+                        ? "bg-green-100 text-green-800" 
+                        : "bg-red-100 text-red-800"
+                    }`}>
+                      {emp.status || "INACTIVE"}
+                    </span>
+                  </td>
+                  <td className="px-4 py-2">
+                    <label className="relative inline-flex items-center cursor-pointer">
+                      <input
+                        type="checkbox"
+                        checked={emp.status === "ACTIVE"}
+                        onChange={() => handleToggleStatus(emp.userId, emp.status)}
+                        className="sr-only peer"
+                      />
+                      <div className="w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-blue-300 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-blue-600"></div>
+                      <span className="ml-3 text-sm font-medium text-gray-900">
+                        {emp.status === "ACTIVE" ? "Active" : "Inactive"}
+                      </span>
+                    </label>
+                  </td>
                   </tr>
                 )))}
             </tbody>

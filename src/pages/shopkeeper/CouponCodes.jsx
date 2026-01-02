@@ -223,26 +223,58 @@ const CouponCodes = () => {
         <div className="mb-8 bg-white p-6 rounded shadow-md">
           <h2 className="text-xl font-semibold mb-4" style={{ color: colorPalette.primaryDark }}>Individual Coupon Code Generation</h2>
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 mb-4">
-            <input type="text" placeholder="Name" value={form.name}
+            {/* <input type="text" placeholder="Name" value={form.name}
               onChange={(e) => setForm({ ...form, name: e.target.value })}
-              className="border rounded p-2" />
-              <div className="flex flex-col">
-            <input 
-            type="email" 
-            placeholder="Email" 
-            value={form.email} 
-            onChange={(e) =>
-              setForm({ ...form, email: e.target.value })} 
-              className={`border rounded p-2 ${
-                form.email && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(form.email) ? "border-red-500" : ""
-              }`} />
+              className="border rounded p-2" /> */}
+            <div>
+              <label htmlFor="individual-name" className="block text-sm font-medium text-gray-700 mb-1">
+                Name <span className="text-red-500">*</span>
+              </label>
+              <input
+                id="individual-name"
+                type="text"
+                placeholder="Enter name"
+                value={form.name}
+                onChange={(e) => setForm({ ...form, name: e.target.value })}
+                className="w-full border rounded p-2 focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+              />
+            </div>  
+            
+            {/* <div className="flex flex-col">
+              <input 
+              type="email" 
+              placeholder="Email" 
+              value={form.email} 
+              onChange={(e) =>
+                setForm({ ...form, email: e.target.value })} 
+                className={`border rounded p-2 ${
+                  form.email && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(form.email) ? "border-red-500" : ""
+                }`} />
+                {form.email && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(form.email) && (
+                  <span className="text-sm text-red-600">Please enter a valid email address.</span>
+                )}
+            </div> */}
+            <div>
+              <label htmlFor="individual-email" className="block text-sm font-medium text-gray-700 mb-1">
+                Email Address <span className="text-red-500">*</span>
+              </label>
+              <input
+                id="individual-email"
+                type="email"
+                placeholder="Enter email"
+                value={form.email}
+                onChange={(e) => setForm({ ...form, email: e.target.value })}
+                className={`w-full border rounded p-2 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 ${
+                  form.email && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(form.email) ? "border-red-500" : ""
+                }`}
+              />
               {form.email && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(form.email) && (
                 <span className="text-sm text-red-600">Please enter a valid email address.</span>
               )}
-              </div>
+            </div>
             {/* <PhoneInputField label="" name="phone" value={form.phone} onChange={(e) => setForm({ ...form, phone: e.target.value })} containerClass="w-full" inputClass="border rounded p-2 w-full" /> */}
-            <PhoneInputField
-              label=""
+            {/* <PhoneInputField
+              label="Phone"
               name="phone"
               dialCodeField="phoneDialCode"
               value={form.phone}
@@ -250,13 +282,43 @@ const CouponCodes = () => {
               onChange={(e) => setForm((prev) => ({ ...prev, [e.target.name]: e.target.value }))}
               containerClass="w-full"
               inputClass="border rounded p-2 w-full"
-            />
+            /> */}
+            <div>
+              <label htmlFor="individual-phone" className="block text-sm font-medium text-gray-700 mb-1">
+                Phone Number
+              </label>
+              <PhoneInputField
+                id="individual-phone"
+                label=""
+                name="phone"
+                dialCodeField="phoneDialCode"
+                value={form.phone}
+                dialCodeValue={form.phoneDialCode}
+                onChange={(e) => setForm((prev) => ({ ...prev, [e.target.name]: e.target.value }))}
+                containerClass="w-full"
+                inputClass="border rounded p-2 w-full focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+              />
+            </div>
 
-            <input type="date" value={form.expiryDate}
+            {/* <input type="date" value={form.expiryDate}
               onChange={(e) => setForm({ ...form, expiryDate: e.target.value })}
               className="border rounded p-2" title="Expire Date" readOnly={expiryReadOnly}
-              min={new Date().toISOString().split("T")[0]} />
-            <input type="number" placeholder="Coupon Amount ($)" value={form.referralAmount}
+              min={new Date().toISOString().split("T")[0]} /> */}
+            <div>
+              <label htmlFor="individual-expiry" className="block text-sm font-medium text-gray-700 mb-1">
+                Expiry Date <span className="text-red-500">*</span>
+              </label>
+              <input
+                id="individual-expiry"
+                type="date"
+                value={form.expiryDate}
+                onChange={(e) => setForm({ ...form, expiryDate: e.target.value })}
+                className="w-full border rounded p-2 focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                readOnly={expiryReadOnly}
+                min={new Date().toISOString().split("T")[0]}
+              />
+            </div>  
+            {/* <input type="number" placeholder="Coupon Amount ($)" value={form.referralAmount}
               onChange={(e) => {
                 const value = Number(e.target.value);
                 setForm((prev) => ({
@@ -264,8 +326,28 @@ const CouponCodes = () => {
                   referralAmount: isNaN(value) ? '' : Math.max(0, value),
                 }));
               }}  
-              className="border rounded p-2" readOnly={referralAmountReadOnly} />
-            <input type="number" placeholder="Limit" value={form.usageLimit}
+              className="border rounded p-2" readOnly={referralAmountReadOnly} /> */}
+            <div>
+              <label htmlFor="individual-amount" className="block text-sm font-medium text-gray-700 mb-1">
+                Coupon Amount ($) <span className="text-red-500">*</span>
+              </label>
+              <input
+                id="individual-amount"
+                type="number"
+                placeholder="Enter amount"
+                value={form.referralAmount}
+                onChange={(e) => {
+                  const value = Number(e.target.value);
+                  setForm((prev) => ({
+                    ...prev,
+                    referralAmount: isNaN(value) ? "" : Math.max(0, value),
+                  }));
+                }}
+                className="w-full border rounded p-2 focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                readOnly={referralAmountReadOnly}
+              />
+            </div>  
+            {/* <input type="number" placeholder="Limit" value={form.usageLimit}
               onChange={(e) =>{
                 const value = Number(e.target.value);
                 setForm((prev) => ({
@@ -273,7 +355,27 @@ const CouponCodes = () => {
                   usageLimit: isNaN(value) ? '' : Math.max(0, value),
                 }));
               }}
-              className="border rounded p-2" readOnly={couponUseLimitReadOnly} />
+              className="border rounded p-2" readOnly={couponUseLimitReadOnly} /> */}
+            <div>
+              <label htmlFor="individual-limit" className="block text-sm font-medium text-gray-700 mb-1">
+                Usage Limit <span className="text-red-500">*</span>
+              </label>
+              <input
+                id="individual-limit"
+                type="number"
+                placeholder="Enter usage limit"
+                value={form.usageLimit}
+                onChange={(e) => {
+                  const value = Number(e.target.value);
+                  setForm((prev) => ({
+                    ...prev,
+                    usageLimit: isNaN(value) ? "" : Math.max(0, value),
+                  }));
+                }}
+                className="w-full border rounded p-2 focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                readOnly={couponUseLimitReadOnly}
+              />
+            </div>  
           </div>
           <button onClick={handleGenerateCode} className="px-4 py-2 rounded shadow" style={{ backgroundColor: colorPalette.accent, color: colorPalette.white }}>Generate Code</button>
         </div>
@@ -282,24 +384,84 @@ const CouponCodes = () => {
         <div className="mb-8 bg-white p-6 rounded shadow-md">
           <h2 className="text-xl font-semibold mb-4" style={{ color: colorPalette.secondaryDark }}>Bulk Coupon Codes Generation</h2>
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 mb-4">
-            <input type="file" accept=".csv, .xls, .xlsx, .txt" onChange={(e) => setBulkFile(e.target.files[0])} className="block text-sm border rounded p-2" />
-            <input type="date" value={bulkExpiryDate} onChange={(e) => setBulkExpiryDate(e.target.value)}
+            {/* <input type="file" accept=".csv, .xls, .xlsx, .txt" onChange={(e) => setBulkFile(e.target.files[0])} className="block text-sm border rounded p-2" /> */}
+            <div>
+              <label htmlFor="bulk-file" className="block text-sm font-medium text-gray-700 mb-1">
+                Upload File (CSV/XLSX) <span className="text-red-500">*</span>
+              </label>
+              <input
+                id="bulk-file"
+                type="file"
+                accept=".csv, .xls, .xlsx, .txt"
+                onChange={(e) => setBulkFile(e.target.files[0])}
+                className="block w-full text-sm text-gray-700 border rounded p-2 file:mr-4 file:py-2 file:px-4 file:rounded file:border-0 file:bg-blue-50 file:text-blue-700 hover:file:bg-blue-100"
+              />
+            </div>
+            {/* <input type="date" value={bulkExpiryDate} onChange={(e) => setBulkExpiryDate(e.target.value)}
               className="border rounded p-2" title="Expire Date - mm/dd/yyyy" readOnly={expiryReadOnly} 
-              min={new Date().toISOString().split("T")[0]} />
+              min={new Date().toISOString().split("T")[0]} /> */}
+            <div>
+              <label htmlFor="bulk-expiry" className="block text-sm font-medium text-gray-700 mb-1">
+                Expiry Date <span className="text-red-500">*</span>
+              </label>
+              <input
+                id="bulk-expiry"
+                type="date"
+                value={bulkExpiryDate}
+                onChange={(e) => setBulkExpiryDate(e.target.value)}
+                className="w-full border rounded p-2 focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                readOnly={expiryReadOnly}
+                min={new Date().toISOString().split("T")[0]}
+              />
+            </div>  
 
-            <input type="number" placeholder="Coupon Amount ($)" value={bulkReferralAmount}
+            {/* <input type="number" placeholder="Coupon Amount ($)" value={bulkReferralAmount}
               onChange={(e) => {
                 const value = Number(e.target.value);
                 setBulkReferralAmount(isNaN(value) ? '' : Math.max(0, value));
               }} className="border rounded p-2"
-              readOnly={referralAmountReadOnly} />
-            <input type="number" placeholder="Limit" value={bulkLimit}
+              readOnly={referralAmountReadOnly} /> */}
+            <div>
+              <label htmlFor="bulk-amount" className="block text-sm font-medium text-gray-700 mb-1">
+                Coupon Amount ($) <span className="text-red-500">*</span>
+              </label>
+              <input
+                id="bulk-amount"
+                type="number"
+                placeholder="Enter amount"
+                value={bulkReferralAmount}
+                onChange={(e) => {
+                  const value = Number(e.target.value);
+                  setBulkReferralAmount(isNaN(value) ? "" : Math.max(0, value));
+                }}
+                className="w-full border rounded p-2 focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                readOnly={referralAmountReadOnly}
+              />
+            </div>  
+            {/* <input type="number" placeholder="Limit" value={bulkLimit}
               onChange={(e) => {
                 const value = Number(e.target.value);
                 setBulkLimit(isNaN(value) ? '' : Math.max(0, value));
-              }} className="border rounded p-2" readOnly={couponUseLimitReadOnly} />
+              }} className="border rounded p-2" readOnly={couponUseLimitReadOnly} /> */}
+            <div>
+              <label htmlFor="bulk-limit" className="block text-sm font-medium text-gray-700 mb-1">
+                Usage Limit <span className="text-red-500">*</span>
+              </label>
+              <input
+                id="bulk-limit"
+                type="number"
+                placeholder="Enter limit"
+                value={bulkLimit}
+                onChange={(e) => {
+                  const value = Number(e.target.value);
+                  setBulkLimit(isNaN(value) ? "" : Math.max(0, value));
+                }}
+                className="w-full border rounded p-2 focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                readOnly={couponUseLimitReadOnly}
+              />
+            </div>  
           </div>
-          <button onClick={handleBulkGenerate} className="px-4 py-2 rounded shadow" style={{ backgroundColor: colorPalette.secondary, color: colorPalette.white }}>Generate Coupon Codes</button>
+          <button onClick={handleBulkGenerate} className="px-4 py-2 rounded shadow" style={{ backgroundColor: colorPalette.secondary, color: colorPalette.white }}>Generate Bulk Coupon Codes</button>
         </div>
         {showFailedModal && (
           <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">

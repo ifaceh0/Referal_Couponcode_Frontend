@@ -1205,270 +1205,315 @@ const InteractionPanel = () => {
     <div className="min-h-screen flex flex-col items-center p-8 bg-gray-100">
       <ToastContainer position="top-right" autoClose={3000} />
 
-      <div className="w-full max-w-6xl mb-6 bg-white p-4 rounded shadow text-center">
-        <h1 className="text-2xl font-bold text-gray-800">
-          {userDetails?.name || "Shop Name"}
-        </h1>
-        <p className="text-sm text-gray-500">
-          Shop ID: {userDetails?.id || shopkeeperId}
-        </p>
-      </div>
+      {userDetails?.role === "SHOP_EMPLOYEE" && userDetails?.employeeActive === false ? (
+        <div className="w-full max-w-4xl mt-20 text-center">
+          <div className="bg-red-50 border border-red-200 rounded p-10 shadow-lg">
+            <h1 className="text-3xl font-bold text-red-700 mb-4">
+              Access Restricted
+            </h1>
 
-      {/* Verification Modal */}
-      {verificationDialogOpen && verificationData && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-sm">
-          <div className="bg-white rounded-2xl w-full max-w-[800px] p-6 shadow-xl">
-            <h2 className="text-xl font-semibold mb-4 text-gray-700">
-              Customer Details
-            </h2>
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4 text-gray-800">
-              <p>
-                <strong>Name:</strong> {verificationData.name}
-              </p>
-              <p>
-                <strong>Phone:</strong> {verificationData.phone}
-              </p>
-              <p>
-                <strong>Email:</strong> {verificationData.email}
-              </p>
-              <p>
-                <strong>Customer ID:</strong> {verificationData.customerId}
-              </p>
-              <p>
-                <strong>Available Balance:</strong> ₹
-                {verificationData.availableBalance}
-              </p>
-              <p>
-                <strong>Coupon Amount:</strong> ₹
-                {verificationData.couponAmount}
-              </p>
-              <p>
-                <strong>Coupon Usage Limit:</strong>{" "}
-                {verificationData.couponUsageLimit}
-              </p>
-              <p>
-                <strong>Referral Code:</strong> {verificationData.referralCode}
-              </p>
-            </div>
+            <p className="text-lg text-gray-700 mb-4">
+              Your employee account has been deactivated.
+            </p>
 
-            <div className="mt-6">
-              <h3 className="font-semibold mb-2">Redeem Discount</h3>
-              <div className="flex items-center gap-2">
-                <input
-                  type="number"
-                  value={redeemAmount}
-                  onChange={(e) => setRedeemAmount(e.target.value)}
-                  placeholder="Enter amount"
-                  className="p-2 border rounded w-40"
-                />
+            <p className="text-md text-gray-600 mb-3">
+              This usually happens if:
+            </p>
+
+            <ul className="text-md text-gray-600 list-disc list-inside mb-6 text-left inline-block">
+              <li>Your employment with this shop has ended</li>
+              <li>Your access was temporarily disabled by the shop owner</li>
+            </ul>
+
+            <p className="text-md text-gray-600 mb-6">
+              If you believe this is a mistake or you are still working with this shop,
+              please contact the shop owner or administrator to reactivate your account.
+            </p>
+
+            <p className="text-sm text-gray-500 mb-6">
+              For security reasons, you cannot access shop data until your account is
+              reactivated.
+            </p>
+
+            <button
+              onClick={() => {
+                localStorage.clear();
+                navigate("/signin");
+              }}
+              className="mt-4 bg-red-600 text-white px-6 py-2 rounded hover:bg-red-700"
+            >
+              Logout
+            </button>
+          </div>
+        </div>
+      ) : (
+        <>
+          <div className="w-full max-w-6xl mb-6 bg-white p-4 rounded shadow text-center">
+            <h1 className="text-2xl font-bold text-gray-800">
+              {userDetails?.name || "Shop Name"}
+            </h1>
+            <p className="text-sm text-gray-500">
+              Shop ID: {userDetails?.id || shopkeeperId}
+            </p>
+          </div>
+
+          {/* Verification Modal */}
+          {verificationDialogOpen && verificationData && (
+            <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-sm">
+              <div className="bg-white rounded-2xl w-full max-w-[800px] p-6 shadow-xl">
+                <h2 className="text-xl font-semibold mb-4 text-gray-700">
+                  Customer Details
+                </h2>
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4 text-gray-800">
+                  <p>
+                    <strong>Name:</strong> {verificationData.name}
+                  </p>
+                  <p>
+                    <strong>Phone:</strong> {verificationData.phone}
+                  </p>
+                  <p>
+                    <strong>Email:</strong> {verificationData.email}
+                  </p>
+                  <p>
+                    <strong>Customer ID:</strong> {verificationData.customerId}
+                  </p>
+                  <p>
+                    <strong>Available Balance:</strong> ₹
+                    {verificationData.availableBalance}
+                  </p>
+                  <p>
+                    <strong>Coupon Amount:</strong> ₹
+                    {verificationData.couponAmount}
+                  </p>
+                  <p>
+                    <strong>Coupon Usage Limit:</strong>{" "}
+                    {verificationData.couponUsageLimit}
+                  </p>
+                  <p>
+                    <strong>Referral Code:</strong> {verificationData.referralCode}
+                  </p>
+                </div>
+
+                <div className="mt-6">
+                  <h3 className="font-semibold mb-2">Redeem Discount</h3>
+                  <div className="flex items-center gap-2">
+                    <input
+                      type="number"
+                      value={redeemAmount}
+                      onChange={(e) => setRedeemAmount(e.target.value)}
+                      placeholder="Enter amount"
+                      className="p-2 border rounded w-40"
+                    />
+                    <button
+                      onClick={handleRedeemClick}
+                      className="bg-green-500 text-white px-4 py-2 rounded"
+                      disabled={loading}
+                    >
+                      {loading ? "Processing..." : "Redeem"}
+                    </button>
+                  </div>
+                  {error && <p className="text-red-500 mt-2">{error}</p>}
+                </div>
+
                 <button
-                  onClick={handleRedeemClick}
-                  className="bg-green-500 text-white px-4 py-2 rounded"
-                  disabled={loading}
+                  onClick={handleCloseVerificationDialog}
+                  className="mt-6 w-full py-2 bg-gray-200 hover:bg-gray-300 rounded-lg"
                 >
-                  {loading ? "Processing..." : "Redeem"}
+                  Close
                 </button>
               </div>
-              {error && <p className="text-red-500 mt-2">{error}</p>}
+            </div>
+          )}
+
+          {/* Main Form */}
+          <div className="max-w-6xl w-full grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+            {/* Code Entry */}
+            <div className="bg-gray-50 p-6 rounded shadow">
+              <h2 className="font-semibold mb-2">Search Code</h2>
+              <input
+                type="text"
+                value={code}
+                onChange={(e) => setCode(e.target.value)}
+                placeholder="Enter Referral or Coupon Code"
+                className="w-full p-2 border rounded mb-4"
+              />
+              <button
+                onClick={handleSearchCode}
+                className="bg-green-500 text-white py-2 px-4 rounded w-full"
+              >
+                Search
+              </button>
             </div>
 
-            <button
-              onClick={handleCloseVerificationDialog}
-              className="mt-6 w-full py-2 bg-gray-200 hover:bg-gray-300 rounded-lg"
-            >
-              Close
-            </button>
-          </div>
-        </div>
-      )}
-
-      {/* Main Form */}
-      <div className="max-w-6xl w-full grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-        {/* Code Entry */}
-        <div className="bg-gray-50 p-6 rounded shadow">
-          <h2 className="font-semibold mb-2">Search Code</h2>
-          <input
-            type="text"
-            value={code}
-            onChange={(e) => setCode(e.target.value)}
-            placeholder="Enter Referral or Coupon Code"
-            className="w-full p-2 border rounded mb-4"
-          />
-          <button
-            onClick={handleSearchCode}
-            className="bg-green-500 text-white py-2 px-4 rounded w-full"
-          >
-            Search
-          </button>
-        </div>
-
-        {/* Phone */}
-        <div className="bg-purple-50 p-6 rounded shadow">
-          <h2 className="font-semibold flex items-center mb-2">
-            <FaPhone className="mr-2" /> Phone Number
-          </h2>
-          <div className="flex items-center">
-            <input
-              type="tel"
-              value={phoneNumber}
-              onChange={(e) => {
-                setPhoneNumber(e.target.value);
-                setPhoneVerified(false);
-              }}
-              placeholder="Enter phone"
-              className="w-full p-2 border rounded"
-            />
-            <button
-              onClick={handleVerifyPhone}
-              disabled={phoneVerified}
-              className={`ml-2 p-2 rounded-full ${
-                phoneVerified
-                  ? "bg-green-100 text-green-600"
-                  : "bg-purple-100 text-purple-600"
-              }`}
-            >
-              <FaCheck />
-            </button>
-          </div>
-          <p className="text-xs">
-            {phoneVerified
-              ? "Verified!"
-              : "We’ll use this to identify user"}
-          </p>
-        </div>
-
-        {/* Email */}
-        <div className="bg-blue-50 p-6 rounded shadow">
-          <h2 className="font-semibold flex items-center mb-2">
-            <FaEnvelope className="mr-2" /> Email Address
-          </h2>
-          <div className="flex items-center">
-            <input
-              type="email"
-              value={email}
-              onChange={(e) => {
-                setEmail(e.target.value);
-                setEmailVerified(false);
-              }}
-              placeholder="Enter email"
-              className="w-full p-2 border rounded"
-            />
-            <button
-              onClick={handleVerifyEmail}
-              disabled={emailVerified}
-              className={`ml-2 p-2 rounded-full ${
-                emailVerified
-                  ? "bg-green-100 text-green-600"
-                  : "bg-blue-100 text-blue-600"
-              }`}
-            >
-              <FaCheck />
-            </button>
-          </div>
-          <p className="text-xs">
-            {emailVerified
-              ? "Verified!"
-              : "We’ll use this to identify user"}
-          </p>
-        </div>
-
-        {/* Scanner Trigger */}
-        <div className="bg-blue-50 p-6 rounded shadow">
-          <h2 className="font-semibold text-center mb-3">Scan Code</h2>
-          <div className="flex flex-col items-center">
-            <button
-              onClick={() => setShowScanner(true)}
-              className="bg-blue-500 text-white px-4 py-2 rounded flex items-center"
-            >
-              <FaQrcode className="mr-2" />
-              Open Scanner
-            </button>
-          </div>
-        </div>
-      </div>
-
-      {/* Scanner Modal */}
-      {showScanner && (
-        <div className="fixed inset-0 z-50 flex flex-col bg-black/50 backdrop-blur-sm">
-          <div className="flex justify-between items-center bg-blue-600 text-white px-4 py-3">
-            <h2 className="text-lg font-bold">QR Code Scanner</h2>
-            <button
-              onClick={() => setShowScanner(false)}
-              className="text-white hover:text-gray-300 text-2xl leading-none"
-            >
-              &times;
-            </button>
-          </div>
-          <div className="flex-1 bg-white overflow-hidden">
-            <Scanner
-              onScan={(scannedCode) => {
-                setCode(scannedCode);
-                setShowScanner(false);
-              }}
-            />
-          </div>
-        </div>
-      )}
-
-      {/* Code Result Display */}
-      {codeDetails && (
-        <div className="max-w-6xl w-full bg-gray-50 p-6 rounded shadow mt-6">
-          <h3 className="font-bold text-lg">Code Details</h3>
-          <p>
-            <strong>Code:</strong> {codeDetails.code}
-          </p>
-          <p>
-            <strong>Status:</strong> {codeDetails.status}
-          </p>
-          <p>
-            <strong>Expiry:</strong> {codeDetails.expiryDate}
-          </p>
-
-          {codeDetails.user && (
-            <>
-              <h4 className="font-semibold mt-3">User Info</h4>
-              <p>
-                <strong>Name:</strong> {codeDetails.user.name}
+            {/* Phone */}
+            <div className="bg-purple-50 p-6 rounded shadow">
+              <h2 className="font-semibold flex items-center mb-2">
+                <FaPhone className="mr-2" /> Phone Number
+              </h2>
+              <div className="flex items-center">
+                <input
+                  type="tel"
+                  value={phoneNumber}
+                  onChange={(e) => {
+                    setPhoneNumber(e.target.value);
+                    setPhoneVerified(false);
+                  }}
+                  placeholder="Enter phone"
+                  className="w-full p-2 border rounded"
+                />
+                <button
+                  onClick={handleVerifyPhone}
+                  disabled={phoneVerified}
+                  className={`ml-2 p-2 rounded-full ${
+                    phoneVerified
+                      ? "bg-green-100 text-green-600"
+                      : "bg-purple-100 text-purple-600"
+                  }`}
+                >
+                  <FaCheck />
+                </button>
+              </div>
+              <p className="text-xs">
+                {phoneVerified
+                  ? "Verified!"
+                  : "We’ll use this to identify user"}
               </p>
-              <p>
-                <strong>Email:</strong> {codeDetails.user.email}
+            </div>
+
+            {/* Email */}
+            <div className="bg-blue-50 p-6 rounded shadow">
+              <h2 className="font-semibold flex items-center mb-2">
+                <FaEnvelope className="mr-2" /> Email Address
+              </h2>
+              <div className="flex items-center">
+                <input
+                  type="email"
+                  value={email}
+                  onChange={(e) => {
+                    setEmail(e.target.value);
+                    setEmailVerified(false);
+                  }}
+                  placeholder="Enter email"
+                  className="w-full p-2 border rounded"
+                />
+                <button
+                  onClick={handleVerifyEmail}
+                  disabled={emailVerified}
+                  className={`ml-2 p-2 rounded-full ${
+                    emailVerified
+                      ? "bg-green-100 text-green-600"
+                      : "bg-blue-100 text-blue-600"
+                  }`}
+                >
+                  <FaCheck />
+                </button>
+              </div>
+              <p className="text-xs">
+                {emailVerified
+                  ? "Verified!"
+                  : "We’ll use this to identify user"}
               </p>
-              <p>
-                <strong>Phone:</strong> {codeDetails.user.phone}
-              </p>
-            </>
+            </div>
+
+            {/* Scanner Trigger */}
+            <div className="bg-blue-50 p-6 rounded shadow">
+              <h2 className="font-semibold text-center mb-3">Scan Code</h2>
+              <div className="flex flex-col items-center">
+                <button
+                  onClick={() => setShowScanner(true)}
+                  className="bg-blue-500 text-white px-4 py-2 rounded flex items-center"
+                >
+                  <FaQrcode className="mr-2" />
+                  Open Scanner
+                </button>
+              </div>
+            </div>
+          </div>
+
+          {/* Scanner Modal */}
+          {showScanner && (
+            <div className="fixed inset-0 z-50 flex flex-col bg-black/50 backdrop-blur-sm">
+              <div className="flex justify-between items-center bg-blue-600 text-white px-4 py-3">
+                <h2 className="text-lg font-bold">QR Code Scanner</h2>
+                <button
+                  onClick={() => setShowScanner(false)}
+                  className="text-white hover:text-gray-300 text-2xl leading-none"
+                >
+                  &times;
+                </button>
+              </div>
+              <div className="flex-1 bg-white overflow-hidden">
+                <Scanner
+                  onScan={(scannedCode) => {
+                    setCode(scannedCode);
+                    setShowScanner(false);
+                  }}
+                />
+              </div>
+            </div>
           )}
 
-          {isCouponCode ? (
-            <>
+          {/* Code Result Display */}
+          {codeDetails && (
+            <div className="max-w-6xl w-full bg-gray-50 p-6 rounded shadow mt-6">
+              <h3 className="font-bold text-lg">Code Details</h3>
               <p>
-                <strong>Discount:</strong> ${codeDetails.amount}
+                <strong>Code:</strong> {codeDetails.code}
               </p>
               <p>
-                <strong>Uses Left:</strong> {codeDetails.usageLimitLeft}
-              </p>
-              <button
-                onClick={handleUseCouponCode}
-                className="mt-2 bg-orange-500 text-white py-2 px-4 rounded"
-              >
-                Use Coupon Code
-              </button>
-            </>
-          ) : (
-            <>
-              <p>
-                <strong>Referral Amount:</strong> ${codeDetails.referralAmount}
+                <strong>Status:</strong> {codeDetails.status}
               </p>
               <p>
-                <strong>Referrer Amount:</strong> ${codeDetails.referrerAmount}
+                <strong>Expiry:</strong> {codeDetails.expiryDate}
               </p>
-            </>
-          )}
-        </div>
-      )}
 
-      {validationMessage && (
-        <p className="text-red-600 mt-4 text-center">{validationMessage}</p>
+              {codeDetails.user && (
+                <>
+                  <h4 className="font-semibold mt-3">User Info</h4>
+                  <p>
+                    <strong>Name:</strong> {codeDetails.user.name}
+                  </p>
+                  <p>
+                    <strong>Email:</strong> {codeDetails.user.email}
+                  </p>
+                  <p>
+                    <strong>Phone:</strong> {codeDetails.user.phone}
+                  </p>
+                </>
+              )}
+
+              {isCouponCode ? (
+                <>
+                  <p>
+                    <strong>Discount:</strong> ${codeDetails.amount}
+                  </p>
+                  <p>
+                    <strong>Uses Left:</strong> {codeDetails.usageLimitLeft}
+                  </p>
+                  <button
+                    onClick={handleUseCouponCode}
+                    className="mt-2 bg-orange-500 text-white py-2 px-4 rounded"
+                  >
+                    Use Coupon Code
+                  </button>
+                </>
+              ) : (
+                <>
+                  <p>
+                    <strong>Referral Amount:</strong> ${codeDetails.referralAmount}
+                  </p>
+                  <p>
+                    <strong>Referrer Amount:</strong> ${codeDetails.referrerAmount}
+                  </p>
+                </>
+              )}
+            </div>
+          )}
+
+          {validationMessage && (
+            <p className="text-red-600 mt-4 text-center">{validationMessage}</p>
+          )}
+        </>
       )}
     </div>
   );
