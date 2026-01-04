@@ -80,6 +80,11 @@ const ShopkeeperDashboardLayout = ({ children }) => {
     roles: ["SHOPKEEPER", "SHOP_EMPLOYEE"],
   },
   {
+    to: "/shopkeeper/inactive-shops",
+    label: "Work History",
+    roles: ["SHOP_EMPLOYEE"],
+  },
+  {
     to: "/shopkeeper/shop",
     label: "Shop",
     icon: <FaStore />,

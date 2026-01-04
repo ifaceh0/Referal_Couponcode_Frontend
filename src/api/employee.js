@@ -124,3 +124,40 @@ export const employeeInvitation = async (email,inviteId) => {
         throw error;
     }
 };
+
+
+// Helper function for employee auth headers
+const getEmployeeAuthHeaders = () => {
+  const token = localStorage.getItem("token");
+  return {
+    "Content-Type": "application/json",
+    "Authorization": `Bearer ${token}`,
+  };
+};
+
+// Get previous (inactive) shops for logged-in employee
+export const getPreviousShops = async () => {
+  try {
+    const response = await fetch(`${VITE_BACKEND_URL}/api/shopkeeper/previous-shops`, {
+      method: "GET",
+      headers: getEmployeeAuthHeaders(),
+    });
+
+    if (!response.ok) {
+      if (response.status === 401) {
+        throw new Error('Unauthorized. Please log in again.');
+      } else if (response.status === 403) {
+        throw new Error('Access denied. Only employees can view this page.');
+      } else {
+        const errorData = await response.json().catch(() => ({}));
+        throw new Error(errorData.message || 'Failed to load work history.');
+      }
+    }
+
+    const data = await response.json();
+    return data;
+  } catch (error) {
+    console.error("Error fetching previous shops:", error);
+    throw error;
+  }
+};

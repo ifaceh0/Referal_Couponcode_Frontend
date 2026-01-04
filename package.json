@@ -28,6 +28,7 @@
     "antd": "^5.26.0",
     "axios": "^1.7.9",
     "chart.js": "^4.4.9",
+    "date-fns": "^4.1.0",
     "framer-motion": "^12.5.0",
     "frontend": "file:",
     "html5-qrcode": "^2.3.8",

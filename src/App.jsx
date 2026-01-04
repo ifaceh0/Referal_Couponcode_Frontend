@@ -44,6 +44,7 @@ import ShopOwnerDashboard from "./components/Dashboard/ShopOwnerDashboard";
 import ReferredCustomerDashboard from "./components/Dashboard/referredCustomerDashBoard";
 import ReferrerDashboard from "./components/Dashboard/referrerDashboard";
 import ForgotPassword from "./pages/shopkeeper/signin/ForgotPassword";
+import PreviousShopsPage from "./pages/Employee/PreviousShopsPage";
 
 //import UserSignUp from "./pages/shopkeeper/signin/UserSignUp";
 
@@ -125,6 +126,7 @@ const App = () => {
           <Route path="referredcustomerdashboard" element={<ReferredCustomerDashboard/>}/>
           <Route path="referrerdashboard" element={<ReferrerDashboard/>}/>
           <Route path="forgotpassword" element={<ForgotPassword/>}/>
+          <Route path="inactive-shops" element={<PreviousShopsPage/>}/>
         </Route>
 
         {/* Routes for admin pages with AdminLayout */}
