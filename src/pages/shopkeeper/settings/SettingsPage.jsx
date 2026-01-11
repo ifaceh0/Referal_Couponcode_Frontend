@@ -10,7 +10,7 @@ const tabs = [
     { id: "companyProfile", label: "Company Profile" },
     { id: "personalProfile", label: "Personal Profile" },
     { id: "emailSettings", label: "Email" },
-    { id: "smsSettings", label: "SMS" },
+    // { id: "smsSettings", label: "SMS" },
     { id: "referralCodeSettings", label: "Promotion" },
     { id: "generalSettings", label: "General" },
 ];
@@ -26,8 +26,8 @@ const SettingsPage = () => {
                 return <PersonalProfile />;
             case "emailSettings":
                 return <EmailSettings />;
-            case "smsSettings":
-                return <SMSSettings />;
+            // case "smsSettings":
+            //     return <SMSSettings />;
             case "referralCodeSettings":
                 return <ReferralCodeSettings />;
             case "generalSettings":

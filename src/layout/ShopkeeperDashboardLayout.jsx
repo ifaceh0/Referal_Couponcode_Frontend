@@ -90,21 +90,21 @@ const ShopkeeperDashboardLayout = ({ children }) => {
     icon: <FaStore />,
     roles: ["USER"], // excluded from SHOPKEEPER
   },
-  {
-    to: "/shopkeeper/transaction",
-    label: "Transaction",
-    roles: ["SHOPKEEPER"],
-  },
+  // {
+  //   to: "/shopkeeper/transaction",
+  //   label: "Transaction",
+  //   roles: ["SHOPKEEPER"],
+  // },
   {
     to: "/shopkeeper/subscription",
     label: "Subscription",
     roles: ["SHOPKEEPER"],
   },
-  {
-    to: "/shopkeeper/analytics",
-    label: "Analytics",
-    roles: ["SHOPKEEPER"],
-  },
+  // {
+  //   to: "/shopkeeper/analytics",
+  //   label: "Analytics",
+  //   roles: ["SHOPKEEPER"],
+  // },
   {
     to: "/shopkeeper/settings",
     label: "Settings",
