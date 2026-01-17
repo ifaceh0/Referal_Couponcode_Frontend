@@ -260,6 +260,7 @@ import React, { useState, useEffect } from 'react';
 import { FaShareAlt, FaCopy, FaQrcode, FaWhatsapp, FaEnvelope, FaSms } from 'react-icons/fa';
 import { QRCodeSVG } from 'qrcode.react';
 import { getCurrentUser } from "../../api/signin";
+import { VITE_BACKEND_URL } from '../../apiConfig';
 
 const ReferrerDashboard = () => {
   const [dashboardData, setDashboardData] = useState(null);
@@ -270,7 +271,7 @@ const ReferrerDashboard = () => {
   // Function to fetch referral dashboard data
   const fetchDashboardData = async (userId) => {
     const token = localStorage.getItem('token');
-    const url = `https://referral-couponcode-backend.onrender.com/refer/api/shopkeeperDashboard/referrerDashboard?userId=${userId}`;
+    const url = `${VITE_BACKEND_URL}/api/shopkeeperDashboard/referrerDashboard?userId=${userId}`;
 
     setIsLoading(true);
     try {

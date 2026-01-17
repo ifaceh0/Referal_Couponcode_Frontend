@@ -765,10 +765,11 @@
 // update code for multi role & multi shop employee
 import React, { useState, useEffect } from "react";
 import { colorPalette } from "../../../utils/demoData";
-import { loginShopkeeper, getRoles, getEmployeeShops } from "../../../api/signin"; // ← ADDED: getEmployeeShops
+import { loginShopkeeper, getRoles, getEmployeeShops } from "../../../api/signin";
 import { useNavigate } from "react-router-dom";
 import { getCurrentUser } from '../../../api/signin';
-import { User, Store, Users } from "lucide-react"; // Icons for roles
+import { User, Store, Users } from "lucide-react"; 
+import { VITE_BACKEND_URL } from '../../../apiConfig';
 
 const ShopkeeperSignIn = () => {
   const [formData, setFormData] = useState({ email: "", password: "" });
@@ -1131,8 +1132,9 @@ const ShopkeeperSignIn = () => {
     setForgotPasswordLoading(true);
     setForgotPasswordMessage("");
 
+
     try {
-      const response = await fetch("https://referral-couponcode-backend.onrender.com/refer/api/auth/forgot-password", {
+      const response = await fetch(`${VITE_BACKEND_URL}/api/auth/forgot-password`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
