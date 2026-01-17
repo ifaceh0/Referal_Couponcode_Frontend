@@ -10,7 +10,7 @@ export default function Footer() {
         <div className="flex justify-between items-center">
           <div>
             
-            <p className="mt-2 text-sm text-gray-300">© 2023 Your Company Name. All rights reserved.</p>
+            <p className="mt-2 text-sm text-gray-300">© 2026 Interface Hub. All rights reserved.</p>
           </div>
           <div className="flex space-x-6">
             <a href="#" className="text-gray-400 hover:text-white">
