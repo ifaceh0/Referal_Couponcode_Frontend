@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import { colorPalette } from "../../../utils/demoData";
 import { useNavigate, useSearchParams } from "react-router-dom";
+import { VITE_BACKEND_URL } from '../../../apiConfig';
 
 const ForgotPassword = () => {
   const [formData, setFormData] = useState({
@@ -69,7 +70,7 @@ const ForgotPassword = () => {
     setError(null);
 
     try {
-      const response = await fetch("https://referral-couponcode-backend.onrender.com/refer/api/auth/reset-password", {
+      const response = await fetch(`${VITE_BACKEND_URL}/api/auth/reset-password`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
