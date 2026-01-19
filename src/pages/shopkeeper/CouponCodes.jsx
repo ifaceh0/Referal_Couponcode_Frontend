@@ -193,6 +193,54 @@ const CouponCodes = () => {
     // }
   };
 
+  const handleDownloadTemplate = () => {
+    const data = [
+      ["!!! IMPORTANT - DO NOT CHANGE THIS ROW !!!", "", ""],
+      ["name", "email", "phone"],                                               
+      ["Sample1", "Sample1@ifaceh.com", ""],
+      ["Sample2", "Sample2@ifaceh.com", ""],
+      ["Sample3", "Sample3@ifaceh.com", ""],
+      ["Sample4", "Sample4@ifaceh.com", ""],
+      ["Sample5", "Sample5@ifaceh.com", ""],
+      ["Sample6", "Sample6@ifaceh.com", ""],
+      ["", "", ""],
+      ["INSTRUCTIONS (please read):", "", ""],
+      ["→ Do NOT edit, delete or move the headers in row 2 (name, email, phone)", "", ""],
+      ["→ Edit the sample values or delete them", "", ""],
+      ["→ Add your own people starting from row 3", "", ""],
+      ["→ You can add hundreds of rows - no limit", "", ""]
+    ];
+  
+    const ws = XLSX.utils.aoa_to_sheet(data);
+  
+    const warningStyle = {
+      font: { bold: true, sz: 14, color: { rgb: "FF0000" } }, 
+      fill: { fgColor: { rgb: "FFFF00" } },                      
+      alignment: { horizontal: "center", wrapText: true }
+    };
+  
+    const headerStyle = {
+      font: { bold: true, sz: 12, color: { rgb: "FFFFFF" } },
+      fill: { fgColor: { rgb: "1F497D" } },                       
+      alignment: { horizontal: "center" }
+    };
+  
+    ws["A1"].s = warningStyle;
+    ws["A2"].s = headerStyle;
+    ws["B2"].s = headerStyle;
+    ws["C2"].s = headerStyle;
+  
+    for (let r = 11; r <= 15; r++) {
+      const addr = `A${r}`;
+      if (ws[addr]) ws[addr].s = { font: { bold: true } };
+    }
+  
+    const wb = XLSX.utils.book_new();
+    XLSX.utils.book_append_sheet(wb, ws, "Template");
+  
+    XLSX.writeFile(wb, "Template.xlsx");
+  };
+
   const handleDownloadCSV = () => {
     const headers = ["Name", "Email", "Phone", "Reason"];
     const rows = failedUsers.map(user =>
@@ -382,7 +430,28 @@ const CouponCodes = () => {
 
         {/* Bulk Coupon Code Generation */}
         <div className="mb-8 bg-white p-6 rounded shadow-md">
-          <h2 className="text-xl font-semibold mb-4" style={{ color: colorPalette.secondaryDark }}>Bulk Coupon Codes Generation</h2>
+          {/* <h2 className="text-xl font-semibold mb-4" style={{ color: colorPalette.secondaryDark }}>Bulk Coupon Codes Generation</h2> */}
+
+          <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between mb-4">
+                      <h2
+                        className="text-xl font-semibold"
+                        style={{ color: colorPalette.secondaryDark }}
+                      >
+                        Bulk Coupon Codes Generation
+                      </h2>
+          
+                      <div className="mt-2 sm:mt-0 flex flex-col items-start sm:items-end">
+                        <button
+                          onClick={handleDownloadTemplate}
+                          className="ml-4 px-4 py-2 rounded text-white transition"
+                          style={{ backgroundColor: colorPalette.primaryDark }}
+                          title="Download this template to see the correct bulk Coupon Code upload format."
+                        >
+                          Download Template
+                        </button>
+                      </div>
+                    </div>
+
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 mb-4">
             {/* <input type="file" accept=".csv, .xls, .xlsx, .txt" onChange={(e) => setBulkFile(e.target.files[0])} className="block text-sm border rounded p-2" /> */}
             <div>
