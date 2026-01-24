@@ -302,7 +302,7 @@ export default function Navbar() {
   return (
     <>
       <nav className="bg-white shadow-md fixed w-full z-50 top-0">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div className="max-w-full mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex justify-between h-16 items-center">
             <Link to="/" className="text-xl font-bold text-purple-600">MyApp</Link>
             
@@ -384,13 +384,21 @@ export default function Navbar() {
                     </button>
                     {showDropdown && (
                       <div className="absolute right-0 mt-2 w-40 bg-white shadow-lg rounded-lg z-50">
-                        <Link 
+                        {/* <Link 
                           to="/signup/shopkeeper" 
                           className="block px-4 py-2 text-gray-700 hover:bg-gray-200"
                           onClick={() => setShowDropdown(false)}
                         >
                           Shopkeeper
-                        </Link>
+                        </Link> */}
+                        <a 
+                          href="https://subscription-frontend-psi.vercel.app/subscription"
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="block px-4 py-2 text-gray-700 hover:bg-gray-200"
+                        >
+                          Shopkeeper
+                        </a>  
                         <Link 
                           to="/signup/user"
                           className="block px-4 py-2 text-gray-700 hover:bg-gray-200"
@@ -483,9 +491,17 @@ export default function Navbar() {
                 </button>
                 {showDropdown && (
                   <div className="mt-1 bg-white shadow-lg rounded-lg z-50">
-                    <Link to="/signup/shopkeeper" className="block px-4 py-2 text-gray-700 hover:bg-gray-200" onClick={toggleMenu}>
+                    {/* <Link to="/signup/shopkeeper" className="block px-4 py-2 text-gray-700 hover:bg-gray-200" onClick={toggleMenu}>
                       Shopkeeper
-                    </Link>
+                    </Link> */}
+                    <a 
+                      href="https://subscription-frontend-psi.vercel.app/subscription"
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="block px-4 py-2 text-gray-700 hover:bg-gray-200"
+                    >
+                      Shopkeeper
+                    </a>  
                     <Link to="/signup/user" className="block px-4 py-2 text-gray-700 hover:bg-gray-200" onClick={toggleMenu}>
                       User
                     </Link>
