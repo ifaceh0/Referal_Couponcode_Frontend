@@ -250,11 +250,12 @@ import { getCurrentUser } from '../api/signin';
 const navLinks = [
   { name: 'Home', path: '/' },
   { name: 'Features', path: '/features' },
-  // 👇 Subscription ke liye external link
   { name: 'Subscription', path: 'https://subscription-frontend-psi.vercel.app/subscription' },
   { name: 'Resources', path: '/resources' },
   { name: 'Contact', path: '/contact' },
 ];
+
+const isLoggedIn = !!localStorage.getItem('token');
 
 export default function Navbar() {
   const location = useLocation();
@@ -263,18 +264,37 @@ export default function Navbar() {
   const [showDropdown, setShowDropdown] = useState(false);
   const [userDetails, setUserDetails] = useState(null);
 
+  // useEffect(() => {
+  //   const fetchUser = async () => {
+  //     try {
+  //       const user = await getCurrentUser();
+  //       setUserDetails(user);
+  //       console.dir(user);
+  //     } catch (error) {
+  //       console.error("Error fetching user:", error);
+  //     }
+  //   };
+  //   fetchUser();
+  // }, []);
+
   useEffect(() => {
     const fetchUser = async () => {
+      if (!isLoggedIn) return;
+
       try {
         const user = await getCurrentUser();
         setUserDetails(user);
-        console.dir(user);
       } catch (error) {
         console.error("Error fetching user:", error);
       }
     };
     fetchUser();
-  }, []);
+  }, [isLoggedIn]);
+
+  const filteredNavLinks = navLinks.filter(link => {
+    if (link.name === 'Contact' && isLoggedIn) return false;
+    return true;
+  });
 
   const isActive = (path) => location.pathname === path;
   const toggleMenu = () => setIsOpen(!isOpen);
@@ -304,11 +324,11 @@ export default function Navbar() {
       <nav className="bg-white shadow-md fixed w-full z-50 top-0">
         <div className="max-w-full mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex justify-between h-16 items-center">
-            <Link to="/" className="text-xl font-bold text-purple-600">MyApp</Link>
+            <Link to="/" className="text-xl font-bold text-purple-600">ReferralPro</Link>
             
             {/* Desktop menu */}
             <div className="hidden sm:flex space-x-6">
-              {navLinks.map(({ name, path }) => {
+              {filteredNavLinks.map(({ name, path }) => {
                 if (name === 'Subscription') {
                   return (
                     <a
@@ -378,7 +398,7 @@ export default function Navbar() {
                   <div className="relative dropdown-container">
                     <button 
                       onClick={toggleDropdown} 
-                      className="px-4 py-2 bg-orange-500 text-white rounded-lg hover:bg-orange-600 transition relative"
+                      className="px-4 py-2 bg-orange-500 text-white rounded-md hover:bg-orange-600 transition relative"
                     >
                       Sign Up
                     </button>
@@ -409,7 +429,7 @@ export default function Navbar() {
                       </div>
                     )}
                   </div>
-                  <Link to="/signin" className="px-4 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600 transition">
+                  <Link to="/signin" className="px-4 py-2 bg-blue-500 text-white rounded-md hover:bg-blue-600 transition">
                     Sign In
                   </Link>
                 </>
@@ -432,7 +452,7 @@ export default function Navbar() {
       } overflow-hidden`}
       >
         <div className="bg-white shadow-md space-y-2 p-4">
-          {navLinks.map(({ name, path }) => {
+          {filteredNavLinks.map(({ name, path }) => {
             if (name === 'Subscription') {
               return (
                 <a
