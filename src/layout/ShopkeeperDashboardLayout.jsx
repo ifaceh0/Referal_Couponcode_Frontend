@@ -1,6 +1,6 @@
 import React, { useState,useEffect } from "react";
 import { NavLink, useNavigate } from "react-router-dom";
-import { FaBars, FaTimes, FaUser, FaCog, FaBell, FaQrcode, FaStore } from "react-icons/fa";
+import { FaBars, FaTimes, FaUser, FaCog, FaBell, FaQrcode, FaStore, FaEnvelope } from "react-icons/fa";
 import Cookies from "js-cookie";
 import { getCurrentUser } from '../api/signin';
 
@@ -114,6 +114,12 @@ const ShopkeeperDashboardLayout = ({ children }) => {
     to: "/shopkeeper/employee",
     label: "Employee",
     roles: ["SHOPKEEPER"], // excluded from USER
+  },
+  {
+    to: "/contact",
+    label: "Contact Us",
+    icon: <FaEnvelope />,       
+    roles: ["SHOPKEEPER", "SHOP_EMPLOYEE", "USER"], 
   },
 ]
 : [];

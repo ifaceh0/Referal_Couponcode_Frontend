@@ -45,6 +45,13 @@ import ReferredCustomerDashboard from "./components/Dashboard/referredCustomerDa
 import ReferrerDashboard from "./components/Dashboard/referrerDashboard";
 import ForgotPassword from "./pages/shopkeeper/signin/ForgotPassword";
 import PreviousShopsPage from "./pages/Employee/PreviousShopsPage";
+import Resources from "./pages/HomePage/Resources";
+import ContactPage from "./common/ContactPage";
+import FAQPage from "./home/FAQPage";
+import ReferralProgramsPage from "./pages/HomePage/ReferralProgramsPage";
+import CouponsPage from "./pages/HomePage/CouponsPage";
+import GuidesPage from "./pages/HomePage/GuidesPage";
+// import UserSignIn from "./pages/shopkeeper/signin/UserSignIn";
 
 //import UserSignUp from "./pages/shopkeeper/signin/UserSignUp";
 
@@ -69,6 +76,10 @@ const App = () => {
               <Route path="/features" element={<ProductShowcase/>} />
               <Route path="/features/:id" element={<FeatureDetailPage/>} />
               <Route path="/signup/employee" element={<ShopEmployee />} />
+              <Route path="/resources" element={<Resources />} />
+              <Route path="/referral-programs" element={<ReferralProgramsPage />} />
+              <Route path="/coupons"           element={<CouponsPage />} />
+              <Route path="/guides"            element={<GuidesPage />} />
             </Route>
           <Route
             path="/:slug"
@@ -100,6 +111,8 @@ const App = () => {
             <Route path="analytics" element={<Analytics />} />
             <Route path="settings" element={<SettingsPage />} />
           </Route> */}
+        <Route path="/faq" element={<FAQPage />} />
+        <Route path="/contact" element={<ContactPage />} />
         <Route path="subscriptions" element={<SubscriptionsPage />} />
         {/* Routes for shopkeeper pages with ShopkeeperDashboardLayout */}
         <Route
