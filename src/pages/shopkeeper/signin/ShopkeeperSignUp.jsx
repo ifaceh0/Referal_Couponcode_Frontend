@@ -281,6 +281,7 @@ import { FaInfoCircle } from "react-icons/fa";
 import { toast, ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import PhoneInputField from "../../../components/ui/PhoneInputField";
+import { VITE_BACKEND_URL } from "../../../apiConfig";
 
 const InputField = ({ label, type, name, value, onChange, error }) => (
   <div className="mb-4 w-full">
@@ -381,7 +382,7 @@ const ShopkeeperSignUp = () => {
 
     try {
       const response = await fetchWithBackoff(
-        "https://referral-couponcode-backend.onrender.com/refer/api/shopkeeperDashboard/verifyShopSubscriptionEmail",
+        `${VITE_BACKEND_URL}/api/shopkeeperDashboard/verifyShopSubscriptionEmail`,
         {
           method: "POST",
           headers: { "Content-Type": "application/json" },
