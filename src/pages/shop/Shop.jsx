@@ -186,6 +186,7 @@ import { QRCodeSVG } from "qrcode.react";
 import { getAllShopkeeper, getQRCodeByShopkeeper } from "../../api/users";
 import { getCurrentUser } from "../../api/signin";
 import referralImage from "../../assets/referralImage.jpg";
+import { getCurrentCurrency } from "../../utils/currencyUtils";
 
 
 const Shop = () => {
@@ -195,6 +196,7 @@ const Shop = () => {
   const [userInfo, setUserInfo] = useState(null);
   const [isLoading, setIsLoading] = useState(false);
   const [userDetails, setUserDetails] = useState(null);
+  const currency = getCurrentCurrency();
   useEffect(() => {
     const fetchData = async () => {
       try {
@@ -234,7 +236,7 @@ const Shop = () => {
             phone: shop.phone,
             // image: `https://source.unsplash.com/400x300/?store,shop,${index}`,
             image: referralImage,
-            balance: `$${shop.availableBalance.toFixed(2)}`,
+            balance: `${currency.symbol}${shop.availableBalance.toFixed(2)}`,
             referredBy: shop.referralCode,
             referralAmount: shop.referralAmount,
             referrerAmount: shop.referrerAmount,
@@ -414,11 +416,11 @@ const Shop = () => {
       </div>
       <div>
         <p className="text-sm text-blue-600">Referral Amount</p>
-        <p className="font-medium text-blue-800">${selectedShop.referralAmount}</p>
+        <p className="font-medium text-blue-800">{currency.symbol}{selectedShop.referralAmount}</p>
       </div>
       <div>
         <p className="text-sm text-blue-600">Referrer Amount</p>
-        <p className="font-medium text-blue-800">${selectedShop.referrerAmount}</p>
+        <p className="font-medium text-blue-800">{currency.symbol}{selectedShop.referrerAmount}</p>
       </div>
       <div>
         <p className="text-sm text-blue-600">Referrer By</p>

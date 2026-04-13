@@ -526,7 +526,7 @@ import { discountData } from "../../../../utils/demoData";
 import { toast, ToastContainer } from 'react-toastify';
 import { getSettingsAction, updateSettingsAction } from "../../../../api/settingPageApi";
 import { getCurrentUser } from "../../../../api/signin";
-
+import { getCurrentCurrency } from "../../../../utils/currencyUtils";
 
 
 const ReferralCodeSettings = ({ shopkeeperId, token }) => {
@@ -553,6 +553,7 @@ const ReferralCodeSettings = ({ shopkeeperId, token }) => {
         couponAmount: '',
         limitOfUse: ''
     });
+    const currency = getCurrentCurrency();
 
 
 
@@ -753,7 +754,7 @@ const ReferralCodeSettings = ({ shopkeeperId, token }) => {
                             ) : (
                                 <p className="mt-2">
                                     {/* {useCredits ? `$${signUpDollars}` : `${signupPoints} Points`} */}
-                                    ${signUpDollars}
+                                    {currency.symbol}{signUpDollars}
                                 </p>
                             )}
                         </div>
@@ -838,7 +839,7 @@ const ReferralCodeSettings = ({ shopkeeperId, token }) => {
                                 />
                             ) : (
                                 // <p>{promotion.referralAmount ? (useCredits ? `$${promotion.referralAmount}` : `${promotion.referralAmount} Points`) : 'Not set'}</p>
-                                <p>{promotion.referralAmount ? `$${promotion.referralAmount}` : 'Not set'}</p>
+                                <p>{promotion.referralAmount ? `    ${currency.symbol}${promotion.referralAmount}` : 'Not set'}</p>
                             )}
                         </div>
                         <div>
@@ -856,7 +857,7 @@ const ReferralCodeSettings = ({ shopkeeperId, token }) => {
                                 />
                             ) : (
                                 // <p>{promotion.referrerAmount ? (useCredits ? `$${promotion.referrerAmount}` : `${promotion.referrerAmount} Points`) : 'Not set'}</p>
-                                <p>{promotion.referrerAmount ? `$${promotion.referrerAmount}` : 'Not set'}</p>
+                                <p>{promotion.referrerAmount ? `${currency.symbol}${promotion.referrerAmount}` : 'Not set'}</p>
                             )}
                         </div>
                     </div>
@@ -864,7 +865,7 @@ const ReferralCodeSettings = ({ shopkeeperId, token }) => {
                 )}
 
                 {/* Milestone Mapping */}
-                {applications.includes("Referral") && (
+                {/* {applications.includes("Referral") && (
                 <div>
                     <h3 className="font-bold mb-4">Milestone Rewards</h3>
                     {milestoneMapping.map((milestone, index) => (
@@ -872,7 +873,7 @@ const ReferralCodeSettings = ({ shopkeeperId, token }) => {
                             key={index}
                             className="flex items-center space-x-4 mb-4 border p-4 rounded-md"
                         >
-                            {/* Threshold (Number of Referrals) */}
+                            
                             <div className="w-1/4">
                                 <label className="block text-sm font-medium text-gray-700 mb-1">
                                 No of Referrals
@@ -893,7 +894,6 @@ const ReferralCodeSettings = ({ shopkeeperId, token }) => {
                                 />
                             </div>
 
-                            {/* Hidden field to match backend: thresholdRefer */}
                             <input type="hidden" value={milestone.thresholdRefer || 0} />
 
                             <div className="w-1/4">
@@ -915,25 +915,10 @@ const ReferralCodeSettings = ({ shopkeeperId, token }) => {
                                 <option value="Referrals">Referrals</option>
                                 </select>
                             </div>
-                            {/* <select
-                                value={milestone.rewardType}
-                                onChange={(e) =>
-                                    setMilestoneMapping((prev) => {
-                                        const updated = [...prev];
-                                        updated[index].rewardType = e.target.value;
-                                        return updated;
-                                    })
-                                }
-                                className="w-1/4 p-2 border rounded"
-                                disabled={!isEditing}
-                            >
-                                <option value="Points">Points</option>
-                                <option value="Item">Item</option>
-                            </select> */}
-                            {/* Reward Amount */}
+                            
                             <div className="w-1/4">
                                 <label className="block text-sm font-medium text-gray-700 mb-1">
-                                Reward Amount ($)
+                                Reward Amount ({currency.symbol})
                                 </label>
                                 <input
                                 type="number"
@@ -985,7 +970,7 @@ const ReferralCodeSettings = ({ shopkeeperId, token }) => {
                         </button>
                     )}
                 </div>
-                )}
+                )} */}
                 </div>
                 {/* Current Coupon Promotion */}
                 {applications.includes("Coupon") && (
@@ -1042,7 +1027,7 @@ const ReferralCodeSettings = ({ shopkeeperId, token }) => {
                                 />
                             ) : (
                                 // <p>{couponPromotion.couponAmount ? (useCredits ? `$${couponPromotion.couponAmount}` : `${couponPromotion.couponAmount} Points`) : 'Not set'}</p>
-                                <p>{couponPromotion.couponAmount ? `$${couponPromotion.couponAmount}` : 'Not set'}</p>
+                                <p>{couponPromotion.couponAmount ? `${currency.symbol}${couponPromotion.couponAmount}` : 'Not set'}</p>
                             )}
                         </div>
                         <div>

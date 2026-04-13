@@ -108,6 +108,7 @@
 // export default CustomerDetailsDialog;  
 
 import React from 'react';
+import { getCurrentCurrency } from "../../utils/currencyUtils";
 
 const CustomerDetailsDialog = ({
   open,
@@ -120,6 +121,7 @@ const CustomerDetailsDialog = ({
   loading,
 }) => {
   if (!open) return null; // Prevent rendering when not open
+  const currency = getCurrentCurrency();
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-sm">
@@ -140,11 +142,11 @@ const CustomerDetailsDialog = ({
                 <div className="text-center">
                   <p className="text-lg font-semibold text-gray-700 mb-2">Available Balance</p>
                   <div className="text-4xl font-bold text-blue-600 mb-4">
-                    ${scannedData.availableBalance.toFixed(2)}
+                    {currency.symbol}{scannedData.availableBalance.toFixed(2)}
                   </div>
                   <div className="bg-blue-50 p-4 rounded-lg">
                     <p className="text-sm text-gray-600 mb-1">
-                      Coupon Amount: ${scannedData.couponAmount}
+                      Coupon Amount: {currency.symbol}{scannedData.couponAmount}
                     </p>
                     <p className="text-sm text-gray-600">
                       Usage Limit: {scannedData.couponUsageLimit}
@@ -192,7 +194,7 @@ const CustomerDetailsDialog = ({
             <p className="text-sm font-semibold text-gray-600">Redeem Amount</p>
             <input
               type="text"
-              value={redeemAmount ? `$${redeemAmount}` : `$`}
+              value={redeemAmount ? `${currency.symbol}${redeemAmount}` : `${currency.symbol}`}
               onChange={onRedeemAmountChange}
               className={`w-full p-3 border ${
                 error ? 'border-red-500' : 'border-gray-300'
