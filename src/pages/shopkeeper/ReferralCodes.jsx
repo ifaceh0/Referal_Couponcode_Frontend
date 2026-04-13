@@ -721,6 +721,8 @@ import PhoneInputField from "../../components/ui/PhoneInputField";
 import { getCurrentUser } from "../../api/signin";
 import { getSettingsAction } from "../../api/settingPageApi";
 
+import { getCurrentCurrency } from "../../utils/currencyUtils";
+
 
 const ReferralManagement = () => {
   const [codes, setCodes] = useState([]);
@@ -747,6 +749,8 @@ const ReferralManagement = () => {
   const [referrerAmountReadOnly, setReferrerAmountReadOnly] = useState(false);
   const [referralPromotionEndDateReadOnly, setReferralPromotionEndDateReadOnly] = useState(false);
   const [expiryReadOnly, setExpiryReadOnly] = useState(false);
+
+  const currency = getCurrentCurrency();
 
 
   const failedUsersPerPage = 5;
@@ -818,6 +822,10 @@ const ReferralManagement = () => {
     };
     fetchCodes();
   }, []);
+
+  const formatAmount = (amount) => {
+    return `${currency.symbol}${Number(amount || 0).toFixed(2)}`;
+  };
 
   const handleRegister = async () => {
     if (!name || !email || !phone || !expiryDate || !referralAmount || !referrerAmount) {
@@ -1124,7 +1132,7 @@ const ReferralManagement = () => {
             {/* Referral Amount */}
             <div>
               <label htmlFor="referralAmount" className="block text-sm font-medium text-gray-700 mb-1">
-                Referral Amount ($) <span className="text-red-500">*</span>
+                Referral Amount ({currency.symbol}) <span className="text-red-500">*</span>
               </label>
               <input
                 id="referralAmount"
@@ -1150,7 +1158,7 @@ const ReferralManagement = () => {
             {/* Referrer Amount */}
             <div>
               <label htmlFor="block text-sm font-medium text-gray-700 mb-1">
-                Referrer Amount ($) <span className="text-red-500">*</span>
+                Referrer Amount ({currency.symbol}) <span className="text-red-500">*</span>
               </label>
               <input
                 id="referrerAmount"
@@ -1254,7 +1262,7 @@ const ReferralManagement = () => {
             {/* Bulk Referral Amount */}
             <div>
               <label htmlFor="bulkReferralAmount" className="block text-sm font-medium text-gray-700 mb-1">
-                Referral Amount ($) <span className="text-red-500">*</span>
+                Referral Amount ({currency.symbol}) <span className="text-red-500">*</span>
               </label>
               <input
                 id="bulkReferralAmount"
@@ -1284,7 +1292,7 @@ const ReferralManagement = () => {
           {/* Bulk Referrer Amount */}
           <div>
             <label htmlFor="bulkReferrerAmount" className="block text-sm font-medium text-gray-700 mb-1">
-              Referrer Amount ($) <span className="text-red-500">*</span>
+              Referrer Amount ({currency.symbol}) <span className="text-red-500">*</span>
             </label>
             <input
               id="bulkReferrerAmount"
@@ -1409,8 +1417,10 @@ const ReferralManagement = () => {
                 email: code.user?.email || "N/A",
                 phone: code.user?.phone || "N/A",
                 expiryDate: code.expiryDate || "",
-                referralAmount: `$${code.referralAmount || 0}`,
-                referrerAmount: `$${code.referrerAmount || 0}`,
+                // referralAmount: `$${code.referralAmount || 0}`,
+                // referrerAmount: `$${code.referrerAmount || 0}`,
+                referralAmount: formatAmount(code.referralAmount),
+                referrerAmount: formatAmount(code.referrerAmount),
                 code: code.code || "N/A",
                 status: code.status || "N/A",
                 createdDate: code.createdDate || "N/A",

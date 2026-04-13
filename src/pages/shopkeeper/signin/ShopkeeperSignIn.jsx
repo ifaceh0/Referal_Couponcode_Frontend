@@ -770,6 +770,7 @@ import { useNavigate } from "react-router-dom";
 import { getCurrentUser } from '../../../api/signin';
 import { User, Store, Users } from "lucide-react"; 
 import { VITE_BACKEND_URL } from '../../../apiConfig';
+import { saveCountryToLocalStorage } from '../../../utils/authUtils';
 
 const ShopkeeperSignIn = () => {
   const [formData, setFormData] = useState({ email: "", password: "" });
@@ -838,7 +839,6 @@ const ShopkeeperSignIn = () => {
     return true;
   };
 
-  // ← ADDED FOR MULTI-SHOP EMPLOYEE SUPPORT: Helper to perform actual login
   const performLogin = async (shopkeeperId = null) => {
     setLoading(true);
     setError(null);
@@ -856,6 +856,7 @@ const ShopkeeperSignIn = () => {
       });
 
       const user = await getCurrentUser();
+      saveCountryToLocalStorage(user);
       navigateBasedOnRole(user.role);
     } catch (err) {
       setError(err.message || "Login failed");
@@ -863,96 +864,6 @@ const ShopkeeperSignIn = () => {
       setLoading(false);
     }
   };
-
-  // const handleLogin = async () => {
-  //   if (step === 1) {
-  //     if (!validateFields()) return;
-
-  //     setLoading(true);
-  //     setError(null);
-
-  //     try {
-  //       const roles = await getRoles({
-  //         email: formData.email,
-  //         password: formData.password
-  //       });
-
-  //       if (roles.length === 1) {
-  //         // ← ADDED: Handle single SHOP_EMPLOYEE role with auto shop selection
-  //         if (roles[0] === "SHOP_EMPLOYEE") {
-  //           setSelectedRole(roles[0]);
-  //           const shops = await getEmployeeShops(formData.email);
-  //           setEmployeeShops(shops);
-  //           if (shops.length === 1) {
-  //             await performLogin(shops[0].shopkeeperId);
-  //           } else {
-  //             setStep(3);
-  //           }
-  //           return;
-  //         }
-
-  //         // Existing single role logic (USER or SHOPKEEPER)
-  //         await loginShopkeeper({
-  //           email: formData.email,
-  //           password: formData.password,
-  //           role: roles[0]
-  //         });
-  //         const user = await getCurrentUser();
-  //         navigateBasedOnRole(user.role);
-  //       } else if (roles.length > 1) {
-  //         // Existing multi-role logic
-  //         setPossibleRoles(roles);
-  //         setStep(2);
-  //       } else {
-  //         setError("No roles found for this account");
-  //       }
-  //     } catch (err) {
-  //       console.error("Get roles error:", err);
-  //       setError(err.message || "Invalid email or password");
-  //       generateCaptcha();
-  //     } finally {
-  //       setLoading(false);
-  //     }
-  //   }
-
-  //   if (step === 2) {
-  //     if (!selectedRole) {
-  //       setError("Please select a role");
-  //       return;
-  //     }
-
-  //     // ← ADDED: If SHOP_EMPLOYEE selected → go to shop selection
-  //     if (selectedRole === "SHOP_EMPLOYEE") {
-  //       setLoading(true);
-  //       try {
-  //         const shops = await getEmployeeShops(formData.email);
-  //         setEmployeeShops(shops);
-  //         if (shops.length === 1) {
-  //           await performLogin(shops[0].shopkeeperId);
-  //         } else {
-  //           setStep(3);
-  //         }
-  //       } catch (err) {
-  //         setError("Failed to load your shops");
-  //       } finally {
-  //         setLoading(false);
-  //       }
-  //       return;
-  //     }
-
-  //     // Existing normal role login
-  //     await performLogin();
-  //   }
-
-  //   // ← ADDED FOR MULTI-SHOP EMPLOYEE SUPPORT: Shop selection step
-  //   if (step === 3) {
-  //     if (!selectedShop) {
-  //       setError("Please select a shop");
-  //       return;
-  //     }
-  //     await performLogin(selectedShop.shopkeeperId);
-  //   }
-  // };
 
   const handleLogin = async () => {
     // STEP 1: Email + Password entered
@@ -997,6 +908,7 @@ const ShopkeeperSignIn = () => {
               });
 
               const user = await getCurrentUser();
+              saveCountryToLocalStorage(user);
               navigateBasedOnRole(user.role);
               return;
             }

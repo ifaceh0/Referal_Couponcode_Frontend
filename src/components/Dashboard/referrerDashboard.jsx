@@ -261,12 +261,14 @@ import { FaShareAlt, FaCopy, FaQrcode, FaWhatsapp, FaEnvelope, FaSms } from 'rea
 import { QRCodeSVG } from 'qrcode.react';
 import { getCurrentUser } from "../../api/signin";
 import { VITE_BACKEND_URL } from '../../apiConfig';
+import { getCurrentCurrency } from "../../utils/currencyUtils";
 
 const ReferrerDashboard = () => {
   const [dashboardData, setDashboardData] = useState(null);
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState(null);
   const [showShareOptions, setShowShareOptions] = useState(false);
+  const currency = getCurrentCurrency();
 
   // Function to fetch referral dashboard data
   const fetchDashboardData = async (userId) => {
@@ -326,8 +328,8 @@ const ReferrerDashboard = () => {
         shareLink: data.shareLink || 'https://example.com/refer?code=REF12345', // Adjust based on backend
         nextMilestone: {
           friendsNeeded: data.nextMilestone?.friendsNeeded || 2, // Adjust based on backend
-          reward: data.nextMilestone?.reward || '$10',
-          description: data.nextMilestone?.description || 'Refer 2 more friends to get $10',
+          reward: data.nextMilestone?.reward || `${currency.symbol}10`,
+          description: data.nextMilestone?.description || `Refer 2 more friends to get ${currency.symbol}10`,
         },
       };
       setDashboardData(mappedData);
@@ -500,10 +502,10 @@ const ReferrerDashboard = () => {
 
         <div className="bg-white rounded-xl shadow-sm p-6 border-l-4 border-amber-500">
           <h3 className="text-gray-500 text-sm font-medium mb-1">Total Rewards Earned</h3>
-          <p className="text-3xl font-bold text-gray-800">${(dashboardData.totalRewardsEarned ?? 0).toFixed(2)}</p>
+          <p className="text-3xl font-bold text-gray-800">{currency.symbol}{(dashboardData.totalRewardsEarned ?? 0).toFixed(2)}</p>
           <p className="text-amber-600 text-sm mt-1 flex items-center">
             <span className="bg-amber-100 px-2 py-1 rounded mr-2">
-              Pending: ${(dashboardData.pendingRewards ?? 0).toFixed(2)}
+              Pending: {currency.symbol}{(dashboardData.pendingRewards ?? 0).toFixed(2)}
             </span>
           </p>
         </div>
@@ -560,7 +562,7 @@ const ReferrerDashboard = () => {
                         {item.status}
                       </span>
                     </td>
-                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">${(item.amount ?? 0).toFixed(2)}</td>
+                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">{currency.symbol}{(item.amount ?? 0).toFixed(2)}</td>
                   </tr>
                 ))}
               </tbody>
@@ -589,7 +591,7 @@ const ReferrerDashboard = () => {
                   <tr key={item.id} className="hover:bg-gray-50">
                     <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{item.date}</td>
                     <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-indigo-600">{item.order}</td>
-                    <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">${(item.amount ?? 0).toFixed(2)}</td>
+                    <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">{currency.symbol}{(item.amount ?? 0).toFixed(2)}</td>
                     {/* <td className="px-6 py-4 text-sm text-gray-500">{item.description}</td> */}
                   </tr>
                 ))}

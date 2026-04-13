@@ -1,5 +1,6 @@
 import { useNavigate } from "react-router-dom";
 import { VITE_BACKEND_URL } from "../apiConfig";
+import { saveCountryToLocalStorage } from '../utils/authUtils';
 
 // Signup API
 export const signupShopkeeperOld = async (formData) => {
@@ -83,6 +84,7 @@ export const getCurrentUser = async () => {
 
         const data = await response.json(); // Store parsed JSON
           console.log("Response JSON:", data);
+          saveCountryToLocalStorage(data);
           localStorage.setItem("shopkeeperId", data.id);
           localStorage.setItem("role",data.role)
 

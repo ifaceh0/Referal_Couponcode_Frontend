@@ -9,6 +9,8 @@ import "react-toastify/dist/ReactToastify.css";
 import { getCurrentUser } from "../../api/signin";
 import { getSettingsAction } from "../../api/settingPageApi";
 
+import { getCurrentCurrency } from "../../utils/currencyUtils";
+
 
 const CouponCodes = () => {
   const [allCodes, setAllCodes] = useState([]);
@@ -48,6 +50,7 @@ const CouponCodes = () => {
   const [expiryReadOnly, setExpiryReadOnly] = useState(false);
   const [settingDetails, setSettingDetails] = useState(null);
   const [userDetails, setUserDetails] = useState(null);
+  const currency = getCurrentCurrency();
   useEffect(() => {
     const fetchData = async () => {
       try {
@@ -377,7 +380,7 @@ const CouponCodes = () => {
               className="border rounded p-2" readOnly={referralAmountReadOnly} /> */}
             <div>
               <label htmlFor="individual-amount" className="block text-sm font-medium text-gray-700 mb-1">
-                Coupon Amount ($) <span className="text-red-500">*</span>
+                Coupon Amount ({currency.symbol}) <span className="text-red-500">*</span>
               </label>
               <input
                 id="individual-amount"
@@ -492,7 +495,7 @@ const CouponCodes = () => {
               readOnly={referralAmountReadOnly} /> */}
             <div>
               <label htmlFor="bulk-amount" className="block text-sm font-medium text-gray-700 mb-1">
-                Coupon Amount ($) <span className="text-red-500">*</span>
+                Coupon Amount ({currency.symbol}) <span className="text-red-500">*</span>
               </label>
               <input
                 id="bulk-amount"
@@ -629,7 +632,8 @@ const CouponCodes = () => {
                 email: code.user?.email || "N/A",
                 phone: code.user?.phone || "N/A",
                 expiryDate: code.expiryDate || "",
-                amount: `$${code.amount || 0}`,
+                // amount: `$${code.amount || 0}`,
+                amount: `${currency.symbol}${Number(code.amount || 0).toFixed(2)}`,
                 code: code.code || "N/A",
                 status: code.status || "N/A",
                 createdDate: code.createdDate || "N/A",

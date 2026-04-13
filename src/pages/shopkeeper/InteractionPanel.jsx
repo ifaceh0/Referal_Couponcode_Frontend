@@ -1006,6 +1006,7 @@ import { FaQrcode, FaPhone, FaEnvelope, FaCheck } from "react-icons/fa";
 import { getCurrentUser } from "../../api/signin";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
+import { getCurrentCurrency } from "../../utils/currencyUtils";
 
 const InteractionPanel = () => {
   const [code, setCode] = useState("");
@@ -1023,6 +1024,8 @@ const InteractionPanel = () => {
   const [redeemAmount, setRedeemAmount] = useState("");
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
+
+  const currency = getCurrentCurrency();
 
   const navigate = useNavigate();
 
@@ -1278,11 +1281,11 @@ const InteractionPanel = () => {
                     <strong>Customer ID:</strong> {verificationData.customerId}
                   </p>
                   <p>
-                    <strong>Available Balance:</strong> ₹
+                    <strong>Available Balance:</strong> {currency.symbol}
                     {verificationData.availableBalance}
                   </p>
                   <p>
-                    <strong>Coupon Amount:</strong> ₹
+                    <strong>Coupon Amount:</strong> {currency.symbol}
                     {verificationData.couponAmount}
                   </p>
                   <p>
@@ -1500,10 +1503,10 @@ const InteractionPanel = () => {
               ) : (
                 <>
                   <p>
-                    <strong>Referral Amount:</strong> ${codeDetails.referralAmount}
+                    <strong>Referral Amount:</strong> {currency.symbol}{codeDetails.referralAmount}
                   </p>
                   <p>
-                    <strong>Referrer Amount:</strong> ${codeDetails.referrerAmount}
+                    <strong>Referrer Amount:</strong> {currency.symbol}{codeDetails.referrerAmount}
                   </p>
                 </>
               )}
