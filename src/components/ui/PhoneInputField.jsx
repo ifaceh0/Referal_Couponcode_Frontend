@@ -60,7 +60,7 @@ const PhoneInputField = ({
       <div className={`flex flex-col ${wrapperClass}`}>
         <PhoneInput
           country={"us"}
-          onlyCountries={["us", "ca"]}
+          // onlyCountries={["us", "ca", "in"]}
           value={fullPhone} // use internal state to store full number
           onChange={handlePhoneChange}
           disableCountryCode={false}
