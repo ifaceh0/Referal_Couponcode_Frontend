@@ -311,7 +311,7 @@ const ShopkeeperSignUp = () => {
     companyAddress: "",
     companyEmail: "",
     companyPhone: "",
-    country: "",
+    country: "US",
   });
   const [errors, setErrors] = useState({});
   const [captchaText, setCaptchaText] = useState("");
@@ -544,7 +544,7 @@ const ShopkeeperSignUp = () => {
                 <label className="block text-gray-700 mb-2 font-medium">Country</label>
                 <select
                   name="country"
-                  value={formData.country}
+                  value={formData.country || "US"}
                   onChange={handleInputChange}
                   className="w-full h-12 p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500 bg-white"
                 >
