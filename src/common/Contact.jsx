@@ -117,7 +117,6 @@ const Contact = () => {
     setError('');
     setLoading(true);
 
-    // CAPTCHA check
     if (formData.captchaInput.toUpperCase() !== captchaText) {
       setError('Invalid CAPTCHA. Please try again.');
       generateCaptcha();
@@ -157,7 +156,6 @@ const Contact = () => {
 
   return (
     <div className="bg-white min-h-screen">
-      {/* 1. HERO HEADER */}
       <section className="bg-slate-900 pt-14 pb-20 px-6">
         <div className="max-w-7xl mx-auto text-center">
           <h1 className="text-4xl md:text-5xl font-extrabold text-white mb-6">
