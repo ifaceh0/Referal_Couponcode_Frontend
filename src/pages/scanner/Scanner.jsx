@@ -633,6 +633,7 @@ const Scanner = () => {
       customerId: scannedData.customerId,
       referralCode: scannedData.referralCode,
       discountAmount: amount,
+      purchaseAmount: amount,
     };
 
     setLoading(true);

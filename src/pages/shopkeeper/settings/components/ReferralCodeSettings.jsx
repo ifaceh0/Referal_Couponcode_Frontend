@@ -551,7 +551,8 @@ const ReferralCodeSettings = ({ shopkeeperId, token }) => {
         beginDate: '',
         expiryDate: '',
         couponAmount: '',
-        limitOfUse: ''
+        limitOfUse: '',
+        minPurchaseAmount: ''
     });
     const currency = getCurrentCurrency();
 
@@ -601,7 +602,8 @@ const ReferralCodeSettings = ({ shopkeeperId, token }) => {
                             beginDate: settings.couponPromotionBeginDate || '',
                             expiryDate: settings.couponPromotionEndDate || '',
                             couponAmount: settings.couponAmount ?? '',
-                            limitOfUse: settings.couponUseLimit ?? ''
+                            limitOfUse: settings.couponUseLimit ?? '',
+                            minPurchaseAmount: response.couponMinPurchaseAmt ?? '',
                         });
                         
                         setMilestoneMapping(
@@ -649,6 +651,7 @@ const ReferralCodeSettings = ({ shopkeeperId, token }) => {
                 couponPromotionEndDate: couponPromotion.expiryDate,
                 couponAmount: couponPromotion.couponAmount,
                 couponUseLimit: couponPromotion.limitOfUse,
+                couponMinPurchaseAmt: couponPromotion.minPurchaseAmount,
                 // discountMapping,
                 // milestoneMapping,
                 milestoneRewards: milestoneMapping
@@ -1046,6 +1049,34 @@ const ReferralCodeSettings = ({ shopkeeperId, token }) => {
                                 <p>{couponPromotion.limitOfUse || 'Not set'}</p>
                             )}
                         </div>
+                        <div className="md:col-span-2">
+                                    <label className="block text-sm font-medium mb-1">
+                                        Minimum Purchase Amount <span className="text-gray-500">(for coupon to be applicable)</span>
+                                    </label>
+                                    {isEditing ? (
+                                        <div className="flex items-center gap-2 max-w-md">
+                                            {/* <span className="text-xl font-medium">{currency.symbol}</span> */}
+                                            <input
+                                             
+                                                type="number" 
+                                                value={couponPromotion.minPurchaseAmount}
+                                                onChange={(e) => setCouponPromotion({ 
+                                                    ...couponPromotion, 
+                                                    minPurchaseAmount: e.target.value 
+                                                })}
+                                                placeholder={currency.symbol}
+                                                className="w-full p-2 border rounded"
+                                                min="0"
+                                            />
+                                        </div>
+                                    ) : (
+                                        <p>
+                                            {couponPromotion.minPurchaseAmount 
+                                                ? `${currency.symbol}${couponPromotion.minPurchaseAmount}` 
+                                                : 'No minimum amount required'}
+                                        </p>
+                                    )}
+                                </div>
                     </div>
                     </div>
                 </div>

@@ -1118,8 +1118,9 @@ const InteractionPanel = () => {
 
     const payload = {
       customerId: verificationData.customerId,
-      referralCode: verificationData.referralCode,
+      // referralCode: verificationData.referralCode,
       discountAmount: amount,
+      purchaseAmount: amount,
     };
 
     setLoading(true);
@@ -1156,7 +1157,11 @@ const InteractionPanel = () => {
         isLoading: false,
         autoClose: 3000,
       });
-      setError("Redemption failed.");
+      // setError("Redemption failed.");
+      const backendMessage =
+        err?.response?.data || err?.response?.data?.message || err.message;
+
+      setError(backendMessage);
     } finally {
       setLoading(false);
     }
