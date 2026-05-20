@@ -732,13 +732,13 @@ const ReferralCodeSettings = ({ shopkeeperId, token }) => {
                     />
                 </div> */}
 
-                <div className="mb-6">
+                {/* <div className="mb-6">
                     <div className="flex justify-between items-start gap-8 flex-wrap">
-                        {/* Signup for New Users */}
+            
                         <div>
                             <h3 className="font-bold">
                                 Bonus
-                                {/* {useCredits ? "Dollars" : "Points"}  */}
+                                
                                 
                             </h3>
                             {isEditing ? (
@@ -756,7 +756,7 @@ const ReferralCodeSettings = ({ shopkeeperId, token }) => {
                                 />
                             ) : (
                                 <p className="mt-2">
-                                    {/* {useCredits ? `$${signUpDollars}` : `${signupPoints} Points`} */}
+                                    
                                     {currency.symbol}{signUpDollars}
                                 </p>
                             )}
@@ -792,7 +792,88 @@ const ReferralCodeSettings = ({ shopkeeperId, token }) => {
                             </label>
                         </div>
                     </div>
-                </div>
+                </div> */}
+
+                {/* Referral Settings Only */}
+                {applications.includes("Referral") && (
+                    <div className="mb-6">
+                        <div className="flex justify-between items-start gap-8 flex-wrap">
+
+                            {/* Bonus */}
+                            <div>
+                                <h3 className="font-bold">
+                                    Bonus
+                                </h3>
+
+                                {isEditing ? (
+                                    <input
+                                        type="number"
+                                        value={signUpDollars}
+                                        onChange={(e) =>
+                                            setSignupDollars(
+                                                Math.max(0, Number(e.target.value))
+                                            )
+                                        }
+                                        className="border p-2 rounded mt-2 w-32"
+                                    />
+                                ) : (
+                                    <p className="mt-2">
+                                        {currency.symbol}{signUpDollars}
+                                    </p>
+                                )}
+                            </div>
+
+                            {/* Existing Customer */}
+                            <div>
+                                <h3 className="font-bold mb-2">
+                                    Existing Customer
+                                </h3>
+
+                                <label className="switch">
+                                    <input
+                                        type="checkbox"
+                                        checked={existingCustomerReward}
+                                        onChange={(e) =>
+                                            setExistingCustomerReward(
+                                                e.target.checked
+                                            )
+                                        }
+                                        disabled={!isEditing}
+                                    />
+
+                                    <span className="slider round">
+                                        {existingCustomerReward ? "Yes" : "No"}
+                                    </span>
+                                </label>
+                            </div>
+
+                            {/* New Customer */}
+                            <div>
+                                <h3 className="font-bold mb-2">
+                                    New Customer
+                                </h3>
+
+                                <label className="switch">
+                                    <input
+                                        type="checkbox"
+                                        checked={newCustomerReward}
+                                        onChange={(e) =>
+                                            setNewCustomerReward(
+                                                e.target.checked
+                                            )
+                                        }
+                                        disabled={!isEditing}
+                                    />
+
+                                    <span className="slider round">
+                                        {newCustomerReward ? "Yes" : "No"}
+                                    </span>
+                                </label>
+                            </div>
+
+                        </div>
+                    </div>
+                )}
 
                 {/* Current Referral Promotion */}
                 {applications.includes("Referral") && (
