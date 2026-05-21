@@ -1147,7 +1147,12 @@ const InteractionPanel = () => {
 
     const payload = {
       customerId: verificationData.customerId,
-      referralCode: verificationData.referralCode,
+      // referralCode: verificationData.referralCode,
+      referralCode:
+        verificationData.referralCode &&
+        verificationData.referralCode !== "None"
+          ? verificationData.referralCode
+          : null,
       discountAmount: amount,
       // purchaseAmount: amount,
     };
@@ -1186,7 +1191,7 @@ const InteractionPanel = () => {
       //   "Redemption failed";
       const backendMessage =
         err?.response?.data?.message ||
-        err?.response?.data?.details ||
+        err?.response?.data ||
         err?.message ||
         "Redemption failed";
 
@@ -1420,8 +1425,7 @@ const InteractionPanel = () => {
                   </p> */}
 
                   {applications.includes("Referral") && 
-                    verificationData?.referralCode &&
-                    verificationData?.referralCode !== "None" && (
+                    verificationData?.referralCode && (
                     <>
                       <p>
                         <strong>Referral Code:</strong>{" "}
@@ -1488,8 +1492,7 @@ const InteractionPanel = () => {
 
                   {/* Referral Section */}
                   {applications.includes("Referral") && 
-                    verificationData?.referralCode &&
-                    verificationData?.referralCode !== "None" && (
+                    verificationData?.referralCode && (
                     <div className="border p-4 rounded-lg bg-green-50">
                       <h3 className="font-semibold mb-2">Redeem Discount</h3>
 

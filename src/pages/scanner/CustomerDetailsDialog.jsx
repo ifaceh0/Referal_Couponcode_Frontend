@@ -145,7 +145,7 @@ import { getCurrentCurrency } from "../../utils/currencyUtils";
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-sm">
       {/* <div className="bg-white rounded-2xl w-full max-w-[600px] border border-purple-300 shadow-xl p-0 overflow-hidden"> */}
-      <div className="bg-white rounded-2xl w-full max-w-[600px] h-[90vh] border border-purple-300 shadow-xl p-0 overflow-hidden flex flex-col">
+      <div className="bg-white rounded-xl w-full max-w-[600px] h-[90vh] border border-purple-300 shadow-xl p-0 overflow-hidden flex flex-col">
         
         {/* Title */}
         <div className="bg-gradient-to-r from-blue-600 to-purple-600 text-white text-center text-xl font-bold py-4">
@@ -166,8 +166,7 @@ import { getCurrentCurrency } from "../../utils/currencyUtils";
                     {currency.symbol}{scannedData.availableBalance.toFixed(2)}
                   </div> */}
                   {applications.includes("Referral") && 
-                    scannedData?.referralCode &&
-                    scannedData?.referralCode !== "None" && (
+                    scannedData?.referralCode && (
                     <>
                       <p className="text-lg font-semibold text-gray-700 mb-2">
                         Available Balance
@@ -248,8 +247,7 @@ import { getCurrentCurrency } from "../../utils/currencyUtils";
                     )}
 
                     {applications.includes("Referral") && 
-                      scannedData?.referralCode &&
-                      scannedData?.referralCode !== "None" && (
+                      scannedData?.referralCode && (
                       <tr className="border-b border-gray-300">
                         <td className="py-2 px-4 font-semibold text-gray-700">
                           Referral Code:
@@ -337,8 +335,7 @@ import { getCurrentCurrency } from "../../utils/currencyUtils";
 
             {/* Referral Section */}
             {applications.includes("Referral") && 
-              scannedData?.referralCode &&
-              scannedData?.referralCode !== "None" && (
+              scannedData?.referralCode && (
               <div className="border p-4 rounded-lg bg-green-50">
 
                 <h3 className="font-semibold mb-2">
