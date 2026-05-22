@@ -1104,8 +1104,10 @@ const ReferralCodeSettings = ({ shopkeeperId, token }) => {
                                     type="number"
                                     min={0}
                                     value={couponPromotion.couponAmount}
-                                    onChange={(e) => setCouponPromotion({ ...couponPromotion, couponAmount: Number(e.target.value),
-                                        couponAmount: Math.max(0, Number(e.target.value)),
+                                    onChange={(e) => setCouponPromotion({ ...couponPromotion, 
+                                        couponAmount: e.target.value
+                                        // couponAmount: Number(e.target.value),
+                                        // couponAmount: Math.max(0, Number(e.target.value)),
                                      })}
                                     className="w-full p-2 border rounded"
                                 />
