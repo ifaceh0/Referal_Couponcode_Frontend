@@ -30,11 +30,14 @@ export const updateSettingsAction = async (settingsData) => {
         body: JSON.stringify(settingsData), //  send JSON body
     });
 
+    const data = await response.json();
+
     if (!response.ok) {
-        throw new Error("Failed to update shop settings");
+        throw new Error(data.message || "Failed to update shop settings");
     }
 
-    return response.json();
+    // return response.json();
+    return data;
 };
 
 

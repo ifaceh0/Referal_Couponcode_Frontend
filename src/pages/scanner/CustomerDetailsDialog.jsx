@@ -250,11 +250,14 @@ import { getCurrentCurrency } from "../../utils/currencyUtils";
                       scannedData?.referralCode && (
                       <tr className="border-b border-gray-300">
                         <td className="py-2 px-4 font-semibold text-gray-700">
-                          Referral Code:
+                          Referred User Code:
                         </td>
 
                         <td className="py-2 px-4 text-gray-600">
-                          {scannedData.referralCode || "N/A"}
+                          {/* {scannedData.referralCode || "N/A"} */}
+                          {scannedData?.referralCode === "None"
+                            ? "Shopkeeper"
+                            : scannedData?.referralCode || "N/A"}
                         </td>
                       </tr>
                     )}

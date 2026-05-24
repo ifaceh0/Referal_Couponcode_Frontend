@@ -1428,8 +1428,11 @@ const InteractionPanel = () => {
                     verificationData?.referralCode && (
                     <>
                       <p>
-                        <strong>Referral Code:</strong>{" "}
-                        {verificationData.referralCode}
+                        <strong>Referred User Code:</strong>{" "}
+                        {/* {verificationData.referralCode} */}
+                        {verificationData?.referralCode === "None"
+                            ? "Shopkeeper"
+                            : verificationData?.referralCode || "N/A"}
                       </p>
 
                       <p>

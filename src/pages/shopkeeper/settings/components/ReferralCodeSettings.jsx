@@ -666,8 +666,11 @@ const ReferralCodeSettings = ({ shopkeeperId, token }) => {
             toast.success('Promotion added successfully');
             setIsEditing(false);
         } catch (error) {
-            toast.error('Failed to save promotion');
-            console.error('Error saving promotion:', error);
+            // toast.error('Failed to save promotion');
+            // console.error('Error saving promotion:', error);
+            toast.error(
+                error.message || "Failed to save promotion"
+            );
         } finally {
             setLoading(false);
         }
