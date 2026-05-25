@@ -302,7 +302,7 @@ import { getCurrentCurrency } from "../../utils/currencyUtils";
               <div className="border p-4 rounded-lg bg-yellow-50">
 
                 <h3 className="font-semibold mb-2">
-                  Apply Coupon
+                  Purchase amount
                 </h3>
 
                 <input

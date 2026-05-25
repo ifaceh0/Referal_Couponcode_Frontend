@@ -647,11 +647,18 @@ const ReferralCodeSettings = ({ shopkeeperId, token }) => {
                 referralAmount: promotion.referralAmount,
                 referrerAmount: promotion.referrerAmount,
                 // Coupon Promotion
-                couponPromotionBeginDate: couponPromotion.beginDate,
-                couponPromotionEndDate: couponPromotion.expiryDate,
-                couponAmount: couponPromotion.couponAmount,
-                couponUseLimit: couponPromotion.limitOfUse,
-                couponMinPurchaseAmt: couponPromotion.minPurchaseAmount,
+                // couponPromotionBeginDate: couponPromotion.beginDate,
+                // couponPromotionEndDate: couponPromotion.expiryDate,
+                // couponAmount: couponPromotion.couponAmount,
+                // couponUseLimit: couponPromotion.limitOfUse,
+                // couponMinPurchaseAmt: couponPromotion.minPurchaseAmount,
+                ...(applications.includes("Coupon") && {
+                    couponPromotionBeginDate: couponPromotion.beginDate,
+                    couponPromotionEndDate: couponPromotion.expiryDate,
+                    couponAmount: couponPromotion.couponAmount,
+                    couponUseLimit: couponPromotion.limitOfUse,
+                    couponMinPurchaseAmt: couponPromotion.minPurchaseAmount,
+                }),
                 // discountMapping,
                 // milestoneMapping,
                 milestoneRewards: milestoneMapping
@@ -699,7 +706,8 @@ const ReferralCodeSettings = ({ shopkeeperId, token }) => {
             <ToastContainer />
             <div className="p-6 max-w-4xl mx-auto bg-white shadow-md rounded-lg">
                 <h2 className="text-2xl font-bold text-center mb-4">Promotion Settings</h2>
-                <div className="p-6 max-w-4xl mx-auto bg-gray-50 shadow-md rounded-lg border border-gray-200">
+                {/* <div className="p-6 max-w-4xl mx-auto bg-gray-50 shadow-md rounded-lg border border-gray-200"> */}
+                <div className="p-6 max-w-4xl mx-auto bg-white shadow-md rounded-lg">
                  <div className="flex justify-end items-center mb-6">
                     {/* <h2 className="text-2xl font-bold">Promotion Settings</h2> */}
                     <div className="flex space-x-2">
@@ -721,7 +729,7 @@ const ReferralCodeSettings = ({ shopkeeperId, token }) => {
                             </button>
                         )}
                     </div>
-                </div>
+                 </div>
 
                 {/* Toggle Credits/Dollars */}
                 {/* <div className="flex items-center mb-6">
@@ -799,8 +807,8 @@ const ReferralCodeSettings = ({ shopkeeperId, token }) => {
 
                 {/* Referral Settings Only */}
                 {applications.includes("Referral") && (
-                    <div className="mb-6">
-                        <div className="flex justify-between items-start gap-8 flex-wrap">
+                    <div className="p-6 max-w-4xl mx-auto bg-gray-50 shadow-md rounded-lg border border-gray-200">
+                        <div className="flex justify-between items-start gap-8 flex-wrap mb-6">
 
                             {/* Bonus */}
                             <div>
@@ -875,12 +883,12 @@ const ReferralCodeSettings = ({ shopkeeperId, token }) => {
                             </div>
 
                         </div>
-                    </div>
-                )}
+                    {/* </div>
+                )} */}
 
                 {/* Current Referral Promotion */}
-                {applications.includes("Referral") && (
-                <div className="mb-6 border-t pt-6">
+                {/* {applications.includes("Referral") && ( */}
+                {/* <div className="mb-6 border-t pt-6">  */}
                     <h3 className="font-bold mb-4">Current Referral Promotion</h3>
                     <div className="grid grid-cols-2 gap-4">
                         <div>
@@ -1058,10 +1066,10 @@ const ReferralCodeSettings = ({ shopkeeperId, token }) => {
                     )}
                 </div>
                 )} */}
-                </div>
+                {/* </div> */}
                 {/* Current Coupon Promotion */}
                 {applications.includes("Coupon") && (
-                <div className="mb-6 border-t pt-6">
+                <div className="mb-6">
                     {/* <h2 className="text-xl font-bold">Current Coupon Promotion</h2> */}
                     <div className="p-6 max-w-4xl mx-auto bg-gray-50 shadow-md rounded-lg border border-gray-200">
                     <h3 className="font-bold mb-4">Current Coupon Promotion</h3>
@@ -1159,7 +1167,7 @@ const ReferralCodeSettings = ({ shopkeeperId, token }) => {
                                         <p>
                                             {couponPromotion.minPurchaseAmount 
                                                 ? `${currency.symbol}${couponPromotion.minPurchaseAmount}` 
-                                                : 'No minimum amount required'}
+                                                : 'Not set'}
                                         </p>
                                     )}
                                 </div>
@@ -1171,7 +1179,7 @@ const ReferralCodeSettings = ({ shopkeeperId, token }) => {
                 {/* {!useCredits && ( */}
                 
                 {/* )} */}
-
+            </div>
                 
             </div>
         </>

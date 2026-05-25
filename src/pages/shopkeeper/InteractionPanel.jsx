@@ -1469,7 +1469,7 @@ const InteractionPanel = () => {
                   {applications.includes("Coupon") && 
                     verificationData?.couponCode && (
                     <div className="border p-4 rounded-lg bg-yellow-50">
-                      <h3 className="font-semibold mb-2">Apply Coupon</h3>
+                      <h3 className="font-semibold mb-2">Purchase amount</h3>
 
                       <div className="flex items-center gap-2">
                         <input
