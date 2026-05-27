@@ -551,7 +551,8 @@ const ReferralCodeSettings = ({ shopkeeperId, token }) => {
         beginDate: '',
         expiryDate: '',
         couponAmount: '',
-        limitOfUse: ''
+        limitOfUse: '',
+        minPurchaseAmount: ''
     });
     const currency = getCurrentCurrency();
 
@@ -601,7 +602,8 @@ const ReferralCodeSettings = ({ shopkeeperId, token }) => {
                             beginDate: settings.couponPromotionBeginDate || '',
                             expiryDate: settings.couponPromotionEndDate || '',
                             couponAmount: settings.couponAmount ?? '',
-                            limitOfUse: settings.couponUseLimit ?? ''
+                            limitOfUse: settings.couponUseLimit ?? '',
+                            minPurchaseAmount: response.couponMinPurchaseAmt ?? '',
                         });
                         
                         setMilestoneMapping(
@@ -645,10 +647,18 @@ const ReferralCodeSettings = ({ shopkeeperId, token }) => {
                 referralAmount: promotion.referralAmount,
                 referrerAmount: promotion.referrerAmount,
                 // Coupon Promotion
-                couponPromotionBeginDate: couponPromotion.beginDate,
-                couponPromotionEndDate: couponPromotion.expiryDate,
-                couponAmount: couponPromotion.couponAmount,
-                couponUseLimit: couponPromotion.limitOfUse,
+                // couponPromotionBeginDate: couponPromotion.beginDate,
+                // couponPromotionEndDate: couponPromotion.expiryDate,
+                // couponAmount: couponPromotion.couponAmount,
+                // couponUseLimit: couponPromotion.limitOfUse,
+                // couponMinPurchaseAmt: couponPromotion.minPurchaseAmount,
+                ...(applications.includes("Coupon") && {
+                    couponPromotionBeginDate: couponPromotion.beginDate,
+                    couponPromotionEndDate: couponPromotion.expiryDate,
+                    couponAmount: couponPromotion.couponAmount,
+                    couponUseLimit: couponPromotion.limitOfUse,
+                    couponMinPurchaseAmt: couponPromotion.minPurchaseAmount,
+                }),
                 // discountMapping,
                 // milestoneMapping,
                 milestoneRewards: milestoneMapping
@@ -663,8 +673,11 @@ const ReferralCodeSettings = ({ shopkeeperId, token }) => {
             toast.success('Promotion added successfully');
             setIsEditing(false);
         } catch (error) {
-            toast.error('Failed to save promotion');
-            console.error('Error saving promotion:', error);
+            // toast.error('Failed to save promotion');
+            // console.error('Error saving promotion:', error);
+            toast.error(
+                error.message || "Failed to save promotion"
+            );
         } finally {
             setLoading(false);
         }
@@ -693,7 +706,8 @@ const ReferralCodeSettings = ({ shopkeeperId, token }) => {
             <ToastContainer />
             <div className="p-6 max-w-4xl mx-auto bg-white shadow-md rounded-lg">
                 <h2 className="text-2xl font-bold text-center mb-4">Promotion Settings</h2>
-                <div className="p-6 max-w-4xl mx-auto bg-gray-50 shadow-md rounded-lg border border-gray-200">
+                {/* <div className="p-6 max-w-4xl mx-auto bg-gray-50 shadow-md rounded-lg border border-gray-200"> */}
+                <div className="p-6 max-w-4xl mx-auto bg-white shadow-md rounded-lg">
                  <div className="flex justify-end items-center mb-6">
                     {/* <h2 className="text-2xl font-bold">Promotion Settings</h2> */}
                     <div className="flex space-x-2">
@@ -715,7 +729,7 @@ const ReferralCodeSettings = ({ shopkeeperId, token }) => {
                             </button>
                         )}
                     </div>
-                </div>
+                 </div>
 
                 {/* Toggle Credits/Dollars */}
                 {/* <div className="flex items-center mb-6">
@@ -729,13 +743,13 @@ const ReferralCodeSettings = ({ shopkeeperId, token }) => {
                     />
                 </div> */}
 
-                <div className="mb-6">
+                {/* <div className="mb-6">
                     <div className="flex justify-between items-start gap-8 flex-wrap">
-                        {/* Signup for New Users */}
+            
                         <div>
                             <h3 className="font-bold">
                                 Bonus
-                                {/* {useCredits ? "Dollars" : "Points"}  */}
+                                
                                 
                             </h3>
                             {isEditing ? (
@@ -753,7 +767,7 @@ const ReferralCodeSettings = ({ shopkeeperId, token }) => {
                                 />
                             ) : (
                                 <p className="mt-2">
-                                    {/* {useCredits ? `$${signUpDollars}` : `${signupPoints} Points`} */}
+                                    
                                     {currency.symbol}{signUpDollars}
                                 </p>
                             )}
@@ -789,11 +803,92 @@ const ReferralCodeSettings = ({ shopkeeperId, token }) => {
                             </label>
                         </div>
                     </div>
-                </div>
+                </div> */}
+
+                {/* Referral Settings Only */}
+                {applications.includes("Referral") && (
+                    <div className="p-6 max-w-4xl mx-auto bg-gray-50 shadow-md rounded-lg border border-gray-200">
+                        <div className="flex justify-between items-start gap-8 flex-wrap mb-6">
+
+                            {/* Bonus */}
+                            <div>
+                                <h3 className="font-bold">
+                                    Bonus
+                                </h3>
+
+                                {isEditing ? (
+                                    <input
+                                        type="number"
+                                        value={signUpDollars}
+                                        onChange={(e) =>
+                                            setSignupDollars(
+                                                Math.max(0, Number(e.target.value))
+                                            )
+                                        }
+                                        className="border p-2 rounded mt-2 w-32"
+                                    />
+                                ) : (
+                                    <p className="mt-2">
+                                        {currency.symbol}{signUpDollars}
+                                    </p>
+                                )}
+                            </div>
+
+                            {/* Existing Customer */}
+                            <div>
+                                <h3 className="font-bold mb-2">
+                                    Existing Customer
+                                </h3>
+
+                                <label className="switch">
+                                    <input
+                                        type="checkbox"
+                                        checked={existingCustomerReward}
+                                        onChange={(e) =>
+                                            setExistingCustomerReward(
+                                                e.target.checked
+                                            )
+                                        }
+                                        disabled={!isEditing}
+                                    />
+
+                                    <span className="slider round">
+                                        {existingCustomerReward ? "Yes" : "No"}
+                                    </span>
+                                </label>
+                            </div>
+
+                            {/* New Customer */}
+                            <div>
+                                <h3 className="font-bold mb-2">
+                                    New Customer
+                                </h3>
+
+                                <label className="switch">
+                                    <input
+                                        type="checkbox"
+                                        checked={newCustomerReward}
+                                        onChange={(e) =>
+                                            setNewCustomerReward(
+                                                e.target.checked
+                                            )
+                                        }
+                                        disabled={!isEditing}
+                                    />
+
+                                    <span className="slider round">
+                                        {newCustomerReward ? "Yes" : "No"}
+                                    </span>
+                                </label>
+                            </div>
+
+                        </div>
+                    {/* </div>
+                )} */}
 
                 {/* Current Referral Promotion */}
-                {applications.includes("Referral") && (
-                <div className="mb-6 border-t pt-6">
+                {/* {applications.includes("Referral") && ( */}
+                {/* <div className="mb-6 border-t pt-6">  */}
                     <h3 className="font-bold mb-4">Current Referral Promotion</h3>
                     <div className="grid grid-cols-2 gap-4">
                         <div>
@@ -971,10 +1066,10 @@ const ReferralCodeSettings = ({ shopkeeperId, token }) => {
                     )}
                 </div>
                 )} */}
-                </div>
+                {/* </div> */}
                 {/* Current Coupon Promotion */}
                 {applications.includes("Coupon") && (
-                <div className="mb-6 border-t pt-6">
+                <div className="mb-6">
                     {/* <h2 className="text-xl font-bold">Current Coupon Promotion</h2> */}
                     <div className="p-6 max-w-4xl mx-auto bg-gray-50 shadow-md rounded-lg border border-gray-200">
                     <h3 className="font-bold mb-4">Current Coupon Promotion</h3>
@@ -1020,8 +1115,10 @@ const ReferralCodeSettings = ({ shopkeeperId, token }) => {
                                     type="number"
                                     min={0}
                                     value={couponPromotion.couponAmount}
-                                    onChange={(e) => setCouponPromotion({ ...couponPromotion, couponAmount: Number(e.target.value),
-                                        couponAmount: Math.max(0, Number(e.target.value)),
+                                    onChange={(e) => setCouponPromotion({ ...couponPromotion, 
+                                        couponAmount: e.target.value
+                                        // couponAmount: Number(e.target.value),
+                                        // couponAmount: Math.max(0, Number(e.target.value)),
                                      })}
                                     className="w-full p-2 border rounded"
                                 />
@@ -1046,6 +1143,34 @@ const ReferralCodeSettings = ({ shopkeeperId, token }) => {
                                 <p>{couponPromotion.limitOfUse || 'Not set'}</p>
                             )}
                         </div>
+                        <div className="md:col-span-2">
+                                    <label className="block text-sm font-medium mb-1">
+                                        Minimum Purchase Amount <span className="text-gray-500">(for coupon to be applicable)</span>
+                                    </label>
+                                    {isEditing ? (
+                                        <div className="flex items-center gap-2 max-w-md">
+                                            {/* <span className="text-xl font-medium">{currency.symbol}</span> */}
+                                            <input
+                                             
+                                                type="number" 
+                                                value={couponPromotion.minPurchaseAmount}
+                                                onChange={(e) => setCouponPromotion({ 
+                                                    ...couponPromotion, 
+                                                    minPurchaseAmount: e.target.value 
+                                                })}
+                                                placeholder={currency.symbol}
+                                                className="w-full p-2 border rounded"
+                                                min="0"
+                                            />
+                                        </div>
+                                    ) : (
+                                        <p>
+                                            {couponPromotion.minPurchaseAmount 
+                                                ? `${currency.symbol}${couponPromotion.minPurchaseAmount}` 
+                                                : 'Not set'}
+                                        </p>
+                                    )}
+                                </div>
                     </div>
                     </div>
                 </div>
@@ -1054,7 +1179,7 @@ const ReferralCodeSettings = ({ shopkeeperId, token }) => {
                 {/* {!useCredits && ( */}
                 
                 {/* )} */}
-
+            </div>
                 
             </div>
         </>

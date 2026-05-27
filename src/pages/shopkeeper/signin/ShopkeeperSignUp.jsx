@@ -311,7 +311,7 @@ const ShopkeeperSignUp = () => {
     companyAddress: "",
     companyEmail: "",
     companyPhone: "",
-    country: "US",
+    country: "",
   });
   const [errors, setErrors] = useState({});
   const [captchaText, setCaptchaText] = useState("");
@@ -529,7 +529,7 @@ const ShopkeeperSignUp = () => {
           {step === 1 ? (
             <>
               <InputField label="Name" type="text" name="name" value={formData.name} onChange={handleInputChange} error={errors.name} />
-              <InputField label="Email" type="email" name="email" value={formData.email} onChange={handleInputChange} error={errors.email} />
+              <InputField label="Email (used for login)" type="email" name="email" value={formData.email} onChange={handleInputChange} error={errors.email} />
               <PhoneInputField
                 label=""
                 name="phone"
@@ -544,17 +544,18 @@ const ShopkeeperSignUp = () => {
                 <label className="block text-gray-700 mb-2 font-medium">Country</label>
                 <select
                   name="country"
-                  value={formData.country || "US"}
+                  value={formData.country || ""}
                   onChange={handleInputChange}
                   className="w-full h-12 p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500 bg-white"
                 >
+                  <option value="">Select Country</option>
                   <option value="IN">India (IN)</option>
                   <option value="US">United States (US)</option>
                 </select>
                 {errors.country && <span className="text-red-500 text-sm">{errors.country}</span>}
               </div>
 
-              <InputField label="Password" type="password" name="password" value={formData.password} onChange={handleInputChange} error={errors.password} />
+              <InputField label="Password (used for login)" type="password" name="password" value={formData.password} onChange={handleInputChange} error={errors.password} />
               <InputField label="Confirm Password" type="password" name="confirmPassword" value={formData.confirmPassword} onChange={handleInputChange} error={errors.confirmPassword} />
               <button onClick={handleNext} className="bg-blue-600 text-white py-2 px-4 rounded-lg w-full mt-4 hover:bg-blue-700 transition">Next</button>
             </>

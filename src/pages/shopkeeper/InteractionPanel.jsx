@@ -1021,9 +1021,16 @@ const InteractionPanel = () => {
   const [userDetails, setUserDetails] = useState(null);
   const [verificationDialogOpen, setVerificationDialogOpen] = useState(false);
   const [verificationData, setVerificationData] = useState(null);
-  const [redeemAmount, setRedeemAmount] = useState("");
-  const [loading, setLoading] = useState(false);
-  const [error, setError] = useState("");
+  // const [redeemAmount, setRedeemAmount] = useState("");
+  // const [loading, setLoading] = useState(false);
+  // const [error, setError] = useState("");
+  const [applications, setApplications] = useState([]);
+  const [purchaseAmount, setPurchaseAmount] = useState("");
+  const [referralRedeemAmount, setReferralRedeemAmount] = useState("");
+  const [couponLoading, setCouponLoading] = useState(false);
+  const [redeemLoading, setRedeemLoading] = useState(false);
+  const [couponError, setCouponError] = useState("");
+  const [redeemError, setRedeemError] = useState("");
 
   const currency = getCurrentCurrency();
 
@@ -1034,6 +1041,12 @@ const InteractionPanel = () => {
       try {
         const user = await getCurrentUser();
         setUserDetails(user);
+
+        if (user.application_name && Array.isArray(user.application_name)) {
+          setApplications(user.application_name);
+        } else if (user.application_name) {
+          setApplications([user.application_name]);
+        }
       } catch (error) {
         console.error("Error fetching user:", error);
       }
@@ -1050,15 +1063,18 @@ const InteractionPanel = () => {
     try {
       const data = await userInfo("", phoneNumber);
       if (data?.phone) {
+        const firstCoupon = data.coupons?.[0] || {};
+
         setVerificationData({
           customerId: data.customerId || "Unknown",
           name: data.name,
           phone: data.phone,
           email: data.email,
           availableBalance: data.availableBalance || 0,
-          couponAmount: data.couponAmount || 0,
-          couponUsageLimit: data.couponUsageLimit || 0,
-          couponCode: data.couponCode || "",
+          couponAmount: firstCoupon.couponAmount || 0,
+          couponUsageLimit: firstCoupon.couponUsageLimit || 0,
+          usageLeft: firstCoupon.usageLeft || 0,
+          couponCode: firstCoupon.couponCode || "",
           referralCode: data.referralCode || "",
           shopName: userDetails?.name || "Default Shop",
         });
@@ -1078,15 +1094,18 @@ const InteractionPanel = () => {
     try {
       const data = await userInfo(email, "");
       if (data?.email) {
+        const firstCoupon = data.coupons?.[0] || {};
+
         setVerificationData({
           customerId: data.customerId || "Unknown",
           name: data.name,
           phone: data.phone || "",
           email: data.email,
           availableBalance: data.availableBalance || 0,
-          couponAmount: data.couponAmount || 0,
-          couponUsageLimit: data.couponUsageLimit || 0,
-          couponCode: data.couponCode || "",
+          couponAmount: firstCoupon.couponAmount || 0,
+          couponUsageLimit: firstCoupon.couponUsageLimit || 0,
+          usageLeft: firstCoupon.usageLeft || 0,
+          couponCode: firstCoupon.couponCode || "",
           referralCode: data.referralCode || "",
           shopName: userDetails?.name || "Default Shop",
         });
@@ -1098,31 +1117,47 @@ const InteractionPanel = () => {
     }
   };
 
+  // const handleCloseVerificationDialog = () => {
+  //   setVerificationDialogOpen(false);
+  //   setRedeemAmount("");
+  //   setError("");
+  // };
+
   const handleCloseVerificationDialog = () => {
     setVerificationDialogOpen(false);
-    setRedeemAmount("");
-    setError("");
+
+    setReferralRedeemAmount("");
+    setPurchaseAmount("");
+
+    setCouponError("");
+    setRedeemError("");
   };
 
   const handleRedeemClick = async () => {
-    const amount = parseFloat(redeemAmount);
+    const amount = parseFloat(referralRedeemAmount);
 
-    if (!redeemAmount) return setError("Please enter an amount");
+    if (!referralRedeemAmount) return setRedeemError("Please enter an amount");
     if (isNaN(amount) || amount <= 0)
-      return setError("Enter a valid positive amount");
+      return setRedeemError("Enter a valid positive amount");
     if (amount > verificationData?.availableBalance)
-      return setError("Exceeds available balance");
+      return setRedeemError("Exceeds available balance");
 
     const token = localStorage.getItem("token");
-    if (!token) return setError("Authentication token not found.");
+    if (!token) return setRedeemError("Authentication token not found.");
 
     const payload = {
       customerId: verificationData.customerId,
-      referralCode: verificationData.referralCode,
+      // referralCode: verificationData.referralCode,
+      referralCode:
+        verificationData.referralCode &&
+        verificationData.referralCode !== "None"
+          ? verificationData.referralCode
+          : null,
       discountAmount: amount,
+      // purchaseAmount: amount,
     };
 
-    setLoading(true);
+    setRedeemLoading(true);
     const toastId = toast.loading("Processing...");
 
     try {
@@ -1135,7 +1170,7 @@ const InteractionPanel = () => {
       );
 
       toast.update(toastId, {
-        render: "Redeemed successfully!",
+        render: "Discount redeemed successfully!",
         type: "success",
         isLoading: false,
         autoClose: 3000,
@@ -1145,20 +1180,87 @@ const InteractionPanel = () => {
         ...prev,
         availableBalance: prev.availableBalance - amount,
       }));
-      setRedeemAmount("");
-      setError("");
+      setReferralRedeemAmount("");
+      setRedeemError("");
       setVerificationDialogOpen(false);
     } catch (err) {
+      // const backendMessage =
+      //   err?.response?.data?.message ||
+      //   err?.response?.data ||
+      //   err.message ||
+      //   "Redemption failed";
+      const backendMessage =
+        err?.response?.data?.message ||
+        err?.response?.data ||
+        err?.message ||
+        "Redemption failed";
+
       toast.update(toastId, {
-        render:
-          err?.response?.data?.message || err.message || "Redemption failed",
+        render: backendMessage,
         type: "error",
         isLoading: false,
         autoClose: 3000,
       });
-      setError("Redemption failed.");
+      // setError("Redemption failed.");
+      // const backendMessage =
+      //   err?.response?.data || err?.response?.data?.message || err.message;
+
+      setRedeemError(backendMessage);
     } finally {
-      setLoading(false);
+      setRedeemLoading(false);
+    }
+  };
+
+  const handleApplyCoupon = async () => {
+
+    if (!purchaseAmount || purchaseAmount <= 0) {
+      return setCouponError("Enter valid purchase amount");
+    }
+
+    const token = localStorage.getItem("token");
+
+    try {
+
+      setCouponLoading(true);
+
+      await axios.post(
+        `${import.meta.env.VITE_BACKEND_URL}/api/shopkeeper/apply-coupon`,
+        {
+          customerId: verificationData.customerId,
+          couponCode: verificationData.couponCode,
+          purchaseAmount: purchaseAmount,
+        },
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
+
+      toast.success(
+        `Coupon Applied Successfully. Discount: ${currency.symbol}${verificationData.couponAmount}`
+      );
+      setCouponError("");
+      setVerificationDialogOpen(false);
+
+    } catch (err) {
+
+      // setCouponError(
+      //   err?.response?.data ||
+      //   err?.response?.data?.message ||
+      //   err.message
+      // );
+      const errorMessage =
+      err?.response?.data?.message ||
+      err?.response?.data ||
+      err?.message ||
+      "Failed to apply coupon";
+
+    setCouponError(errorMessage);
+
+    } finally {
+
+      setCouponLoading(false);
     }
   };
 
@@ -1263,7 +1365,7 @@ const InteractionPanel = () => {
           {/* Verification Modal */}
           {verificationDialogOpen && verificationData && (
             <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-sm">
-              <div className="bg-white rounded-2xl w-full max-w-[800px] p-6 shadow-xl">
+              <div className="bg-white rounded-xl w-full max-w-[800px] p-6 shadow-xl">
                 <h2 className="text-xl font-semibold mb-4 text-gray-700">
                   Customer Details
                 </h2>
@@ -1280,24 +1382,68 @@ const InteractionPanel = () => {
                   <p>
                     <strong>Customer ID:</strong> {verificationData.customerId}
                   </p>
-                  <p>
+                  {/* <p>
                     <strong>Available Balance:</strong> {currency.symbol}
                     {verificationData.availableBalance}
-                  </p>
-                  <p>
+                  </p> */}
+
+                  {/* <p>
                     <strong>Coupon Amount:</strong> {currency.symbol}
                     {verificationData.couponAmount}
                   </p>
                   <p>
                     <strong>Coupon Usage Limit:</strong>{" "}
                     {verificationData.couponUsageLimit}
-                  </p>
-                  <p>
+                  </p> */}
+
+                  {applications.includes("Coupon") && 
+                    verificationData?.couponCode && (
+                    <>
+                      <p>
+                        <strong>Coupon Code:</strong> {verificationData.couponCode}
+                      </p>
+
+                      <p>
+                        <strong>Coupon Amount:</strong> {currency.symbol}
+                        {verificationData.couponAmount}
+                      </p>
+
+                      <p>
+                        <strong>Coupon Usage Limit:</strong>{" "}
+                        {verificationData.couponUsageLimit}
+                      </p>
+
+                      <p>
+                        <strong>Coupon Usage Left:</strong>{" "}
+                        {verificationData.usageLeft}
+                      </p>
+                    </>
+                  )}
+
+                  {/* <p>
                     <strong>Referral Code:</strong> {verificationData.referralCode}
-                  </p>
+                  </p> */}
+
+                  {applications.includes("Referral") && 
+                    verificationData?.referralCode && (
+                    <>
+                      <p>
+                        <strong>Referred User Code:</strong>{" "}
+                        {/* {verificationData.referralCode} */}
+                        {verificationData?.referralCode === "None"
+                            ? "Shopkeeper"
+                            : verificationData?.referralCode || "N/A"}
+                      </p>
+
+                      <p>
+                        <strong>Available Balance:</strong> {currency.symbol}
+                        {verificationData.availableBalance}
+                      </p>
+                    </>
+                  )}
                 </div>
 
-                <div className="mt-6">
+                {/* <div className="mt-6">
                   <h3 className="font-semibold mb-2">Redeem Discount</h3>
                   <div className="flex items-center gap-2">
                     <input
@@ -1316,11 +1462,69 @@ const InteractionPanel = () => {
                     </button>
                   </div>
                   {error && <p className="text-red-500 mt-2">{error}</p>}
+                </div> */}
+
+                <div className="mt-6 flex flex-row gap-3">
+                  {/* Coupon Section */}
+                  {applications.includes("Coupon") && 
+                    verificationData?.couponCode && (
+                    <div className="border p-4 rounded-lg bg-yellow-50">
+                      <h3 className="font-semibold mb-2">Purchase amount</h3>
+
+                      <div className="flex items-center gap-2">
+                        <input
+                          type="number"
+                          value={purchaseAmount}
+                          onChange={(e) => setPurchaseAmount(e.target.value)}
+                          placeholder="Enter purchase amount"
+                          className="p-2 border rounded w-52"
+                        />
+
+                        <button
+                          onClick={handleApplyCoupon}
+                          className="bg-yellow-500 text-white px-4 py-1.5 rounded-full"
+                          disabled={couponLoading}
+                        >
+                          {couponLoading ? "Processing..." : "Apply Coupon"}
+                        </button>
+                      </div>
+
+                      {couponError && <p className="text-red-500 mt-2">{couponError}</p>}
+                    </div>
+                  )}
+
+                  {/* Referral Section */}
+                  {applications.includes("Referral") && 
+                    verificationData?.referralCode && (
+                    <div className="border p-4 rounded-lg bg-green-50">
+                      <h3 className="font-semibold mb-2">Redeem Discount</h3>
+
+                      <div className="flex items-center gap-2">
+                        <input
+                          type="number"
+                          value={referralRedeemAmount}
+                          onChange={(e) => setReferralRedeemAmount(e.target.value)}
+                          placeholder="Enter redeem amount"
+                          className="p-2 border rounded w-52"
+                        />
+
+                        <button
+                          onClick={handleRedeemClick}
+                          className="bg-green-500 text-white px-4 py-1.5 rounded-full"
+                          disabled={redeemLoading}
+                        >
+                          {redeemLoading ? "Processing..." : "Redeem"}
+                        </button>
+                      </div>
+
+                      {redeemError && <p className="text-red-500 mt-2">{redeemError}</p>}
+                    </div>
+                  )}
                 </div>
 
                 <button
                   onClick={handleCloseVerificationDialog}
-                  className="mt-6 w-full py-2 bg-gray-200 hover:bg-gray-300 rounded-lg"
+                  className="mt-6 w-full py-2 bg-gray-200 hover:bg-gray-300 rounded-full"
                 >
                   Close
                 </button>

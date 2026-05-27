@@ -20,7 +20,9 @@ const PhoneInputField = ({
 
   const handlePhoneChange = (phone, country) => {
     const digitsOnly = phone.replace(/\D/g, "");
-    const nationalNumber = digitsOnly.replace(country.dialCode, "");
+    const dialCode = country?.dialCode || "";
+    const nationalNumber = digitsOnly.replace(dialCode, "");
+    // const nationalNumber = digitsOnly.replace(country.dialCode, "");
 
     // Update local state for displaying full value (required by react-phone-input-2)
     setFullPhone(phone);
@@ -37,7 +39,9 @@ const PhoneInputField = ({
 
   const validatePhone = (inputValue, country) => {
     const digitsOnly = inputValue.replace(/\D/g, "");
-    const nationalNumber = digitsOnly.replace(country.dialCode, "");
+    const dialCode = country?.dialCode || "";
+    const nationalNumber = digitsOnly.replace(dialCode, "");
+    // const nationalNumber = digitsOnly.replace(country.dialCode, "");
 
     if (nationalNumber.length > 0 && nationalNumber.length < 10) {
       return "Phone number must be at least 10 digits";
@@ -59,7 +63,7 @@ const PhoneInputField = ({
       )}
       <div className={`flex flex-col ${wrapperClass}`}>
         <PhoneInput
-          country={"us"}
+          country={""}
           // onlyCountries={["us", "ca", "in"]}
           value={fullPhone} // use internal state to store full number
           onChange={handlePhoneChange}
@@ -68,6 +72,7 @@ const PhoneInputField = ({
           enableSearch={true}
           onBlur={() => setTouched(true)}
           isValid={validatePhone}
+          placeholder="Select country & enter number"
           inputExtraProps={{
             name,
             required: true,
