@@ -249,6 +249,8 @@ import { getCurrentUser } from '../api/signin';
 
 const navLinks = [
   { name: 'Home', path: '/' },
+  { name: 'Referral', path: '/referral-hub' },
+  { name: 'Coupon', path: '/coupon-hub' },
   { name: 'Features', path: '/features' },
   { name: 'Subscription', path: 'https://subscription-frontend-psi.vercel.app/subscription' },
   { name: 'Resources', path: '/resources' },
@@ -324,7 +326,15 @@ export default function Navbar() {
       <nav className="bg-white shadow-md fixed w-full z-50 top-0">
         <div className="max-w-full mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex justify-between h-16 items-center">
-            <Link to="/" className="text-xl font-bold text-purple-600">ReferralPro</Link>
+            {/* <Link to="/" className="text-xl font-bold text-purple-600">PromoConnect</Link> */}
+            <Link to="/" className="flex flex-col leading-none">
+              <span className="text-xl font-extrabold text-purple-600">
+                PromoConnect
+              </span>
+              <span className="text-[9px] uppercase tracking-widest text-gray-500">
+                Powered by iFaceh
+              </span>
+            </Link>
             
             {/* Desktop menu */}
             <div className="hidden sm:flex space-x-6">
