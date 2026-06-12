@@ -328,8 +328,9 @@ export default function Navbar() {
           <div className="flex justify-between h-16 items-center">
             {/* <Link to="/" className="text-xl font-bold text-purple-600">PromoConnect</Link> */}
             <Link to="/" className="flex flex-col leading-none">
-              <span className="text-xl font-extrabold text-purple-600">
-                PromoConnect
+              <span className="text-xl font-extrabold">
+                <span className="text-slate-900">Promo</span>
+                <span className="text-purple-600">Connect</span>
               </span>
               <span className="text-[9px] uppercase tracking-widest text-gray-500">
                 Powered by interface hub
