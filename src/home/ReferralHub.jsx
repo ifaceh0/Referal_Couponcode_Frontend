@@ -3,6 +3,9 @@ import {
   Users,
   Share2,
   Gift,
+  Ticket, 
+  Shield,
+  Zap,
   TrendingUp,
   CheckCircle2,
   ArrowRight,
@@ -12,6 +15,8 @@ import {
   Sparkles,
 } from "lucide-react";
 import { Link } from "react-router-dom";
+
+import referralHero from "../assets/gift.png";
 
 export default function ReferralHub() {
   const features = [
@@ -88,54 +93,118 @@ export default function ReferralHub() {
   return (
     <div className="bg-slate-50/50 overflow-x-hidden text-slate-900 font-sans antialiased">
       {/* HERO SECTION */}
-      <section className="relative overflow-hidden bg-gradient-to-b from-blue-50/70 via-indigo-50/30 to-transparent pt-20 pb-24">
-        {/* Subtle Grid Pattern Overlay */}
-        <div className="absolute inset-0 bg-[linear-gradient(to_right,#e2e8f0_1px,transparent_1px),linear-gradient(to_bottom,#e2e8f0_1px,transparent_1px)] bg-[size:4rem_4rem] [mask-image:radial-gradient(ellipse_60%_50%_at_50%_0%,#000_70%,transparent_100%)] opacity-60"></div>
-        
-        <div className="relative max-w-5xl mx-auto px-6 text-center">
-          {/* <div className="inline-flex items-center gap-2 px-3 py-1.5 bg-indigo-50 border border-indigo-100 text-indigo-700 rounded-full text-xs font-medium backdrop-blur-sm shadow-sm">
-            <Sparkles className="w-3.5 h-3.5 animate-pulse" />
-            Powered by iFaceh
-          </div> */}
+      <div className="max-w-8xl mx-auto px-8 lg:px-16 py-10 lg:py-0 relative z-10">
+        <div className="grid lg:grid-cols-2 gap-12 items-center">
+          <div>
+            <h1 className="text-3xl lg:text-5xl font-extrabold leading-tight text-gray-900">
+              Turn Happy Customers
+              <br />
+              Into Your
+              <span className="block text-blue-600">
+                 Best Sales Team
+              </span>
+            </h1>
 
-          <h1 className="mt-8 text-4xl lg:text-7xl font-black text-slate-900 tracking-tight max-w-4xl mx-auto leading-[1.1]">
-            Turn Customers Into Your{" "}
-            <span className="bg-clip-text text-transparent bg-gradient-to-r from-blue-600 via-indigo-600 to-purple-600">
-              Best Sales Team
-            </span>
-          </h1>
+            <p className="mt-8 text-md lg:text-lg text-gray-600 leading-relaxed max-w-xl">
+              Launch referral campaigns in minutes, reward your customers
+              automatically, and grow your business through trusted
+              recommendations.
+            </p>
 
-          <p className="mt-6 text-lg text-slate-600 max-w-2xl mx-auto leading-relaxed">
-            Launch frictionless referral campaigns that incentivize customer loyalty. Acquire high-value users through trusted word-of-mouth recommendations.
-          </p>
+            <div className="mt-10 flex flex-row sm:flex-row gap-4">
+              <a
+                href="https://subscription-frontend-psi.vercel.app/subscription"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="
+                  bg-blue-600
+                  hover:bg-blue-700
+                  text-white
+                  px-8
+                  py-2
+                  rounded
+                  font-bold
+                  shadow-lg
+                  transition
+                  text-center
+                "
+              >
+                Launch Referral Program
+              </a>
 
-          <div className="mt-10 flex flex-col sm:flex-row justify-center items-center gap-4">
-            <a
-              href="https://subscription-frontend-psi.vercel.app/subscription"
-              target="_blank"
-              rel="noopener noreferrer"
-              className="w-full sm:w-auto px-8 py-2 bg-slate-900 hover:bg-slate-800 text-white rounded-xl font-semibold shadow-lg shadow-slate-900/10 hover:shadow-xl transition-all duration-200 flex items-center justify-center gap-2"
-            >
-              Start Referral Program
-              <ArrowRight className="w-4 h-4" />
-            </a>
+              <Link
+                to="/contact"
+                className="
+                  border
+                  border-gray-300
+                  bg-white
+                  px-8
+                  py-2
+                  rounded
+                  font-bold
+                  hover:bg-gray-50
+                  transition
+                  text-center
+                "
+              >
+                Book Demo
+              </Link>
+            </div>
 
-            <Link
-              to="/contact"
-              className="w-full sm:w-auto px-8 py-2 bg-white border border-slate-200 rounded-xl font-semibold text-slate-700 hover:bg-slate-50 shadow-sm transition-all duration-200 text-center"
-            >
-              Book Demo
-            </Link>
+            {/* FEATURES */}
+            <div className="mt-10 flex flex-row gap-2 lg:gap-8">
+
+              <div className="flex items-center gap-3">
+                <div className="w-10 h-10 rounded bg-blue-100 flex items-center justify-center">
+                  <Shield size={18} className="text-blue-600" />
+                </div>
+                <span className="font-small text-gray-700">
+                  No Setup Fee
+                </span>
+              </div>
+
+              <div className="flex items-center gap-3">
+                <div className="w-10 h-10 rounded bg-purple-100 flex items-center justify-center">
+                  <Zap size={18} className="text-purple-600" />
+                </div>
+                <span className="font-small text-gray-700">
+                  Quick Integration
+                </span>
+              </div>
+
+              <div className="flex items-center gap-3">
+                <div className="w-10 h-10 rounded bg-green-100 flex items-center justify-center">
+                  <CheckCircle2 size={18} className="text-green-600" />
+                </div>
+                <span className="font-small text-gray-700">
+                  Secure & Reliable
+                </span>
+              </div>
+
+            </div>
           </div>
-        </div>
-      </section>
 
+          {/* RIGHT SIDE IMAGE */}
+          <div className="flex justify-center lg:justify-end">
+            <img
+              src={referralHero}
+              alt="Referral Marketing"
+              className="
+                w-full
+                max-w-2xl
+                object-contain
+              "
+            />
+          </div>
+
+        </div>
+      </div>
       {/* STATS SECTION */}
-      <section className="max-w-6xl mx-auto px-6 -mt-4 mb-20">
-        <div className="bg-white rounded-2xl border border-slate-100 shadow-xl shadow-slate-100/50 p-8 md:p-10">
+      <section className="max-w-8xl mx-auto px-6 -mt-20 mb-6">
+        <div className="bg-white rounded-xl border border-slate-100 shadow-xl shadow-slate-100/50 p-8 md:p-10">
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8 md:gap-4 divide-y md:divide-y-0 md:divide-x divide-slate-100">
-            <div className="text-center md:px-4">
-              <span className="text-4xl md:text-5xl font-black bg-clip-text text-transparent bg-gradient-to-br from-blue-600 to-blue-500">
+            <div className="text-center pt-6 md:pt-0 md:px-4">
+              <span className="text-2xl md:text-4xl font-black bg-clip-text text-transparent bg-gradient-to-br from-blue-600 to-blue-500">
                 3X
               </span>
               <p className="text-slate-800 font-medium mt-2 text-sm md:text-base">Faster Customer Growth</p>
@@ -143,7 +212,7 @@ export default function ReferralHub() {
             </div>
 
             <div className="text-center pt-6 md:pt-0 md:px-4">
-              <span className="text-4xl md:text-5xl font-black bg-clip-text text-transparent bg-gradient-to-br from-purple-600 to-purple-500">
+              <span className="text-2xl md:text-4xl font-black bg-clip-text text-transparent bg-gradient-to-br from-purple-600 to-purple-500">
                 40%
               </span>
               <p className="text-slate-800 font-medium mt-2 text-sm md:text-base">Lower Acquisition Cost</p>
@@ -151,7 +220,7 @@ export default function ReferralHub() {
             </div>
 
             <div className="text-center pt-6 md:pt-0 md:px-4">
-              <span className="text-4xl md:text-5xl font-black bg-clip-text text-transparent bg-gradient-to-br from-emerald-600 to-emerald-500">
+              <span className="text-2xl md:text-4xl font-black bg-clip-text text-transparent bg-gradient-to-br from-emerald-600 to-emerald-500">
                 24/7
               </span>
               <p className="text-slate-800 font-medium mt-2 text-sm md:text-base">Automated Tracking</p>
@@ -377,7 +446,7 @@ export default function ReferralHub() {
       </section>
 
       {/* FINAL CTA SECTION */}
-      <section className="py-24 bg-white relative overflow-hidden border-t border-slate-100">
+      {/* <section className="py-24 bg-white relative overflow-hidden border-t border-slate-100">
         <div className="absolute inset-0 bg-gradient-to-tr from-blue-50/50 via-indigo-50/20 to-transparent pointer-events-none"></div>
         <div className="max-w-3xl mx-auto text-center px-6 relative z-10">
           <h2 className="text-4xl md:text-5xl font-black text-slate-900 tracking-tight">
@@ -400,7 +469,12 @@ export default function ReferralHub() {
             </a>
           </div>
         </div>
-      </section>
+      </section> */}
     </div>
   );
 }
+
+
+
+
+

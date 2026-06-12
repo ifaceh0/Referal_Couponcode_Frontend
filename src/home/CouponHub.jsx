@@ -16,6 +16,8 @@ import {
 } from "lucide-react";
 import { Link } from "react-router-dom";
 
+import couponHero from "../assets/gift3.png";
+
 export default function CouponHub() {
   const features = [
     {
@@ -92,53 +94,117 @@ export default function CouponHub() {
     <div className="bg-slate-50/50 overflow-x-hidden text-slate-900 font-sans antialiased">
       
       {/* HERO SECTION */}
-      <section className="relative overflow-hidden bg-gradient-to-b from-orange-50/60 via-amber-50/20 to-transparent pt-20 pb-24">
-        {/* Modern Dot/Grid Matrix Background Pattern */}
-        <div className="absolute inset-0 bg-[linear-gradient(to_right,#e2e8f0_1px,transparent_1px),linear-gradient(to_bottom,#e2e8f0_1px,transparent_1px)] bg-[size:4rem_4rem] [mask-image:radial-gradient(ellipse_60%_50%_at_50%_0%,#000_70%,transparent_100%)] opacity-50"></div>
-        
-        <div className="relative max-w-5xl mx-auto px-6 text-center">
-          {/* <div className="inline-flex items-center gap-2 px-3 py-1.5 bg-orange-50 border border-orange-100 text-orange-700 rounded-full text-xs font-medium shadow-sm backdrop-blur-sm">
-            <Sparkles className="w-3.5 h-3.5 text-orange-500 animate-pulse" />
-            Powered by iFaceh
-          </div> */}
+      <div className="max-w-8xl mx-auto px-8 lg:px-16 py-10 lg:py-0 relative z-10">
+        <div className="grid lg:grid-cols-2 gap-12 items-center">
 
-          <h1 className="mt-8 text-4xl lg:text-7xl font-black text-slate-900 tracking-tight max-w-4xl mx-auto leading-[1.1]">
-            Launch High-Converting{" "}
-            <span className="bg-clip-text text-transparent bg-gradient-to-r from-orange-600 via-amber-500 to-amber-600">
-              Coupon Campaigns
-            </span>
-          </h1>
+          {/* LEFT SIDE */}
+          <div>
+            <h1 className="text-3xl lg:text-5xl font-extrabold leading-tight text-gray-900">
+              Launch High-Converting
+              <span className="block text-orange-600">
+                Coupon Campaigns
+              </span>
+            </h1>
 
-          <p className="mt-6 text-lg md:text-xl text-slate-600 max-w-2xl mx-auto leading-relaxed">
-            Create, distribute, and track clean promotional codes that optimize customer acquisition costs, reward loyalty, and clear out inventory.
-          </p>
+            <p className="mt-8 text-md lg:text-lg text-gray-600 leading-relaxed max-w-xl">
+              Create, distribute, and track promotional coupon codes that
+              increase sales, attract new customers, reward loyalty, and
+              boost repeat purchases.
+            </p>
 
-          <div className="mt-10 flex flex-col sm:flex-row justify-center items-center gap-4">
-            <a
-              href="https://subscription-frontend-psi.vercel.app/subscription"
-              target="_blank"
-              rel="noopener noreferrer"
-              className="w-full sm:w-auto px-8 py-2 bg-slate-900 hover:bg-slate-800 text-white rounded-xl font-semibold shadow-lg shadow-slate-900/10 hover:shadow-xl transition-all duration-200 flex items-center justify-center gap-2"
-            >
-              Launch Coupon Campaign
-              <ArrowRight className="w-4 h-4" />
-            </a>
+            <div className="mt-10 flex flex-row gap-4">
+              <a
+                href="https://subscription-frontend-psi.vercel.app/subscription"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="
+                  bg-orange-500
+                  hover:bg-orange-600
+                  text-white
+                  px-8
+                  py-2
+                  rounded
+                  font-bold
+                  shadow-lg
+                  transition
+                  text-center
+                "
+              >
+                Launch Coupon
+              </a>
 
-            <Link
-              to="/contact"
-              className="w-full sm:w-auto px-8 py-2 bg-white border border-slate-200 rounded-xl font-semibold text-slate-700 hover:bg-slate-50 shadow-sm transition-all duration-200 text-center"
-            >
-              Request Demo
-            </Link>
+              <Link
+                to="/contact"
+                className="
+                  border
+                  border-gray-300
+                  bg-white
+                  px-8
+                  py-2
+                  rounded
+                  font-bold
+                  hover:bg-gray-50
+                  transition
+                  text-center
+                "
+              >
+                Request Demo
+              </Link>
+            </div>
+
+            {/* FEATURES */}
+            <div className="mt-10 flex flex-row gap-2 lg:gap-8">
+
+              <div className="flex items-center gap-3">
+                <div className="w-10 h-10 rounded bg-orange-100 flex items-center justify-center">
+                  <Ticket className="text-orange-600" size={18} />
+                </div>
+                <span className="text-gray-700">
+                  Unlimited Coupons
+                </span>
+              </div>
+
+              <div className="flex items-center gap-3">
+                <div className="w-10 h-10 rounded bg-amber-100 flex items-center justify-center">
+                  <Percent className="text-amber-600" size={18} />
+                </div>
+                <span className="text-gray-700">
+                  Flexible Discounts
+                </span>
+              </div>
+
+              <div className="flex items-center gap-3">
+                <div className="w-10 h-10 rounded bg-green-100 flex items-center justify-center">
+                  <BarChart3 className="text-green-600" size={18} />
+                </div>
+                <span className="text-gray-700">
+                  Campaign Analytics
+                </span>
+              </div>
+
+            </div>
           </div>
-        </div>
-      </section>
 
+          {/* RIGHT SIDE IMAGE */}
+          <div className="flex justify-center lg:justify-end">
+            <img
+              src={couponHero}
+              alt="Coupon Campaign"
+              className="
+                w-full
+                max-w-2xl
+                object-contain
+              "
+            />
+          </div>
+
+        </div>
+      </div>
       {/* STATS SECTION */}
       <section className="max-w-6xl mx-auto px-6 -mt-4 mb-20">
         <div className="bg-white rounded-2xl border border-slate-100 shadow-xl shadow-slate-100/40 p-8 md:p-10">
           <div className="grid grid-cols-2 md:grid-cols-4 gap-8 md:gap-4 divide-y md:divide-y-0 md:divide-x divide-slate-100">
-            <div className="text-center px-2">
+            <div className="text-center px-2 pt-6 md:pt-0">
               <span className="text-3xl md:text-4xl font-black bg-clip-text text-transparent bg-gradient-to-br from-orange-600 to-orange-500">
                 250K+
               </span>
@@ -456,7 +522,7 @@ export default function CouponHub() {
       </section>
 
       {/* FINAL CALL-TO-ACTION (CTA) SECTION */}
-      <section className="py-24 bg-white relative overflow-hidden border-t border-slate-100">
+      {/* <section className="py-24 bg-white relative overflow-hidden border-t border-slate-100">
         <div className="absolute inset-0 bg-gradient-to-tr from-orange-50/40 via-amber-50/10 to-transparent pointer-events-none"></div>
         
         <div className="max-w-3xl mx-auto text-center px-6 relative z-10">
@@ -480,7 +546,7 @@ export default function CouponHub() {
             </a>
           </div>
         </div>
-      </section>
+      </section> */}
 
     </div>
   );

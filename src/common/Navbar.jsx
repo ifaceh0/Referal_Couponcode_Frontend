@@ -332,7 +332,7 @@ export default function Navbar() {
                 PromoConnect
               </span>
               <span className="text-[9px] uppercase tracking-widest text-gray-500">
-                Powered by iFaceh
+                Powered by interface hub
               </span>
             </Link>
             

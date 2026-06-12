@@ -194,12 +194,12 @@ const Home = () => {
       {/* 6. FAQ SECTION */}
       <FAQSection />
 
-      <div className="fixed bottom-4 left-0 right-0 z-50 px-4 sm:px-6">
+      {/* <div className="fixed bottom-4 left-0 right-0 z-50 px-4 sm:px-6">
         <div className="max-w-2xl mx-auto bg-gray-900 text-white rounded-xl shadow-2xl border border-gray-700 p-4 sm:p-5">
           
           <div className="flex flex-col sm:flex-row items-center justify-between gap-4">
 
-            {/* Left Content */}
+            
             <div className="text-center sm:text-left">
               <p className="text-[8px] sm:text-xs text-purple-400 font-semibold uppercase tracking-wider">
                 Powered by iFaceh
@@ -214,7 +214,7 @@ const Home = () => {
               </p>
             </div>
 
-            {/* Buttons */}
+            
             <div className="flex w-full sm:w-auto gap-2">
               <button
                 onClick={() => navigate('/referral-hub')}
@@ -235,7 +235,7 @@ const Home = () => {
           </div>
 
         </div>
-      </div>
+      </div> */}
 
       {/* 8. QUICK ACTION BAR */}
       {/* <div className="fixed bottom-6 left-0 right-0 z-50 px-6 pointer-events-none">

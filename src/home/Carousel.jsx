@@ -7,6 +7,8 @@ import referal1 from "../assets/referall1.png";
 import referal2 from "../assets/referall2.png";
 import referal3 from "../assets/referall3.png";
 import referal4 from "../assets/referall4.png";
+import slide1 from "../assets/slide1.jpeg";
+import slide2 from "../assets/slide2.jpeg";
 
 const slides = [
   {
@@ -15,22 +17,22 @@ const slides = [
     description: 'Create custom referral programs to boost your brand reach and grow your customer base effortlessly.'
   },
   {
-    image: referal2,
+    image: referal3,
     title: 'Track Referral Results',
     description: 'Monitor and analyze the success of your referral campaigns with real-time performance tracking.'
   },
   {
-    image: referal3,
+    image: referal4,
     title: 'Customer Rewards',
     description: 'Reward your customers for bringing in new leads with attractive incentives and bonuses.'
   },
   {
-    image: referal4,
+    image: slide1,
     title: 'Automated Referral Workflows',
     description: 'Simplify your referral processes with automated workflows that save you time and effort.'
   },
   {
-    image: referal1,
+    image: slide2,
     title: 'Referral Integrations',
     description: 'Seamlessly integrate our referral software with your existing tools for smooth operation.'
   },

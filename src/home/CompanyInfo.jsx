@@ -163,19 +163,19 @@ export default function CompanyInfo() {
               ))}
             </ul>
 
-            <div className="mt-10 flex flex-col sm:flex-row gap-4">
+            {/* <div className="mt-10 flex flex-col sm:flex-row gap-4">
               <Link
-                to="/signup/user" 
-                className="inline-flex items-center justify-center px-8 py-4 border border-transparent text-base font-bold rounded-lg shadow-lg text-white bg-blue-600 hover:bg-blue-700 transform hover:-translate-y-1 transition-all"
+                to="/referral-hub" 
+                className="inline-flex items-center justify-center px-8 py-2.5 border border-transparent text-base font-bold rounded-lg shadow-lg text-white bg-blue-600 hover:bg-blue-700 transform hover:-translate-y-1 transition-all"
               >
                 Launch Referral Program
               </Link>
               <Link
                 to="/coupon-hub" 
-                className="inline-flex items-center justify-center px-8 py-4 border border-gray-300 text-base font-bold rounded-lg text-gray-700 bg-white hover:bg-gray-50 transition-all"
+                className="inline-flex items-center justify-center px-8 py-2.5 border border-gray-300 text-base font-bold rounded-lg text-gray-700 bg-white hover:bg-gray-50 transition-all"
               >
-                Create Coupon Campaign
-              </Link>
+                Launch Coupon Program
+              </Link> */}
 
               {/* <a  href="https://subscription-frontend-psi.vercel.app/subscription"
                           target="_blank"
@@ -184,7 +184,7 @@ export default function CompanyInfo() {
                         >
                           Partner with Us
                         </a>  */}
-            </div>
+            {/* </div> */}
 
             {/* Optional US trust signals */}
             <div className="mt-8 flex flex-wrap gap-6 opacity-80">
