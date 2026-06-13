@@ -128,10 +128,10 @@ const FAQSection = () => {
     //     </div>
     //   </div>
     // </section>
-    <section className="py-16 bg-white border-t border-gray-100">
+    <section className="py-16 px-4 bg-white border-t border-gray-100">
       <div className="max-w-7xl mx-auto px-1">
 
-        <h2 className="text-4xl font-bold text-center mb-16">
+        <h2 className="text-3xl lg:text-4xl font-bold text-center mb-16">
           Frequently Asked Questions
         </h2>
 

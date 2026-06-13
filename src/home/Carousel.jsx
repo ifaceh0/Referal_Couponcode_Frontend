@@ -7,7 +7,7 @@ import referal1 from "../assets/referall1.png";
 import referal2 from "../assets/referall2.png";
 import referal3 from "../assets/referall3.png";
 import referal4 from "../assets/referall4.png";
-import slide1 from "../assets/slide1.jpeg";
+import slide3 from "../assets/slide3.jpg";
 import slide2 from "../assets/slide2.jpeg";
 
 const slides = [
@@ -27,7 +27,7 @@ const slides = [
     description: 'Reward your customers for bringing in new leads with attractive incentives and bonuses.'
   },
   {
-    image: slide1,
+    image: slide3,
     title: 'Automated Referral Workflows',
     description: 'Simplify your referral processes with automated workflows that save you time and effort.'
   },
@@ -66,7 +66,8 @@ export default function Carousel() {
   };
 
   return (
-    <div className="relative w-full h-[60vh] md:h-[80vh] lg:h-[80vh]  mt-3 overflow-hidden">
+    // <div className="relative w-full h-[60vh] md:h-[80vh] lg:h-[80vh]  mt-3 overflow-hidden">
+    <div className="relative w-full h-[250px] sm:h-[350px] md:h-[500px] lg:h-[650px] overflow-hidden rounded">
       {slides.map((slide, index) => (
         <div
           key={index}
@@ -78,15 +79,16 @@ export default function Carousel() {
             src={slide.image}
             alt={slide.title}
             effect="blur"
-            className="w-screen h-full object-cover "
+            className="w-screen h-full object-cover"
             placeholderSrc={referal1}
           />
-          <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/80 to-transparent text-white p-6 md:p-10">
-            <div className="container mx-auto text-center">
+          <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/30 to-transparent flex items-end">
+            <div className="w-full p-4 sm:p-6 md:p-10 text-center text-white">
               <h2 className="text-lg sm:text-2xl md:text-3xl lg:text-4xl font-bold mb-2">
                 {slide.title}
               </h2>
-              <p className="text-sm sm:text-base md:text-lg lg:text-xl max-w-2xl mx-auto">
+
+              <p className="text-xs sm:text-sm md:text-lg lg:text-xl max-w-3xl mx-auto">
                 {slide.description}
               </p>
             </div>
@@ -97,29 +99,54 @@ export default function Carousel() {
       {/* Navigation Arrows */}
       <button
         onClick={goToPrevSlide}
-        className="absolute top-1/2 left-3 sm:left-6 transform -translate-y-1/2 bg-black/40 hover:bg-black/60 text-white rounded-full p-3 transition duration-300 z-20"
-        aria-label="Previous slide"
+        className="
+          absolute
+          left-2 md:left-4
+          top-1/2
+          -translate-y-1/2
+          bg-black/40
+          hover:bg-black/60
+          text-white
+          rounded-full
+          p-2 md:p-3
+          z-20
+        "
       >
-        <ChevronLeft className="h-6 w-6 sm:h-8 sm:w-8" />
+        <ChevronLeft className="w-5 h-5 md:w-7 md:h-7" />
       </button>
+
       <button
         onClick={goToNextSlide}
-        className="absolute top-1/2 right-3 sm:right-6 transform -translate-y-1/2 bg-black/40 hover:bg-black/60 text-white rounded-full p-3 transition duration-300 z-20"
-        aria-label="Next slide"
+        className="
+          absolute
+          right-2 md:right-4
+          top-1/2
+          -translate-y-1/2
+          bg-black/40
+          hover:bg-black/60
+          text-white
+          rounded-full
+          p-2 md:p-3
+          z-20
+        "
       >
-        <ChevronRight className="h-6 w-6 sm:h-8 sm:w-8" />
+        <ChevronRight className="w-5 h-5 md:w-7 md:h-7" />
       </button>
 
       {/* Indicators */}
-      <div className="absolute bottom-6 left-1/2 transform -translate-x-1/2 flex space-x-2 z-20">
+      <div className="absolute bottom-3 md:bottom-5 left-1/2 -translate-x-1/2 flex gap-2 z-20">
         {slides.map((_, index) => (
           <button
             key={index}
             onClick={() => goToSlide(index)}
-            className={`w-3 h-3 sm:w-4 sm:h-4 rounded-full transition-all duration-300 ${
-              index === currentSlide ? 'bg-white scale-125' : 'bg-white/50 hover:bg-white/75'
-            }`}
-            aria-label={`Go to slide ${index + 1}`}
+            className={`
+              transition-all duration-300
+              ${
+                index === currentSlide
+                  ? "w-6 md:w-8 h-2 bg-white rounded-full"
+                  : "w-2 h-2 bg-white/50 rounded-full"
+              }
+            `}
           />
         ))}
       </div>

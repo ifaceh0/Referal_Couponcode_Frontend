@@ -119,7 +119,7 @@ export default function CompanyInfo() {
 
           {/* RIGHT COLUMN: TEXT + FEATURES */}
           <div>
-            <h2 className="text-4xl font-extrabold text-gray-900 leading-tight">
+            <h2 className="text-2xl lg:text-4xl font-extrabold text-gray-900 leading-tight">
               Grow Faster with <br />
               <span className="text-blue-600">Referral Marketing & Coupon Campaigns</span>
             </h2>

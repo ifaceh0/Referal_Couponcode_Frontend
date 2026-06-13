@@ -69,13 +69,13 @@ const Home = () => {
       {/* 2. CORE FEATURES (The "What") */}
       <section ref={explainRef} className={`py-20 px-6 max-w-7xl mx-auto transition-all duration-1000 delay-300 transform ${explainInView ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-10'}`}>
         <div className="text-center mb-16">
-          <h2 className="text-4xl font-extrabold text-gray-900 mb-6">
+          <h2 className="text-2xl lg:text-4xl font-extrabold text-gray-900 mb-6">
             Turn Customers Into Promoters.
             <br />
             Drive Sales With Referrals & Coupons.
           </h2>
 
-          <p className="text-lg text-gray-600 max-w-4xl mx-auto">
+          <p className="text-sm lg:text-lg text-gray-600 max-w-4xl mx-auto">
             Create referral programs, launch coupon campaigns, and track results from one powerful platform.
           </p>
         </div>
@@ -117,7 +117,7 @@ const Home = () => {
       {/* 3. HOW IT WORKS (The "How") */}
       <section ref={stepsRef} className={`py-20 bg-gradient-to-b from-blue-50 to-white transition-all duration-1000 ${stepsInView ? 'opacity-100' : 'opacity-0'}`}>
         <div className="max-w-7xl mx-auto px-6">
-          <h2 className="text-4xl font-bold text-center mb-16 text-gray-900">How It Works in 3 Simple Steps</h2>
+          <h2 className="text-2xl lg:text-4xl font-bold text-center mb-16 text-gray-900">How It Works in 3 Simple Steps</h2>
           <div className="grid grid-cols-1 md:grid-cols-3 gap-12 relative">
             {[
               {
@@ -143,7 +143,7 @@ const Home = () => {
                 <div className={`w-20 h-20 ${step.iconColor} rounded-full flex items-center justify-center text-4xl font-bold mb-6 shadow-lg z-10`}>
                   {step.num}
                 </div>
-                <h3 className="text-xl font-bold mb-4 text-gray-900">{step.title}</h3>
+                <h3 className="text-lg lg:text-xl font-bold mb-4 text-gray-900">{step.title}</h3>
                 <p className="text-gray-600 text-md max-w-xs">{step.desc}</p>
               </div>
             ))}
