@@ -95,10 +95,10 @@ export default function Footer() {
                 <Link to="/faq" className="hover:text-white transition">Help Center & FAQs</Link>
               </li>
               <li>
-                <Link to="/referral-programs" className="hover:text-white transition">Referral Programs</Link>
+                <Link to="/referral-hub" className="hover:text-white transition">Referral Programs</Link>
               </li>
               <li>
-                <Link to="/coupons" className="hover:text-white transition">Coupon Codes</Link>
+                <Link to="/coupon-hub" className="hover:text-white transition">Coupon Codes</Link>
               </li>
             </ul>
           </div>

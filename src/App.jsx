@@ -51,6 +51,8 @@ import FAQPage from "./home/FAQPage";
 import ReferralProgramsPage from "./pages/HomePage/ReferralProgramsPage";
 import CouponsPage from "./pages/HomePage/CouponsPage";
 import GuidesPage from "./pages/HomePage/GuidesPage";
+import CouponHub from "./home/CouponHub";
+import ReferralHub from "./home/ReferralHub";
 // import UserSignIn from "./pages/shopkeeper/signin/UserSignIn";
 
 //import UserSignUp from "./pages/shopkeeper/signin/UserSignUp";
@@ -70,6 +72,8 @@ const App = () => {
               </ClientLayout>
             }>
               <Route path="/" element={<Home />} />
+              <Route path="/coupon-hub" element={<CouponHub />} />
+              <Route path="/referral-hub" element={<ReferralHub />} />
               <Route path="/signin" element={<ShopkeeperSignIn />} />
               <Route path="/signup/:role" element={<SignUpToggle/>} />
               <Route path="/t" element={<ToastTest />} />

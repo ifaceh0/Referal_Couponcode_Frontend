@@ -197,7 +197,7 @@ const Contact = () => {
                   </div>
                 </div>
 
-                <div className="flex gap-4">
+                {/* <div className="flex gap-4">
                   <div className="w-12 h-12 bg-purple-50 text-purple-600 rounded-2xl flex items-center justify-center shrink-0">
                     <MapPin size={24} />
                   </div>
@@ -205,7 +205,7 @@ const Contact = () => {
                     <p className="text-sm font-bold text-slate-900">Our Hub</p>
                     <p className="text-slate-500 text-sm">123 Tech Plaza, Suite 400<br/>San Francisco, CA 94105</p>
                   </div>
-                </div>
+                </div> */}
               </div>
 
               {/* <div className="mt-12 pt-8 border-t border-slate-100 flex gap-4 justify-center">
