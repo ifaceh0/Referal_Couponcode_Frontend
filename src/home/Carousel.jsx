@@ -3,44 +3,44 @@ import { ChevronLeft, ChevronRight } from 'lucide-react';
 import { LazyLoadImage } from 'react-lazy-load-image-component';
 import 'react-lazy-load-image-component/src/effects/blur.css';
 
-import referal1 from "../assets/referall1.png";
-import referal2 from "../assets/referall2.png";
+import cslide1 from "../assets/cslide1.png";
+import cslide2 from "../assets/cslide2.png";
 import referal3 from "../assets/referall3.png";
-import referal4 from "../assets/referall4.png";
-import slide3 from "../assets/slide3.jpg";
-import slide2 from "../assets/slide2.jpeg";
+import cslide4 from "../assets/cslide4.png";
+import cslide5 from "../assets/cslide5.png";
+// import slide2 from "../assets/slide2.jpeg";
 
 const slides = [
   {
-    image: referal1,
-    title: 'Referral Program Features',
-    description: 'Create custom referral programs to boost your brand reach and grow your customer base effortlessly.'
+    image: cslide1,
+    title: 'Program Features',
+    description: 'Everything you need __ for Referral & Coupon Programs . Built for business Owners & Customers alike.'
+  },
+  {
+    image: cslide2,
+    title: 'Track Your Results',
+    description: 'Business Owners monitor campaign . Customers check rewards & coupons'
   },
   {
     image: referal3,
-    title: 'Track Referral Results',
-    description: 'Monitor and analyze the success of your referral campaigns with real-time performance tracking.'
-  },
-  {
-    image: referal4,
     title: 'Customer Rewards',
     description: 'Reward your customers for bringing in new leads with attractive incentives and bonuses.'
   },
   {
-    image: slide3,
-    title: 'Automated Referral Workflows',
-    description: 'Simplify your referral processes with automated workflows that save you time and effort.'
+    image: cslide4,
+    title: 'Connect, Engage, Reward',
+    description: 'Build stronger customer relationships through referrals, coupons, and rewarding experiences.'
   },
   {
-    image: slide2,
-    title: 'Referral Integrations',
-    description: 'Seamlessly integrate our referral software with your existing tools for smooth operation.'
-  },
-  {
-    image: referal2,
-    title: 'Analytics and Reporting',
-    description: 'Gain insights into your referral performance with detailed analytics and reporting.'
+    image: cslide5,
+    title: 'Analytics and Reports',
+    description: 'Insights for Business Owners . Reward history for Customers'
   }
+  // {
+  //   image: referal2,
+  //   title: 'Analytics and Reporting',
+  //   description: 'Gain insights into your referral performance with detailed analytics and reporting.'
+  // }
 ];
 
 export default function Carousel() {
@@ -67,7 +67,7 @@ export default function Carousel() {
 
   return (
     // <div className="relative w-full h-[60vh] md:h-[80vh] lg:h-[80vh]  mt-3 overflow-hidden">
-    <div className="relative w-full h-[250px] sm:h-[350px] md:h-[500px] lg:h-[650px] overflow-hidden rounded">
+    <div className="relative w-full h-[250px] sm:h-[350px] md:h-[500px] lg:h-[650px] overflow-hidden">
       {slides.map((slide, index) => (
         <div
           key={index}
@@ -80,7 +80,7 @@ export default function Carousel() {
             alt={slide.title}
             effect="blur"
             className="w-screen h-full object-cover"
-            placeholderSrc={referal1}
+            placeholderSrc={cslide1}
           />
           <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/30 to-transparent flex items-end">
             <div className="w-full p-4 sm:p-6 md:p-10 text-center text-white">
