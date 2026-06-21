@@ -151,7 +151,7 @@ export default function Footer() {
             </div>
 
             {/* Optional: Email signup (can add later) */}
-            <div className="text-sm text-gray-400">
+            {/* <div className="text-sm text-gray-400">
               <p className="mb-2">Get the latest coupons & referral tips</p>
               <div className="flex">
                 <input
@@ -163,7 +163,7 @@ export default function Footer() {
                   Subscribe
                 </button>
               </div>
-            </div>
+            </div> */}
           </div>
         </div>
 
