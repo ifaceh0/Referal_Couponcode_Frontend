@@ -73,7 +73,7 @@ export default function Footer() {
           {/* Brand & Description */}
           <div>
             <Link to="/" className="text-2xl font-bold text-white mb-4 inline-block">
-              ReferralPro
+              PromoConnect
             </Link>
             <p className="text-gray-400 mb-6 max-w-xs">
               Earn real cash rewards and unlock exclusive coupons from top brands. Join thousands saving and earning every day.
@@ -95,10 +95,10 @@ export default function Footer() {
                 <Link to="/faq" className="hover:text-white transition">Help Center & FAQs</Link>
               </li>
               <li>
-                <Link to="/referral-hub" className="hover:text-white transition">Referral Programs</Link>
+                <Link to="/referral-hub" className="hover:text-white transition">Referral Hub</Link>
               </li>
               <li>
-                <Link to="/coupon-hub" className="hover:text-white transition">Coupon Codes</Link>
+                <Link to="/coupon-hub" className="hover:text-white transition">Coupon Hub</Link>
               </li>
             </ul>
           </div>
@@ -110,7 +110,7 @@ export default function Footer() {
               <li>
                 <Link to="/contact" className="hover:text-white transition">Contact Us</Link>
               </li>
-              <li>
+              {/* <li>
                 <button
                   onClick={() => openModal('privacy')}
                   className="hover:text-white transition"
@@ -125,9 +125,9 @@ export default function Footer() {
                 >
                   Terms of Service
                 </button>
-              </li>
+              </li> */}
               <li>
-                <Link to="/signup/user" className="hover:text-white transition">Sign Up Free</Link>
+                <Link to="/signup/user" className="hover:text-white transition">Join Now</Link>
               </li>
             </ul>
           </div>
@@ -170,7 +170,7 @@ export default function Footer() {
         {/* Bottom Bar */}
         <div className="pt-8 border-t border-gray-800 flex flex-col md:flex-row justify-between items-center text-sm text-gray-500">
           <p>
-            © {currentYear} ReferralPro. All rights reserved.
+            © {currentYear} PromoConnect. All rights reserved.
           </p>
           <div className="flex items-center gap-6 mt-4 md:mt-0">
             <span className="flex items-center gap-2">
@@ -195,110 +195,317 @@ export default function Footer() {
     </footer>
 
     {/* Privacy Modal */}
-      <Modal isOpen={modalOpen && modalType === 'privacy'} onClose={closeModal} title="Privacy Policy">
+      <Modal
+        isOpen={modalOpen && modalType === "privacy"}
+        onClose={closeModal}
+        title="Privacy Policy"
+      >
         <p>
-            At ReferralPro (Interface Hub), we respect your privacy and are committed to protecting your personal information. This Privacy Policy explains how we collect, use, disclose, and safeguard your information when you visit our website, use our services, or interact with our platform.
-          </p>
+          At <strong>PromoConnect</strong>, we value your privacy and are committed
+          to protecting your personal information. This Privacy Policy explains how
+          we collect, use, store, and safeguard your information when you use our
+          referral, loyalty rewards, and coupon management platform.
+        </p>
 
-          <h2 className="text-2xl font-bold mt-10 mb-4">1. Information We Collect</h2>
-          <p>We may collect the following types of information:</p>
-          <ul className="list-disc pl-6 space-y-2">
-            <li><strong>Personal Information:</strong> Name, email address, phone number (if provided), and account credentials when you sign up or contact us.</li>
-            <li><strong>Referral Data:</strong> Referral links, tracking IDs, and performance metrics (clicks, conversions) to attribute rewards correctly.</li>
-            <li><strong>Usage Data:</strong> IP address, browser type, pages visited, time spent, and referral activity for analytics and improvement.</li>
-            <li><strong>Cookies & Tracking:</strong> We use cookies, pixels, and similar technologies to enhance user experience and measure performance.</li>
-          </ul>
+        <h2 className="text-2xl font-bold mt-10 mb-4">
+          1. Information We Collect
+        </h2>
+        <p>We may collect the following types of information:</p>
 
-          <h2 className="text-2xl font-bold mt-10 mb-4">2. How We Use Your Information</h2>
-          <p>We use your information to:</p>
-          <ul className="list-disc pl-6 space-y-2">
-            <li>Provide, maintain, and improve our referral and coupon services</li>
-            <li>Process and pay referral rewards and commissions</li>
-            <li>Send transactional emails (e.g., account verification, reward notifications)</li>
-            <li>Detect fraud, abuse, or violations of our Terms</li>
-            <li>Comply with legal obligations</li>
-          </ul>
+        <ul className="list-disc pl-6 space-y-2">
+          <li>
+            <strong>Account Information:</strong> Name, email address, phone number,
+            and account credentials provided during registration.
+          </li>
+          <li>
+            <strong>Referral Information:</strong> Referral codes, referral activity,
+            invited users, referral performance, and reward history.
+          </li>
+          <li>
+            <strong>Coupon & Reward Data:</strong> Coupon issuance, coupon
+            redemption, loyalty points earned, reward transactions, and related
+            activity.
+          </li>
+          <li>
+            <strong>Usage Data:</strong> Device information, browser type, IP
+            address, pages visited, session duration, and interactions with our
+            platform.
+          </li>
+          <li>
+            <strong>Cookies & Tracking Technologies:</strong> Cookies and similar
+            technologies used to improve user experience, remember preferences, and
+            analyze platform performance.
+          </li>
+        </ul>
 
-          <h2 className="text-2xl font-bold mt-10 mb-4">3. Information Sharing</h2>
-          <p>We do not sell your personal information. We may share data with:</p>
-          <ul className="list-disc pl-6 space-y-2">
-            <li>Merchant partners (only referral tracking IDs, no personal data)</li>
-            <li>Payment processors (e.g., PayPal, Stripe) for reward payouts</li>
-            <li>Legal authorities when required by law</li>
-          </ul>
+        <h2 className="text-2xl font-bold mt-10 mb-4">
+          2. How We Use Your Information
+        </h2>
+        <p>We use your information to:</p>
 
-          <h2 className="text-2xl font-bold mt-10 mb-4">4. Your Rights</h2>
-          <p>You have the right to:</p>
-          <ul className="list-disc pl-6 space-y-2">
-            <li>Access, correct, or delete your personal information</li>
-            <li>Opt out of marketing emails</li>
-            <li>Request data portability</li>
-          </ul>
-          <p className="mt-4">
-            Contact us at support@referralpro.com to exercise these rights.
-          </p>
+        <ul className="list-disc pl-6 space-y-2">
+          <li>Provide and maintain referral, loyalty, and coupon services.</li>
+          <li>Track referrals and allocate rewards accurately.</li>
+          <li>Manage loyalty points, coupons, and reward redemptions.</li>
+          <li>Verify user identities and prevent fraudulent activities.</li>
+          <li>Improve platform performance and user experience.</li>
+          <li>
+            Send service-related communications, account notifications, and support
+            responses.
+          </li>
+          <li>Comply with legal and regulatory obligations.</li>
+        </ul>
 
-          <h2 className="text-2xl font-bold mt-10 mb-4">5. Security</h2>
-          <p>We implement reasonable security measures to protect your data, but no system is 100% secure. You are responsible for keeping your login credentials safe.</p>
+        <h2 className="text-2xl font-bold mt-10 mb-4">
+          3. Information Sharing
+        </h2>
+        <p>
+          We do not sell, rent, or trade your personal information. We may share
+          information with:
+        </p>
 
-          <h2 className="text-2xl font-bold mt-10 mb-4">6. Changes to This Policy</h2>
-          <p>We may update this Privacy Policy from time to time. We will notify you of material changes via email or on the website.</p>
+        <ul className="list-disc pl-6 space-y-2">
+          <li>
+            Participating merchants and business partners for referral validation,
+            reward processing, and coupon redemption.
+          </li>
+          <li>
+            Trusted service providers that help us operate, maintain, and improve our
+            platform.
+          </li>
+          <li>
+            Government authorities or legal entities when required by applicable law.
+          </li>
+        </ul>
 
-          <h2 className="text-2xl font-bold mt-10 mb-4">7. Contact Us</h2>
-          <p>
-            If you have any questions about this Privacy Policy, contact us at:
-            <br />
-            Email: support@ifaceh.com
-          </p>
+        <h2 className="text-2xl font-bold mt-10 mb-4">
+          4. Data Security
+        </h2>
+        <p>
+          We implement reasonable administrative, technical, and physical safeguards
+          to protect your personal information from unauthorized access, disclosure,
+          alteration, or destruction. However, no method of electronic transmission
+          or storage is completely secure.
+        </p>
+
+        <h2 className="text-2xl font-bold mt-10 mb-4">
+          5. Your Rights
+        </h2>
+        <p>You may have the right to:</p>
+
+        <ul className="list-disc pl-6 space-y-2">
+          <li>Access and review your personal information.</li>
+          <li>Update or correct inaccurate information.</li>
+          <li>Request deletion of your account and associated data.</li>
+          <li>Opt out of promotional communications.</li>
+          <li>Request information about how your data is processed.</li>
+        </ul>
+
+        <p className="mt-4">
+          To exercise these rights, please contact our support team.
+        </p>
+
+        <h2 className="text-2xl font-bold mt-10 mb-4">
+          6. Data Retention
+        </h2>
+        <p>
+          We retain your information only for as long as necessary to provide our
+          services, maintain referral and reward records, comply with legal
+          obligations, and resolve disputes.
+        </p>
+
+        <h2 className="text-2xl font-bold mt-10 mb-4">
+          7. Third-Party Services
+        </h2>
+        <p>
+          Our platform may integrate with third-party services such as analytics,
+          communication, payment, and merchant systems. These providers may process
+          information in accordance with their own privacy policies.
+        </p>
+
+        <h2 className="text-2xl font-bold mt-10 mb-4">
+          8. Changes to This Privacy Policy
+        </h2>
+        <p>
+          We may update this Privacy Policy from time to time. Any material changes
+          will be posted on this page, and where appropriate, we may notify users
+          through email or platform announcements.
+        </p>
+
+        <h2 className="text-2xl font-bold mt-10 mb-4">
+          9. Contact Us
+        </h2>
+        <p>
+          If you have any questions about this Privacy Policy or how your information
+          is handled, please contact us:
+          <br />
+          Email: support@ifaceh.com
+        </p>
       </Modal>
 
       {/* Terms Modal */}
-      <Modal isOpen={modalOpen && modalType === 'terms'} onClose={closeModal} title="Terms of Service">
+      <Modal
+        isOpen={modalOpen && modalType === "terms"}
+        onClose={closeModal}
+        title="Terms of Service"
+      >
         <p>
-            Welcome to ReferralPro (operated by Interface Hub). These Terms of Service ("Terms") govern your use of our website, referral links, coupon codes, and related services. By accessing or using our platform, you agree to be bound by these Terms.
-          </p>
+          Welcome to <strong>PromoConnect</strong>. These Terms of Service
+          ("Terms") govern your access to and use of our referral, loyalty rewards,
+          coupon management, and promotional services. By accessing or using our
+          platform, you agree to comply with and be bound by these Terms.
+        </p>
 
-          <h2 className="text-2xl font-bold mt-10 mb-4">1. Use of the Service</h2>
-          <ul className="list-disc pl-6 space-y-2">
-            <li>You must be at least 13 years old (or the minimum age required in your country) to use our service.</li>
-            <li>You may not use our platform for illegal activities, spam, fraud, or abuse.</li>
-            <li>Referral links and coupon codes are provided for personal, non-commercial use unless otherwise stated.</li>
-          </ul>
+        <h2 className="text-2xl font-bold mt-10 mb-4">
+          1. Eligibility and Account Registration
+        </h2>
+        <ul className="list-disc pl-6 space-y-2">
+          <li>
+            You must be at least 13 years old or meet the minimum legal age
+            requirement in your jurisdiction.
+          </li>
+          <li>
+            You are responsible for maintaining the confidentiality of your account
+            credentials.
+          </li>
+          <li>
+            You agree to provide accurate and complete information during
+            registration and account usage.
+          </li>
+        </ul>
 
-          <h2 className="text-2xl font-bold mt-10 mb-4">2. Referral Program Rules</h2>
-          <ul className="list-disc pl-6 space-y-2">
-            <li>Rewards are paid only for valid referrals (verified purchases or sign-ups).</li>
-            <li>We reserve the right to withhold or reverse rewards for fraudulent activity, self-referrals, or policy violations.</li>
-            <li>Payouts are processed via PayPal, bank transfer, or gift cards once the $10 minimum threshold is reached.</li>
-          </ul>
+        <h2 className="text-2xl font-bold mt-10 mb-4">
+          2. Referral Program Rules
+        </h2>
+        <ul className="list-disc pl-6 space-y-2">
+          <li>
+            Referral rewards are granted only for valid and verified referrals that
+            meet the requirements established by participating merchants.
+          </li>
+          <li>
+            Self-referrals, duplicate accounts, fraudulent referrals, or any attempt
+            to manipulate the referral system are strictly prohibited.
+          </li>
+          <li>
+            PromoConnect reserves the right to review, withhold, reverse, or cancel
+            rewards associated with suspicious or invalid referral activity.
+          </li>
+          <li>
+            Reward eligibility, point values, and referral benefits may vary between
+            participating merchants.
+          </li>
+        </ul>
 
-          <h2 className="text-2xl font-bold mt-10 mb-4">3. Coupon Codes & Accuracy</h2>
-          <ul className="list-disc pl-6 space-y-2">
-            <li>Codes are community-verified but not guaranteed by us. Always test codes at checkout.</li>
-            <li>We are not responsible for expired, invalid, or merchant-specific restrictions on coupons.</li>
-          </ul>
+        <h2 className="text-2xl font-bold mt-10 mb-4">
+          3. Coupons and Promotional Offers
+        </h2>
+        <ul className="list-disc pl-6 space-y-2">
+          <li>
+            Coupons, promotional offers, and discount codes are subject to merchant
+            terms and conditions.
+          </li>
+          <li>
+            PromoConnect does not guarantee the availability, validity, or
+            applicability of any coupon or promotion.
+          </li>
+          <li>
+            Merchants may modify, suspend, or discontinue offers at any time without
+            prior notice.
+          </li>
+          <li>
+            Coupons and rewards may not be sold, transferred, or exchanged unless
+            explicitly permitted.
+          </li>
+        </ul>
 
-          <h2 className="text-2xl font-bold mt-10 mb-4">4. Intellectual Property</h2>
-          <p>All content, trademarks, and referral links on our platform are owned by ReferralPro or our partners. You may not copy, reproduce, or distribute without permission.</p>
+        <h2 className="text-2xl font-bold mt-10 mb-4">
+          4. Loyalty Points and Rewards
+        </h2>
+        <ul className="list-disc pl-6 space-y-2">
+          <li>
+            Loyalty points and rewards are issued by participating merchants and are
+            subject to their individual redemption policies.
+          </li>
+          <li>
+            Points may expire according to merchant-defined expiration periods.
+          </li>
+          <li>
+            PromoConnect is not responsible for merchant decisions regarding reward
+            availability, redemption limits, or program changes.
+          </li>
+        </ul>
 
-          <h2 className="text-2xl font-bold mt-10 mb-4">5. Limitation of Liability</h2>
-          <p>We provide the service "as is" and disclaim all warranties. We are not liable for any indirect, incidental, or consequential damages arising from your use of the platform.</p>
+        <h2 className="text-2xl font-bold mt-10 mb-4">
+          5. Acceptable Use
+        </h2>
+        <ul className="list-disc pl-6 space-y-2">
+          <li>
+            You may not use the platform for unlawful, fraudulent, deceptive, or
+            abusive activities.
+          </li>
+          <li>
+            You may not attempt to gain unauthorized access to any portion of the
+            platform or interfere with its operation.
+          </li>
+          <li>
+            Automated abuse, spam referrals, fake transactions, and manipulation of
+            rewards are strictly prohibited.
+          </li>
+        </ul>
 
-          <h2 className="text-2xl font-bold mt-10 mb-4">6. Termination</h2>
-          <p>We may suspend or terminate your account at any time for violations of these Terms or applicable law.</p>
+        <h2 className="text-2xl font-bold mt-10 mb-4">
+          6. Intellectual Property
+        </h2>
+        <p>
+          All content, software, trademarks, logos, designs, and platform features
+          available through PromoConnect are owned by PromoConnect or its licensors
+          and are protected by applicable intellectual property laws.
+        </p>
 
-          <h2 className="text-2xl font-bold mt-10 mb-4">7. Governing Law</h2>
-          <p>These Terms are governed by the laws of the United States and the State of [Your State, e.g., Delaware]. Any disputes will be resolved in the courts of [Your City/State].</p>
+        <h2 className="text-2xl font-bold mt-10 mb-4">
+          7. Limitation of Liability
+        </h2>
+        <p>
+          PromoConnect provides its services on an "as available" basis. To the
+          fullest extent permitted by law, we disclaim all warranties and shall not
+          be liable for any indirect, incidental, special, consequential, or punitive
+          damages arising from your use of the platform.
+        </p>
 
-          <h2 className="text-2xl font-bold mt-10 mb-4">8. Changes to Terms</h2>
-          <p>We may update these Terms from time to time. Continued use of the service after changes constitutes acceptance.</p>
+        <h2 className="text-2xl font-bold mt-10 mb-4">
+          8. Account Suspension and Termination
+        </h2>
+        <p>
+          We reserve the right to suspend, restrict, or terminate accounts that
+          violate these Terms, engage in fraudulent activity, or misuse the
+          platform's referral, loyalty, or coupon systems.
+        </p>
 
-          <h2 className="text-2xl font-bold mt-10 mb-4">9. Contact Us</h2>
-          <p>
-            Questions about these Terms? Reach out at:
-            <br />
-            Email: support@ifaceh.com
-          </p>
+        <h2 className="text-2xl font-bold mt-10 mb-4">
+          9. Changes to the Service
+        </h2>
+        <p>
+          PromoConnect may modify, suspend, or discontinue any feature, reward
+          program, coupon campaign, or service offering at any time without prior
+          notice.
+        </p>
+
+        <h2 className="text-2xl font-bold mt-10 mb-4">
+          10. Changes to These Terms
+        </h2>
+        <p>
+          We may update these Terms periodically. Continued use of the platform after
+          changes become effective constitutes acceptance of the revised Terms.
+        </p>
+
+        <h2 className="text-2xl font-bold mt-10 mb-4">
+          11. Contact Us
+        </h2>
+        <p>
+          If you have questions regarding these Terms of Service, please contact us:
+          <br />
+          Email: support@ifaceh.com
+        </p>
       </Modal>
     </>
   );

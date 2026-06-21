@@ -130,7 +130,7 @@ export default function CouponHub() {
                   text-center
                 "
               >
-                Launch Coupon
+                Launch Coupon Program
               </a>
 
               <Link
@@ -148,7 +148,7 @@ export default function CouponHub() {
                   text-center
                 "
               >
-                Request Demo
+                Book Demo
               </Link>
             </div>
 
