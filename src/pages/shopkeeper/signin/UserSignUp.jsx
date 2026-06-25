@@ -250,7 +250,7 @@ const [checkInProgress, setCheckInProgress] = useState(false);
       <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-purple-500 to-orange-400 p-6">
         <div className="bg-white shadow-2xl rounded-xl p-8 w-full max-w-lg relative">
           <h2 className="text-3xl font-bold mb-6 text-purple-600 text-center">
-            User Sign Up
+            Create Your Account
           </h2>
           <InputField
             label="Name"

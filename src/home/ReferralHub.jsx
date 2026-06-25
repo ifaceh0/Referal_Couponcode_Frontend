@@ -111,7 +111,7 @@ export default function ReferralHub() {
               recommendations.
             </p>
 
-            <div className="mt-10 flex flex-row sm:flex-row gap-4">
+            <div className="mt-10 flex flex-col sm:flex-row gap-4">
               <a
                 href="https://subscription-frontend-psi.vercel.app/subscription"
                 target="_blank"
@@ -152,7 +152,7 @@ export default function ReferralHub() {
             </div>
 
             {/* FEATURES */}
-            <div className="mt-10 flex flex-row gap-2 lg:gap-8">
+            <div className="mt-10 flex flex-col sm:flex-row gap-4 sm:gap-8">
 
               <div className="flex items-center gap-3">
                 <div className="w-10 h-10 rounded bg-blue-100 flex items-center justify-center">

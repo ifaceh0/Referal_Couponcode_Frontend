@@ -458,34 +458,55 @@ export default function Navbar() {
       <div className="h-16"></div>
       
       {/* Mobile menu */}
-      <div className={`sm:hidden transition-all duration-500 ease-in-out ${
+      {/* <div className={`sm:hidden transition-all duration-500 ease-in-out ${
         isOpen ? 'max-h-screen opacity-100 transform scale-100' : 'max-h-0 opacity-0 transform scale-95'
       } overflow-hidden`}
+      > */}
+      {/* Overlay */}
+      {isOpen && (
+        <div
+          className="fixed inset-0 bg-black/50 z-40 sm:hidden"
+          onClick={toggleMenu}
+        />
+      )}
+
+      {/* Sidebar */}
+      <div
+        className={`fixed top-0 right-0 h-full w-72 bg-white shadow-xl z-50 sm:hidden
+          transform transition-transform duration-300 ease-in-out
+          ${isOpen ? "translate-x-0" : "translate-x-full"}`}
       >
-        <div className="bg-white shadow-md space-y-2 p-4">
+        <div className="flex items-center justify-between h-16 px-4 border-b">
+          <h2 className="text-lg font-semibold">Menu</h2>
+          <button onClick={toggleMenu}>
+            <X className="w-6 h-6" />
+          </button>
+        </div>
+        <div className="p-4 space-y-2 overflow-y-auto">
           {filteredNavLinks.map(({ name, path }) => {
-            if (name === 'Subscription') {
+            if (name === "Subscription") {
               return (
                 <a
                   key={path}
                   href={path}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="block px-4 py-2 rounded-md text-lg text-gray-700 hover:bg-gray-200"
+                  className="block px-4 py-3 rounded-md text-gray-700 hover:bg-gray-100"
                 >
                   {name}
                 </a>
               );
             }
+
             return (
               <Link
                 key={path}
                 to={path}
                 onClick={toggleMenu}
-                className={`block px-4 py-2 rounded-md text-lg ${
+                className={`block px-4 py-3 rounded-md ${
                   isActive(path)
-                    ? 'bg-purple-500 text-white'
-                    : 'text-gray-700 hover:bg-gray-200'
+                    ? "bg-purple-600 text-white"
+                    : "text-gray-700 hover:bg-gray-100"
                 }`}
               >
                 {name}
