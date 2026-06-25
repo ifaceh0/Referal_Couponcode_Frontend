@@ -457,7 +457,10 @@ const ShopkeeperSignUp = () => {
       fieldErrors.country = "Country is required.";
     }
 
-    if (step === 2 && !isEmailVerified) {
+    // if (step === 2 && !isEmailVerified) {
+    //   fieldErrors.companyEmail = "Please verify company email.";
+    // }
+    if (!isEmailVerified) {
       fieldErrors.companyEmail = "Please verify company email.";
     }
 
@@ -474,18 +477,44 @@ const ShopkeeperSignUp = () => {
   };
 
   const handleNext = () => {
-    if (!validateFields(["name", "email", "phone", "password", "confirmPassword", "country"])) return;
+    if (
+      !validateFields([
+        "companyName",
+        "companyAddress",
+        "companyEmail",
+        "companyPhone",
+        "country",
+      ])
+    )
+      return;
+
+    if (!isEmailVerified) {
+      toast.error("Please verify your business email before continuing.");
+      return;
+    }
+  
     setStep(2);
   };
 
   const handleBack = () => {
     setStep(1);
     generateCaptcha();
-    setIsEmailVerified(false);
+    // setIsEmailVerified(false);
   };
 
+  // const handleSubmit = async () => {
+  //   if (!validateFields(["companyName", "companyAddress", "companyEmail", "companyPhone"])) return;
   const handleSubmit = async () => {
-    if (!validateFields(["companyName", "companyAddress", "companyEmail", "companyPhone"])) return;
+    if (
+      !validateFields([
+        "name",
+        "email",
+        "phone",
+        "password",
+        "confirmPassword",
+      ])
+    )
+      return;
 
     const toastId = toast.loading("Signing up...", {
       theme: "colored",
@@ -524,48 +553,32 @@ const ShopkeeperSignUp = () => {
       <ToastContainer />
       <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-purple-500 to-orange-400 p-6">
         <div className="bg-white shadow-2xl rounded-xl p-8 w-full max-w-lg relative">
-          <h2 className="text-3xl font-bold mb-6 text-purple-600 text-center capitalize">Shopkeeper Sign Up</h2>
+          <h2 className="text-3xl font-bold mb-8 text-purple-600 text-center capitalize">Register Your Business</h2>
 
           {step === 1 ? (
             <>
-              <InputField label="Name" type="text" name="name" value={formData.name} onChange={handleInputChange} error={errors.name} />
-              <InputField label="Email (used for login)" type="email" name="email" value={formData.email} onChange={handleInputChange} error={errors.email} />
-              <PhoneInputField
-                label=""
-                name="phone"
-                value={formData.phone}
-                onChange={(phone) => setFormData({ ...formData, phone: phone.target.value })}
-                containerClass="w-full"
-                inputClass="border rounded p-2 w-full"
-                error={errors.phone}
-              />
-              
-              <div className="mb-4 w-full">
-                <label className="block text-gray-700 mb-2 font-medium">Country</label>
-                <select
-                  name="country"
-                  value={formData.country || ""}
-                  onChange={handleInputChange}
-                  className="w-full h-12 p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500 bg-white"
-                >
-                  <option value="">Select Country</option>
-                  <option value="IN">India (IN)</option>
-                  <option value="US">United States (US)</option>
-                </select>
-                {errors.country && <span className="text-red-500 text-sm">{errors.country}</span>}
-              </div>
-
-              <InputField label="Password (used for login)" type="password" name="password" value={formData.password} onChange={handleInputChange} error={errors.password} />
-              <InputField label="Confirm Password" type="password" name="confirmPassword" value={formData.confirmPassword} onChange={handleInputChange} error={errors.confirmPassword} />
-              <button onClick={handleNext} className="bg-blue-600 text-white py-2 px-4 rounded-lg w-full mt-4 hover:bg-blue-700 transition">Next</button>
-            </>
-          ) : (
-            <>
               <InputField label="Company Name" type="text" name="companyName" value={formData.companyName} onChange={handleInputChange} error={errors.companyName} />
-              <InputField label="Company Address" type="text" name="companyAddress" value={formData.companyAddress} onChange={handleInputChange} error={errors.companyAddress} />
 
               <div className="mb-4 w-full">
-                <label className="block text-gray-700 mb-2 font-medium">Company Email</label>
+                {/* <label className="block text-gray-700 mb-2 font-medium">Business Email</label> */}
+                <label className="block text-gray-700 mb-2 font-medium flex items-center gap-2">
+                  Business Email
+
+                  <div className="relative group">
+                    <FaInfoCircle className="text-gray-500 cursor-pointer w-4 h-4" />
+
+                    <div
+                      className="absolute left-6 top-1/2 -translate-y-1/2 w-64
+                                bg-gray-900 text-white text-xs px-3 py-2 rounded-lg
+                                opacity-0 invisible
+                                group-hover:opacity-100 group-hover:visible
+                                transition-all duration-200 z-50"
+                    >
+                      This email is required to verify your active subscription.
+                      It must be linked to a valid subscription.
+                    </div>
+                  </div>
+                </label>
                 <div className="relative">
                   <input
                     type="email"
@@ -577,12 +590,12 @@ const ShopkeeperSignUp = () => {
                       errors.companyEmail ? "border-red-500" : "border-gray-300"
                     }`}
                   />
-                  <div className="absolute left-full top-1/2 ml-2 -translate-y-1/2 group">
-                      <FaInfoCircle className="text-gray-500 cursor-pointer" />
-                      <div className="absolute left-full top-1/2 -translate-y-1/2 ml-2 w-60 text-sm text-white bg-black/80 px-3 py-2 rounded-md opacity-0 group-hover:opacity-100 transition-opacity duration-200 z-10">
-                        This email is required to verify your active subscription. It must be linked to a valid subscription.
-                      </div>
+                  {/* <div className="absolute left-full top-1/2 ml-2 -translate-y-1/2 group">
+                    <FaInfoCircle className="text-gray-500 cursor-pointer" />
+                    <div className="absolute left-full top-1/2 -translate-y-1/2 ml-2 w-60 text-sm text-white bg-black/80 px-3 py-2 rounded-md opacity-0 group-hover:opacity-100 transition-opacity duration-200 z-10">
+                      This email is required to verify your active subscription. It must be linked to a valid subscription.
                     </div>
+                  </div> */}
                   <button
                     type="button"
                     onClick={verifyEmail}
@@ -600,12 +613,61 @@ const ShopkeeperSignUp = () => {
               </div>
 
               <PhoneInputField
-                label=""
+                label="Business Phone"
                 name="companyPhone"
                 value={formData.companyPhone}
                 onChange={(phone) => setFormData({ ...formData, companyPhone: phone.target.value })}
                 error={errors.companyPhone}
               />
+
+              <InputField label="Business Address" type="text" name="companyAddress" value={formData.companyAddress} onChange={handleInputChange} error={errors.companyAddress} />
+              
+              <div className="mb-4 w-full">
+                <label className="block text-gray-700 mb-2 font-medium">Country</label>
+                <select
+                  name="country"
+                  value={formData.country || ""}
+                  onChange={handleInputChange}
+                  className="w-full h-12 p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500 bg-white"
+                >
+                  <option value="">Select Country</option>
+                  <option value="IN">India (IN)</option>
+                  <option value="US">United States (US)</option>
+                </select>
+                {errors.country && <span className="text-red-500 text-sm">{errors.country}</span>}
+              </div>
+
+              {/* <button onClick={handleNext} className="bg-blue-600 text-white py-2 px-4 rounded-lg w-full mt-4 hover:bg-blue-700 transition">Next</button> */}
+              <button
+                onClick={handleNext}
+                disabled={!isEmailVerified}
+                className={`w-full mt-4 py-2 px-4 rounded-lg text-white transition ${
+                  isEmailVerified
+                    ? "bg-blue-600 hover:bg-blue-700"
+                    : "bg-gray-400 cursor-not-allowed"
+                }`}
+              >
+                Next
+              </button>
+            </>
+          ) : (
+            <>
+              <InputField label="Owner Name" type="text" name="name" value={formData.name} onChange={handleInputChange} error={errors.name} />
+              <PhoneInputField
+                label="Owner Phone"
+                name="phone"
+                value={formData.phone}
+                onChange={(phone) => setFormData({ ...formData, phone: phone.target.value })}
+                containerClass="w-full"
+                inputClass="border rounded p-2 w-full"
+                error={errors.phone}
+              />
+
+              <InputField label="Login Email" type="email" name="email" value={formData.email} onChange={handleInputChange} error={errors.email} />
+
+              <InputField label="Password" type="password" name="password" value={formData.password} onChange={handleInputChange} error={errors.password} />
+              <InputField label="Confirm Password" type="password" name="confirmPassword" value={formData.confirmPassword} onChange={handleInputChange} error={errors.confirmPassword} />
+              
               <div className="my-4">
                 <label className="block text-gray-700 mb-2 font-medium">CAPTCHA Verification</label>
                 <div className="flex items-center gap-2 mb-2">
@@ -655,7 +717,7 @@ const ShopkeeperSignUp = () => {
                     !isEmailVerified ? "opacity-60 cursor-not-allowed" : "hover:bg-green-700"
                   }`}
                 >
-                  Sign Up
+                  Get Started
                 </button>
               </div>
             </>

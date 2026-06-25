@@ -858,6 +858,9 @@ const ShopkeeperSignIn = () => {
       const user = await getCurrentUser();
       saveCountryToLocalStorage(user);
       navigateBasedOnRole(user.role);
+      setTimeout(() => {
+        window.location.reload();
+      }, 100);
     } catch (err) {
       setError(err.message || "Login failed");
     } finally {
@@ -910,6 +913,9 @@ const ShopkeeperSignIn = () => {
               const user = await getCurrentUser();
               saveCountryToLocalStorage(user);
               navigateBasedOnRole(user.role);
+              setTimeout(() => {
+                window.location.reload();
+              }, 100);
               return;
             }
 
@@ -933,6 +939,9 @@ const ShopkeeperSignIn = () => {
 
           const user = await getCurrentUser();
           navigateBasedOnRole(user.role);
+          setTimeout(() => {
+            window.location.reload();
+          }, 100);
           return;
         }
 
@@ -1030,7 +1039,6 @@ const ShopkeeperSignIn = () => {
     setStep(1);
     setPossibleRoles([]);
     setSelectedRole("");
-    // ← ADDED: Reset shop states
     setEmployeeShops([]);
     setSelectedShop(null);
   };
