@@ -72,3 +72,24 @@ export const getQRCodeByShopkeeper = async (shopkeeperId) => {
   return URL.createObjectURL(blob); // returns a blob URL to use in <img src="..." />
 };
 
+// Get Shop Logo
+export const getShopLogo = async (shopkeeperId) => {
+  const token = localStorage.getItem("token");
+
+  const response = await fetch(
+    `${import.meta.env.VITE_BACKEND_URL}/api/qrcode/shopkeeper/${shopkeeperId}/logo`,
+    {
+      method: "GET",
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    }
+  );
+
+  if (!response.ok) {
+    throw new Error("No logo found");
+  }
+
+  const blob = await response.blob();
+  return URL.createObjectURL(blob);
+};

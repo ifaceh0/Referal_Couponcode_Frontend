@@ -240,12 +240,12 @@ const ShopkeeperDashboardLayout = ({ children }) => {
                 <span className="hidden lg:inline">{userDetails?.name ? userDetails.name : "Username"}</span>
               </button>
               <div className="hidden group-hover:block absolute top-full right-0 w-40 bg-white shadow-lg border rounded-md p-2">
-                <NavLink to="/profile" className="block py-1 px-2 text-sm hover:bg-gray-100">
+                {/* <NavLink to="/profile" className="block py-1 px-2 text-sm hover:bg-gray-100">
                   <FaUser className="inline mr-2" /> Profile
                 </NavLink>
                 <NavLink to="/settings" className="block py-1 px-2 text-sm hover:bg-gray-100">
                   <FaCog className="inline mr-2" /> Settings
-                </NavLink>
+                </NavLink> */}
                 <button onClick={handleLogout} className="block py-1 px-2 text-sm hover:bg-gray-100 w-full text-left">
                   Logout
                 </button>
