@@ -183,7 +183,7 @@
 import React, { useState, useEffect } from "react";
 import { FaPhone, FaStore, FaTimes, FaQrcode } from "react-icons/fa";
 import { QRCodeSVG } from "qrcode.react";
-import { getAllShopkeeper, getQRCodeByShopkeeper } from "../../api/users";
+import { getAllShopkeeper, getQRCodeByShopkeeper, getShopLogo } from "../../api/users";
 import { getCurrentUser } from "../../api/signin";
 import referralImage from "../../assets/referralImage.jpg";
 import { getCurrentCurrency } from "../../utils/currencyUtils";
@@ -229,20 +229,46 @@ const Shop = () => {
             // balance: result.availableBalance,
           });
 
-          const mappedShops = result.shopkeepers.map((shop, index) => ({
-            // shopkeeperId:shop.id,
-            id: shop.shopkeeperId,
-            name: shop.name,
-            phone: shop.phone,
-            // image: `https://source.unsplash.com/400x300/?store,shop,${index}`,
-            image: referralImage,
-            balance: `${currency.symbol}${shop.availableBalance.toFixed(2)}`,
-            referredBy: shop.referralCode,
-            referralAmount: shop.referralAmount,
-            referrerAmount: shop.referrerAmount,
-            expiryDate: shop.expiryDate,
-            referredUser:shop.userName
-          }));
+          // const mappedShops = result.shopkeepers.map((shop, index) => ({
+          //   // shopkeeperId:shop.id,
+          //   id: shop.shopkeeperId,
+          //   name: shop.companyName,
+          //   phone: shop.phone,
+          //   // image: referralImage,
+          //   image: `${import.meta.env.VITE_BACKEND_URL}${shop.logoUrl}`,
+          //   fallbackImage: referralImage,
+          //   balance: `${currency.symbol}${shop.availableBalance.toFixed(2)}`,
+          //   referredBy: shop.referralCode,
+          //   referralAmount: shop.referralAmount,
+          //   referrerAmount: shop.referrerAmount,
+          //   expiryDate: shop.expiryDate,
+          //   referredUser:shop.userName
+          // }));
+          const mappedShops = await Promise.all(
+            result.shopkeepers.map(async (shop) => {
+
+              let logo = referralImage;
+
+              try {
+                logo = await getShopLogo(shop.shopkeeperId);
+              } catch (error) {
+                console.log("Logo not found. Using default image.");
+              }
+
+              return {
+                id: shop.shopkeeperId,
+                name: shop.companyName,
+                phone: shop.phone,
+                image: logo,
+                balance: `${currency.symbol}${shop.availableBalance.toFixed(2)}`,
+                referredBy: shop.referralCode,
+                referralAmount: shop.referralAmount,
+                referrerAmount: shop.referrerAmount,
+                expiryDate: shop.expiryDate,
+                referredUser: shop.userName,
+              };
+            })
+          );
           setShops(mappedShops);
         }
       } catch (error) {
@@ -403,37 +429,37 @@ const Shop = () => {
                     </div>
 
                     {selectedShop.referredBy ? (
-  <div className="bg-blue-50 p-4 rounded-lg">
-    <h3 className="font-bold text-blue-800 mb-2">Referral Information</h3>
-    <div className="grid grid-cols-2 gap-4">
-      <div>
-        <p className="text-sm text-blue-600">Referral Code</p>
-        <p className="font-medium text-blue-800">{selectedShop.referredBy}</p>
-      </div>
-      <div>
-        <p className="text-sm text-blue-600">Expiry Date</p>
-        <p className="font-medium text-blue-800">{selectedShop.expiryDate}</p>
-      </div>
-      <div>
-        <p className="text-sm text-blue-600">Referral Amount</p>
-        <p className="font-medium text-blue-800">{currency.symbol}{selectedShop.referralAmount}</p>
-      </div>
-      <div>
-        <p className="text-sm text-blue-600">Referrer Amount</p>
-        <p className="font-medium text-blue-800">{currency.symbol}{selectedShop.referrerAmount}</p>
-      </div>
-      <div>
-        <p className="text-sm text-blue-600">Referrer By</p>
-        <p className="font-medium text-blue-800">{selectedShop.referredUser}</p>
-      </div>
-    </div>
-  </div>
-) : (
-  <div className="bg-blue-50 p-4 rounded-lg">
-    <h3 className="font-bold text-blue-800 mb-2">Referral Information</h3>
-    <p className="text-blue-600">Referral not added here.</p>
-  </div>
-)}
+                    <div className="bg-blue-50 p-4 rounded-lg">
+                      <h3 className="font-bold text-blue-800 mb-2">Referral Information</h3>
+                      <div className="grid grid-cols-2 gap-4">
+                        <div>
+                          <p className="text-sm text-blue-600">Referral Code</p>
+                          <p className="font-medium text-blue-800">{selectedShop.referredBy}</p>
+                        </div>
+                        <div>
+                          <p className="text-sm text-blue-600">Expiry Date</p>
+                          <p className="font-medium text-blue-800">{selectedShop.expiryDate}</p>
+                        </div>
+                        <div>
+                          <p className="text-sm text-blue-600">Referral Amount</p>
+                          <p className="font-medium text-blue-800">{currency.symbol}{selectedShop.referralAmount}</p>
+                        </div>
+                        <div>
+                          <p className="text-sm text-blue-600">Referrer Amount</p>
+                          <p className="font-medium text-blue-800">{currency.symbol}{selectedShop.referrerAmount}</p>
+                        </div>
+                        <div>
+                          <p className="text-sm text-blue-600">Referrer By</p>
+                          <p className="font-medium text-blue-800">{selectedShop.referredUser}</p>
+                        </div>
+                      </div>
+                    </div>
+                  ) : (
+                    <div className="bg-blue-50 p-4 rounded-lg">
+                      <h3 className="font-bold text-blue-800 mb-2">Referral Information</h3>
+                      <p className="text-blue-600">Referral not added here.</p>
+                    </div>
+                  )}
 
                   </div>
 
