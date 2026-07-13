@@ -1498,9 +1498,16 @@ const InteractionPanel = () => {
   const [applications, setApplications] = useState([]);
 
   // States
-  const [couponPurchaseAmount, setCouponPurchaseAmount] = useState("");
-  const [referralPurchaseAmount, setReferralPurchaseAmount] = useState("");
+  // const [couponPurchaseAmount, setCouponPurchaseAmount] = useState("");
+  // const [referralPurchaseAmount, setReferralPurchaseAmount] = useState("");
+  const [purchaseAmount, setPurchaseAmount] = useState("");
   const [referralRedeemAmount, setReferralRedeemAmount] = useState("");
+
+  const [showTransactionTypeModal, setShowTransactionTypeModal] = useState(false);
+
+  const [selectedTransactionType, setSelectedTransactionType] = useState("");
+
+  const [showReferralPopup, setShowReferralPopup] = useState(false);
 
   const [couponError, setCouponError] = useState("");
   const [referralError, setReferralError] = useState("");
@@ -1602,27 +1609,62 @@ const InteractionPanel = () => {
   };
 
   const resetAllStates = () => {
-    setCouponPurchaseAmount("");
-    setReferralPurchaseAmount("");
+    // setCouponPurchaseAmount("");
+    // setReferralPurchaseAmount("");
+    setPhoneNumber("");
+    setEmail("");
+    setPurchaseAmount("");
     setReferralRedeemAmount("");
+    setShowTransactionTypeModal(false);
+    setShowReferralPopup(false);
+    setSelectedTransactionType("");
     setCouponError("");
     setReferralError("");
     setShowRedeemChoiceModal(false);
     setRedeemOption("");
     setTempPurchaseAmount("");
     setShowSuccessPopup(false);
+    setPhoneVerified(false);
+    setEmailVerified(false);  
   };
 
   const handleCouponSubmit = () => {
-    if (!couponPurchaseAmount || Number(couponPurchaseAmount) <= 0) {
+    // if (!couponPurchaseAmount || Number(couponPurchaseAmount) <= 0) {
+    if (!purchaseAmount || Number(purchaseAmount) <= 0) {
       setCouponError("Please enter valid purchase amount");
       return;
     }
     if (applications.includes("Referral") && verificationData?.referralCode) {
-      setTempPurchaseAmount(couponPurchaseAmount);
+      // setTempPurchaseAmount(couponPurchaseAmount);
+      setTempPurchaseAmount(purchaseAmount);
       setShowRedeemChoiceModal(true);
     } else {
       handleDirectCouponApply();
+    }
+  };
+
+  const handleContinueTransaction = () => {
+    if (!purchaseAmount || Number(purchaseAmount) <= 0) {
+      toast.error("Please enter purchase amount");
+      return;
+    }
+
+    setShowTransactionTypeModal(true);
+  };
+
+  const handleTransactionSelection = () => {
+    if (!selectedTransactionType) {
+      toast.error("Select transaction type");
+      return;
+    }
+
+    setShowTransactionTypeModal(false);
+
+    if (selectedTransactionType === "referral") {
+      setShowReferralPopup(true);
+    } else {
+      setTempPurchaseAmount(purchaseAmount);
+      setShowRedeemChoiceModal(true);
     }
   };
 
@@ -1682,14 +1724,16 @@ const InteractionPanel = () => {
         {
           customerId: verificationData.customerId,
           couponCode: verificationData.couponCode,
-          purchaseAmount: Number(couponPurchaseAmount),
+          // purchaseAmount: Number(couponPurchaseAmount),
+          purchaseAmount: Number(purchaseAmount),
           redeemAmount: 0,
         },
         { headers: { Authorization: `Bearer ${token}` } }
       );
 
       setSuccessData({
-        purchaseAmount: couponPurchaseAmount,
+        // purchaseAmount: couponPurchaseAmount,
+        purchaseAmount: purchaseAmount,
         couponAmount: verificationData.couponAmount,
         redeemAmount: 0,
       });
@@ -1703,7 +1747,8 @@ const InteractionPanel = () => {
   };
 
   const handleReferralSubmit = async () => {
-    if (!referralPurchaseAmount || Number(referralPurchaseAmount) <= 0) {
+    // if (!referralPurchaseAmount || Number(referralPurchaseAmount) <= 0) {
+    if (!purchaseAmount || Number(purchaseAmount) <= 0) {
       setReferralError("Please enter purchase amount");
       return;
     }
@@ -1726,17 +1771,20 @@ const InteractionPanel = () => {
           customerId: verificationData.customerId,
           referralCode: verificationData.referralCode && verificationData.referralCode !== "None" 
             ? verificationData.referralCode : null,
-          purchaseAmount: Number(referralPurchaseAmount),
+          // purchaseAmount: Number(referralPurchaseAmount),
+          purchaseAmount: Number(purchaseAmount),
           discountAmount: Number(referralRedeemAmount),
         },
         { headers: { Authorization: `Bearer ${token}` } }
       );
 
       setSuccessData({
-        purchaseAmount: referralPurchaseAmount,
+        // purchaseAmount: referralPurchaseAmount,
+        purchaseAmount: purchaseAmount,
         couponAmount: 0,
         redeemAmount: referralRedeemAmount,
       });
+      setShowReferralPopup(false);
       setShowSuccessPopup(true);
     } catch (err) {
       const msg = err?.response?.data?.message || err.message;
@@ -1787,6 +1835,17 @@ const InteractionPanel = () => {
       setIsCouponCode(false);
     }
   };
+
+  const hasReferral =
+    applications.includes("Referral") &&
+    verificationData?.referralCode;
+
+  const hasCoupon =
+    applications.includes("Coupon") &&
+    verificationData?.couponCode;
+
+  const hasBothApplications =
+    hasReferral && hasCoupon;
 
   return (
     <div className="min-h-screen flex flex-col items-center p-8 bg-gray-100">
@@ -1915,9 +1974,57 @@ const InteractionPanel = () => {
 
                   {/* Right Column: Dynamic Action Desks */}
                   <div className="lg:col-span-8 flex flex-col sm:flex-row gap-6">
+
+                    {hasBothApplications && (
+                      <div className="flex-1 border border-slate-100 rounded-lg p-6 bg-gradient-to-b from-white to-slate-50 shadow-sm">
+                        <div className="flex items-center gap-3 mb-6">
+                          <span className="w-3 h-3 rounded-full bg-indigo-500 animate-pulse"></span>
+                          <div>
+                            <h3 className="font-extrabold text-lg text-slate-800">
+                              Transaction
+                            </h3>
+                            <p className="text-xs text-slate-500">
+                              Enter purchase amount once and choose transaction type.
+                            </p>
+                          </div>
+                        </div>
+                        <div>
+                          <label className="block text-sm font-semibold text-slate-600 mb-2">
+                            Purchase Amount
+                          </label>
+                          <div className="relative">
+                            <span className="absolute left-3 top-1/2 -translate-y-1/2 font-semibold text-slate-400">
+                              {currency.symbol}
+                            </span>
+                            <input
+                              type="number"
+                              value={purchaseAmount}
+                              onChange={(e) => {
+                                setPurchaseAmount(e.target.value);
+                                setCouponError("");
+                                setReferralError("");
+                              }}
+                              placeholder="Enter Purchase Amount"
+                              className="w-full pl-8 pr-4 py-2.5 rounded-md border border-slate-200
+                              focus:outline-none
+                              focus:ring-2
+                              focus:ring-indigo-500/20
+                              focus:border-indigo-500"
+                            />
+                          </div>
+                        </div>
+                        <button
+                          onClick={handleContinueTransaction}
+                          className="mt-8 w-full bg-slate-900 hover:bg-slate-800 text-white py-2 rounded-full font-semibold transition"
+                        >
+                          Continue
+                        </button>
+                      </div>
+                    )}
                     
                     {/* Referral Card UI Desk */}
-                    {applications.includes("Referral") && verificationData?.referralCode && (
+                    {/* {applications.includes("Referral") && verificationData?.referralCode && ( */}
+                    {hasReferral && !hasCoupon && (
                       <div className="flex-1 border border-slate-100 rounded-lg p-5 bg-gradient-to-b from-white to-slate-50/40 shadow-sm flex flex-col justify-between">
                         <div>
                           <div className="flex items-center gap-2 mb-4">
@@ -1932,8 +2039,10 @@ const InteractionPanel = () => {
                                 <span className="absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400 text-sm font-semibold">{currency.symbol}</span>
                                 <input
                                   type="number"
-                                  value={referralPurchaseAmount}
-                                  onChange={(e) => setReferralPurchaseAmount(e.target.value)}
+                                  // value={referralPurchaseAmount}
+                                  // onChange={(e) => setReferralPurchaseAmount(e.target.value)}
+                                  value={purchaseAmount}
+                                  onChange={(e)=>setPurchaseAmount(e.target.value)}
                                   placeholder="0.00"
                                   className="w-full pl-8 pr-4 py-2.5 text-sm bg-white border border-slate-200 rounded-md focus:outline-none focus:ring-2 focus:ring-emerald-500/20 focus:border-emerald-500 transition-all font-medium"
                                 />
@@ -1941,7 +2050,7 @@ const InteractionPanel = () => {
                             </div>
 
                             <div>
-                              <label className="block text-xs font-bold text-slate-500 mb-1">Redeem Discount</label>
+                              <label className="block text-xs font-bold text-slate-500 mb-1">Redeem Amount</label>
                               <div className="relative">
                                 <span className="absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400 text-sm font-semibold">{currency.symbol}</span>
                                 <input
@@ -1969,7 +2078,8 @@ const InteractionPanel = () => {
                     )}
 
                     {/* Coupon Card UI Desk */}
-                    {applications.includes("Coupon") && verificationData?.couponCode && (
+                    {/* {applications.includes("Coupon") && verificationData?.couponCode && ( */}
+                    {hasCoupon && !hasReferral && (
                       <div className="flex-1 border border-slate-100 rounded-lg p-5 bg-gradient-to-b from-white to-slate-50/40 shadow-sm flex flex-col justify-between">
                         <div>
                           <div className="flex items-center gap-2 mb-4">
@@ -1983,8 +2093,10 @@ const InteractionPanel = () => {
                               <span className="absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400 text-sm font-semibold">{currency.symbol}</span>
                               <input
                                 type="number"
-                                value={couponPurchaseAmount}
-                                onChange={(e) => setCouponPurchaseAmount(e.target.value)}
+                                // value={couponPurchaseAmount}
+                                // onChange={(e) => setCouponPurchaseAmount(e.target.value)}
+                                value={purchaseAmount}
+                                onChange={(e)=>setPurchaseAmount(e.target.value)}
                                 placeholder="0.00"
                                 className="w-full pl-8 pr-4 py-2.5 text-sm bg-white border border-slate-200 rounded-md focus:outline-none focus:ring-2 focus:ring-amber-500/20 focus:border-amber-500 transition-all font-medium"
                               />
@@ -2012,6 +2124,195 @@ const InteractionPanel = () => {
                     className="px-6 py-2 bg-white hover:bg-slate-100 border border-slate-200 text-slate-700 rounded-full text-sm font-medium transition"
                   >
                     Dismiss Profile
+                  </button>
+                </div>
+              </div>
+            </div>
+          )}
+
+          {/* ================= TRANSACTION TYPE MODAL ================= */}
+          {showTransactionTypeModal && (
+            <div className="fixed inset-0 z-[70] flex items-center justify-center bg-black/50 backdrop-blur-sm p-4">
+              <div className="bg-white w-full max-w-md rounded-lg shadow-2xl overflow-hidden">
+                {/* Header */}
+                <div className="border-b px-6 py-5">
+                  <h2 className="text-xl font-bold text-slate-800">
+                    Choose Transaction
+                  </h2>
+                  <p className="text-sm text-slate-500 mt-1">
+                    Select how you want to process this purchase.
+                  </p>
+                </div>
+                {/* Body */}
+                <div className="p-6 space-y-4">
+                  {/* Purchase */}
+                  <div className="rounded-md border bg-slate-50 p-3">
+                    <p className="text-xs uppercase font-bold text-slate-500">
+                      Purchase Amount
+                    </p>
+                    <h3 className="text-2xl font-black text-slate-900 mt-1">
+                      {currency.symbol}
+                      {purchaseAmount}
+                    </h3>
+                  </div>
+                  {/* Referral */}
+                  <label
+                    className={`flex items-center justify-between border rounded-md p-3 cursor-pointer transition ${
+                      selectedTransactionType === "referral"
+                        ? "border-emerald-500 bg-emerald-50"
+                        : "border-slate-200"
+                    }`}
+                  >
+                    <div>
+                      <h3 className="font-bold text-slate-800">
+                        Referral
+                      </h3>
+                      <p className="text-sm text-slate-500">
+                        Redeem customer referral balance.
+                      </p>
+                    </div>
+                    <input
+                      type="radio"
+                      checked={selectedTransactionType === "referral"}
+                      onChange={() => setSelectedTransactionType("referral")}
+                    />
+                  </label>
+                  {/* Coupon */}
+                  <label
+                    className={`flex items-center justify-between border rounded-md p-3 cursor-pointer transition ${
+                      selectedTransactionType === "coupon"
+                        ? "border-amber-500 bg-amber-50"
+                        : "border-slate-200"
+                    }`}
+                  >
+                    <div>
+                      <h3 className="font-bold text-slate-800">
+                        Coupon
+                      </h3>
+                      <p className="text-sm text-slate-500">
+                        Apply available coupon discount.
+                      </p>
+                    </div>
+                    <input
+                      type="radio"
+                      checked={selectedTransactionType === "coupon"}
+                      onChange={() => setSelectedTransactionType("coupon")}
+                    />
+                  </label>
+                </div>
+                {/* Footer */}
+                <div className="border-t px-6 py-4 flex gap-3">
+                  <button
+                    onClick={() => {
+                      setShowTransactionTypeModal(false);
+                      setSelectedTransactionType("");
+                    }}
+                    className="flex-1 py-2 rounded-full border border-slate-300 hover:bg-slate-100"
+                  >
+                    Cancel
+                  </button>
+                  <button
+                    onClick={handleTransactionSelection}
+                    className="flex-1 py-2 rounded-full bg-slate-900 hover:bg-slate-800 text-white"
+                  >
+                    Continue
+                  </button>
+                </div>
+              </div>
+            </div>
+          )}
+
+          {/* ================= REFERRAL TRANSACTION MODAL ================= */}
+          {showReferralPopup && (
+            <div className="fixed inset-0 z-[70] flex items-center justify-center bg-black/50 backdrop-blur-sm p-4">
+              <div className="bg-white w-full max-w-lg rounded-lg shadow-2xl overflow-hidden">
+                {/* Header */}
+                <div className="px-6 py-5 border-b">
+                  <h2 className="text-xl font-bold text-slate-800">
+                    Referral Transaction
+                  </h2>
+                  <p className="text-sm text-slate-500 mt-1">
+                    Complete referral balance redemption.
+                  </p>
+                </div>
+                {/* Body */}
+                <div className="p-6 space-y-5">
+                  {/* Purchase Amount */}
+                  <div>
+                    <label className="block text-xs font-bold uppercase text-slate-500 mb-2">
+                      Purchase Amount
+                    </label>
+                    <div className="relative">
+                      <span className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 font-semibold">
+                        {currency.symbol}
+                      </span>
+                      <input
+                        type="number"
+                        value={purchaseAmount}
+                        readOnly
+                        className="w-full pl-8 pr-4 py-2 rounded-md border bg-slate-100 cursor-not-allowed"
+                      />
+                    </div>
+                  </div>
+                  {/* Available Balance */}
+                  <div className="rounded-md border border-emerald-200 bg-emerald-50 p-3">
+                    <p className="text-xs uppercase font-bold text-emerald-700">
+                      Available Referral Balance
+                    </p>
+                    <h3 className="text-3xl font-black text-emerald-700 mt-2">
+                      {currency.symbol}
+                      {verificationData.availableBalance}
+                    </h3>
+                  </div>
+                  {/* Redeem Amount */}
+                  <div>
+                    <label className="block text-xs font-bold uppercase text-slate-500 mb-2">
+                      Redeem Amount
+                    </label>
+                    <div className="relative">
+                      <span className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 font-semibold">
+                        {currency.symbol}
+                      </span>
+                      <input
+                        type="number"
+                        value={referralRedeemAmount}
+                        onChange={(e) => {
+                          setReferralRedeemAmount(e.target.value);
+                          setReferralError("");
+                        }}
+                        placeholder="Enter redeem amount"
+                        className="w-full pl-8 pr-4 py-2 rounded-md border border-slate-300 focus:ring-2 focus:ring-emerald-400 focus:outline-none"
+                      />
+                    </div>
+                  </div>
+                  {/* Error */}
+                  {referralError && (
+                    <div className="text-sm text-red-600 font-medium">
+                      {referralError}
+                    </div>
+                  )}
+                </div>
+                {/* Footer */}
+                <div className="border-t px-6 py-4 flex gap-3">
+                  <button
+                    onClick={() => {
+                      setShowReferralPopup(false);
+                      setReferralRedeemAmount("");
+                      setReferralError("");
+                    }}
+                    className="flex-1 py-2 rounded-full border border-slate-300 hover:bg-slate-100"
+                  >
+                    Cancel
+                  </button>
+                  <button
+                    onClick={async () => {
+                      await handleReferralSubmit();
+                      setShowReferralPopup(false);
+                    }}
+                    disabled={redeemLoading}
+                    className="flex-1 py-2 rounded-full bg-emerald-600 hover:bg-emerald-700 text-white font-semibold disabled:bg-slate-300"
+                  >
+                    {redeemLoading ? "Processing..." : "Submit"}
                   </button>
                 </div>
               </div>

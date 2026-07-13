@@ -275,9 +275,8 @@
 
 
 
-
 import React, { useState, useEffect } from "react";
-import { Loader2, Zap, ArrowRight } from "lucide-react";
+import { Loader2, Zap, ArrowRight, ShieldCheck, Mail, Layers, CreditCard, Receipt, Settings } from "lucide-react";
 import { getCurrentUser } from "../../api/signin";
 
 const SubscriptionDashboard = () => {
@@ -306,11 +305,9 @@ const SubscriptionDashboard = () => {
 
   if (loading) {
     return (
-      <div className="flex items-center justify-center min-h-screen bg-gray-50">
-        <div className="text-center p-8 bg-white rounded-lg shadow-lg">
-          <Loader2 className="h-10 w-10 animate-spin text-teal-600 mx-auto mb-4" />
-          <p className="text-gray-700 font-semibold">Loading your subscription data...</p>
-        </div>
+      <div className="min-h-screen bg-zinc-50/60 flex flex-col items-center justify-center py-28 text-center">
+        <Loader2 className="w-8 h-8 animate-spin text-indigo-600 mb-3" />
+        <p className="text-zinc-500 text-sm font-medium tracking-wide">Syncing Subscription Parameters...</p>
       </div>
     );
   }
@@ -318,62 +315,120 @@ const SubscriptionDashboard = () => {
   const isButtonDisabled = !isValidEmail;
 
   return (
-    <div className="min-h-screen flex items-center justify-center p-6 bg-gray-50">
-      {/* Main Card - Sleek and Minimalist */}
-      <div className="bg-white rounded-xl shadow-2xl max-w-xl w-full border border-gray-200">
-        <div className="p-10 sm:p-12">
+    <div className="min-h-screen bg-zinc-50/60 text-zinc-900 antialiased py-8 relative overflow-hidden">
+      {/* Structural Minimal Background Blur Aura */}
+      <div className="absolute top-1/4 left-1/4 w-[500px] h-[500px] bg-indigo-600/5 rounded-full blur-[120px] pointer-events-none" />
+      
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        
+        {/* Module Main Header Panel */}
+        <header className="mb-8 border-b border-zinc-200/80 pb-6">
+          <div className="flex items-center gap-1.5 text-xs font-semibold uppercase tracking-wider text-indigo-600 mb-1">
+            <ShieldCheck className="w-3.5 h-3.5" />
+            <span>Billing & Governance Node</span>
+          </div>
+          <h1 className="text-2xl md:text-3xl font-extrabold text-zinc-900 tracking-tight">
+            Subscription Workspace
+          </h1>
+          <p className="text-zinc-500 text-sm max-w-2xl font-medium mt-1">
+            Review billing frameworks, access external account statements, control transaction limits, or scale platform capabilities.
+          </p>
+        </header>
+
+        {/* Full Page Split Architecture Content Grid */}
+        <main className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
           
-          {/* Header */}
-          <div className="flex items-center space-x-4 mb-8 border-b pb-4">
-            <div className="w-12 h-12 bg-teal-100 rounded-lg flex items-center justify-center">
-              <Zap className="h-6 w-6 text-teal-600" />
+          {/* Left Block: Core Workspace & Interactive Launcher */}
+          <div className="lg:col-span-7 xl:col-span-8 space-y-6">
+            <div className="bg-white border border-zinc-200 rounded-2xl p-6 sm:p-8 shadow-sm">
+              <h2 className="text-base font-bold text-zinc-800 tracking-tight mb-2">
+                External Module Integration
+              </h2>
+              <p className="text-zinc-500 text-xs font-medium leading-relaxed mb-6">
+                Your payment processing engine, history profiles, and credential structures are securely sandbox-hosted outside this primary application cluster. Use the tunnel launcher below to drop cleanly into your active session.
+              </p>
+
+              {/* Account Status Segment Container */}
+              <div className="bg-zinc-50 border border-zinc-200 p-5 rounded-xl flex flex-col gap-1.5 mb-6 shadow-inner">
+                <span className="inline-flex items-center gap-1.5 text-[10px] font-bold text-zinc-400 uppercase tracking-wider">
+                  <Mail size={12} /> Active Gateway Instance Ident
+                </span>
+                <p className={`text-sm font-mono font-bold tracking-tight truncate ${isValidEmail ? 'text-zinc-900' : 'text-rose-600'}`}>
+                  {companyEmail}
+                </p>
+              </div>
+
+              {/* Submit / Action Framework */}
+              <div className="space-y-4">
+                <a
+                  href={subscriptionUrl}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className={`inline-flex items-center justify-center gap-2 px-6 py-2.5 font-bold text-sm rounded-xl transition-all shadow-sm active:scale-98 w-full sm:w-auto
+                    ${isButtonDisabled
+                      ? 'bg-zinc-100 text-zinc-400 cursor-not-allowed shadow-none'
+                      : 'bg-zinc-900 text-white hover:bg-zinc-800'
+                    }`}
+                  aria-disabled={isButtonDisabled}
+                  onClick={(e) => isButtonDisabled && e.preventDefault()}
+                >
+                  <span>Launch Subscription Dashboard</span>
+                  <ArrowRight className="h-4 w-4 text-zinc-400 shrink-0" />
+                </a>
+
+                <p className="text-[11px] font-medium text-zinc-400 leading-relaxed">
+                  {isButtonDisabled 
+                    ? "Routing parameters are structurally blocked without an initialization credential trace." 
+                    : "Routing establishes an isolated layer proxy window opening into an encrypted SSL domain."}
+                </p>
+              </div>
             </div>
-            <h2 className="text-2xl font-extrabold text-gray-900">
-              Subscription Portal
-            </h2>
           </div>
 
-          {/* Email Information Block */}
-          <div className="bg-gray-50 p-6 rounded-lg mb-10 border border-gray-200">
-            <p className="text-sm font-medium text-gray-500 mb-1">
-              Currently Managing
-            </p>
-            <p className={`text-lg font-mono break-all ${isValidEmail ? 'text-gray-800' : 'text-red-600'}`}>
-              {companyEmail}
-            </p>
-          </div>
+          {/* Right Block: General Framework Status Metadata Panels */}
+          <aside className="lg:col-span-5 xl:col-span-4 space-y-6">
+            
+            {/* Quick Contextual Framework Card Info */}
+            <div className="bg-white border border-zinc-200 rounded-2xl p-6 shadow-sm">
+              <h3 className="text-xs font-bold text-zinc-400 uppercase tracking-wider mb-4 flex items-center gap-2">
+                <Layers className="w-4 h-4 text-indigo-600" />
+                Workspace Directives
+              </h3>
+              
+              <div className="space-y-4 text-xs font-medium text-zinc-600">
+                <div className="flex items-start gap-3">
+                  <div className="p-2 rounded-lg bg-zinc-50 border border-zinc-100 text-zinc-500 shrink-0">
+                    <CreditCard size={14} />
+                  </div>
+                  <div>
+                    <h4 className="font-bold text-zinc-800 mb-0.5">Payment Portability</h4>
+                    <p className="text-zinc-400 text-[11px] leading-relaxed">Add secondary card fallbacks directly to mitigate profile operational dropouts.</p>
+                  </div>
+                </div>
 
-          {/* Descriptive Text */}
-          <p className="text-gray-600 mb-8 leading-relaxed">
-            Access your dedicated subscription dashboard to view billing history, manage payment methods, and make changes to your plan.
-          </p>
+                <div className="flex items-start gap-3 border-t border-zinc-100 pt-3">
+                  <div className="p-2 rounded-lg bg-zinc-50 border border-zinc-100 text-zinc-500 shrink-0">
+                    <Receipt size={14} />
+                  </div>
+                  <div>
+                    <h4 className="font-bold text-zinc-800 mb-0.5">Automated Audits</h4>
+                    <p className="text-zinc-400 text-[11px] leading-relaxed">Tax compliance profiles generate download manifests concurrently inside the node window.</p>
+                  </div>
+                </div>
+              </div>
+            </div>
 
-          {/* Action Button */}
-          <a
-            href={subscriptionUrl}
-            target="_blank"
-            rel="noopener noreferrer"
-            // Conditional styling for disabled state
-            className={`group inline-flex items-center justify-center w-full space-x-3 font-semibold text-lg py-3 rounded-lg transition-all shadow-md
-              ${isButtonDisabled
-                ? 'bg-gray-300 text-gray-500 cursor-not-allowed'
-                : 'bg-teal-600 text-white hover:bg-teal-700 hover:shadow-lg'
-              }`}
-            aria-disabled={isButtonDisabled}
-            onClick={(e) => isButtonDisabled && e.preventDefault()}
-          >
-            <span>Go to Dashboard</span>
-            <ArrowRight className="h-5 w-5 ml-2 group-hover:translate-x-1 transition-transform" />
-          </a>
-          
-          {/* Footer Text */}
-          <p className="mt-4 text-xs text-center text-gray-500">
-            {isButtonDisabled ? "Subscription link is unavailable without a valid email." : "Opens in a new, secure tab."}
-          </p>
-        </div>
+            {/* Global Infrastructure Identification Banner */}
+            <div className="p-4 bg-zinc-100/50 border border-zinc-200/80 rounded-2xl flex items-center justify-between text-[10px] font-bold uppercase tracking-widest text-zinc-400">
+              <span className="inline-flex items-center gap-1.5">
+                <Settings size={12} className="text-zinc-300" />
+                PromoConnect Secure Gateway
+              </span>
+              <span className="text-zinc-300">v2.4.0</span>
+            </div>
+          </aside>
 
-        {/* Subtle Accent Bottom */}
-        <div className="h-1 bg-teal-200 opacity-70 rounded-b-xl"></div>
+        </main>
       </div>
     </div>
   );

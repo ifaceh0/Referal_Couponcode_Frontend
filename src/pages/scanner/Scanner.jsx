@@ -1098,8 +1098,11 @@ const Scanner = () => {
   const [couponLoading, setCouponLoading] = useState(false);
   const [referralLoading, setReferralLoading] = useState(false);
 
-  const [couponPurchaseAmount, setCouponPurchaseAmount] = useState("");
-  const [referralPurchaseAmount, setReferralPurchaseAmount] = useState("");
+  const [redeemLoading, setRedeemLoading] = useState(false);
+
+  const [purchaseAmount, setPurchaseAmount] = useState("");
+  // const [couponPurchaseAmount, setCouponPurchaseAmount] = useState("");
+  // const [referralPurchaseAmount, setReferralPurchaseAmount] = useState("");
   const [referralRedeemAmount, setReferralRedeemAmount] = useState("");
 
   const [showRedeemChoiceModal, setShowRedeemChoiceModal] = useState(false);
@@ -1107,6 +1110,10 @@ const Scanner = () => {
   const [tempPurchaseAmount, setTempPurchaseAmount] = useState("");
   const [showSuccessPopup, setShowSuccessPopup] = useState(false);
   const [successData, setSuccessData] = useState({});
+
+  const [showTransactionTypeModal, setShowTransactionTypeModal] = useState(false);
+  const [selectedTransactionType, setSelectedTransactionType] = useState("");
+  const [showReferralPopup, setShowReferralPopup] = useState(false);
 
   const [isProcessing, setIsProcessing] = useState(false);
 
@@ -1186,14 +1193,40 @@ const Scanner = () => {
     setCameraFacingMode((prev) => (prev === "environment" ? "user" : "environment"));
   };
 
+  const handleContinueTransaction = () => {
+    if (!purchaseAmount || Number(purchaseAmount) <= 0) {
+      toast.error("Please enter purchase amount");
+      return;
+    }
+    setShowTransactionTypeModal(true);
+  };
+
+  const handleTransactionSelection = () => {
+    if (!selectedTransactionType) {
+      toast.error("Select transaction type");
+      return;
+    }
+
+    setShowTransactionTypeModal(false);
+
+    if (selectedTransactionType === "referral") {
+      setShowReferralPopup(true);
+    } else {
+      setTempPurchaseAmount(purchaseAmount);
+      setShowRedeemChoiceModal(true);
+    }
+  };
+
   const handleCouponSubmit = () => {
-    if (!couponPurchaseAmount || Number(couponPurchaseAmount) <= 0) {
+    // if (!couponPurchaseAmount || Number(couponPurchaseAmount) <= 0) {
+    if (!purchaseAmount || Number(purchaseAmount) <= 0) {
       setCouponError("Please enter valid purchase amount.");
       return;
     }
 
     if (applications.includes("Referral") && scannedData?.referralCode) {
-      setTempPurchaseAmount(couponPurchaseAmount);
+      // setTempPurchaseAmount(couponPurchaseAmount);
+      setTempPurchaseAmount(purchaseAmount);
       setShowRedeemChoiceModal(true);
     } else {
       handleDirectCouponApply();
@@ -1268,14 +1301,16 @@ const Scanner = () => {
         {
           customerId: scannedData.customerId,
           couponCode: scannedData.couponCode,
-          purchaseAmount: Number(couponPurchaseAmount),
+          // purchaseAmount: Number(couponPurchaseAmount),
+          purchaseAmount: Number(purchaseAmount),
           redeemAmount: 0,
         },
         { headers: { Authorization: `Bearer ${token}` } }
       );
 
       setSuccessData({
-        purchaseAmount: couponPurchaseAmount,
+        // purchaseAmount: couponPurchaseAmount,
+        purchaseAmount: purchaseAmount,
         couponAmount: scannedData.couponAmount,
         redeemAmount: 0,
       });
@@ -1289,7 +1324,8 @@ const Scanner = () => {
   };
 
   const handleReferralSubmit = async () => {
-    if (!referralPurchaseAmount || Number(referralPurchaseAmount) <= 0) {
+    // if (!referralPurchaseAmount || Number(referralPurchaseAmount) <= 0) {
+    if (!purchaseAmount || Number(purchaseAmount) <= 0) {
       setReferralError("Please enter purchase amount.");
       return;
     }
@@ -1317,14 +1353,16 @@ const Scanner = () => {
           customerId: scannedData.customerId,
           referralCode: scannedData.referralCode && scannedData.referralCode !== "None"
             ? scannedData.referralCode : null,
-          purchaseAmount: Number(referralPurchaseAmount),
+          // purchaseAmount: Number(referralPurchaseAmount),
+          purchaseAmount: Number(purchaseAmount),
           discountAmount: Number(referralRedeemAmount),
         },
         { headers: { Authorization: `Bearer ${token}` } }
       );
 
       setSuccessData({
-        purchaseAmount: referralPurchaseAmount,
+        // purchaseAmount: referralPurchaseAmount,
+        purchaseAmount: purchaseAmount,
         couponAmount: 0,
         redeemAmount: referralRedeemAmount,
       });
@@ -1338,15 +1376,28 @@ const Scanner = () => {
     }
   };
 
+  // const resetForm = () => {
+  //   setCouponPurchaseAmount("");
+  //   setReferralPurchaseAmount("");
+  //   setReferralRedeemAmount("");
+  //   setCouponError("");
+  //   setReferralError("");
+  //   setShowRedeemChoiceModal(false);
+  //   setRedeemOption("");
+  //   setTempPurchaseAmount("");
+  //   setShowSuccessPopup(false);
+  // };
   const resetForm = () => {
-    setCouponPurchaseAmount("");
-    setReferralPurchaseAmount("");
+    setPurchaseAmount("");
     setReferralRedeemAmount("");
     setCouponError("");
     setReferralError("");
     setShowRedeemChoiceModal(false);
     setRedeemOption("");
     setTempPurchaseAmount("");
+    setShowTransactionTypeModal(false);
+    setSelectedTransactionType("");
+    setShowReferralPopup(false);
     setShowSuccessPopup(false);
   };
 
@@ -1366,6 +1417,10 @@ const Scanner = () => {
   };
 
   const currency = getCurrentCurrency();
+
+  const hasReferral = applications.includes("Referral") && scannedData?.referralCode;
+  const hasCoupon = applications.includes("Coupon") && scannedData?.couponCode;
+  const hasBothApplications = hasReferral && hasCoupon;
 
   return (
     <div className="flex flex-col items-center justify-center min-h-screen p-6 bg-gradient-to-r from-blue-50 to-purple-50">
@@ -1438,7 +1493,7 @@ const Scanner = () => {
         {cameraFacingMode === "environment" ? "Using back camera" : "Using front camera"}
       </div>
 
-      <CustomerDetailsDialog
+      {/* <CustomerDetailsDialog
         open={open}
         onClose={handleCloseDialog}
         scannedData={scannedData}
@@ -1455,17 +1510,51 @@ const Scanner = () => {
         applications={applications}
         couponLoading={couponLoading}
         referralLoading={referralLoading}
+      /> */}
+      <CustomerDetailsDialog
+        open={open}
+        onClose={handleCloseDialog}
+        scannedData={scannedData}
+        purchaseAmount={purchaseAmount}
+        setPurchaseAmount={setPurchaseAmount}
+        referralRedeemAmount={referralRedeemAmount}
+        setReferralRedeemAmount={setReferralRedeemAmount}
+        couponError={couponError}
+        referralError={referralError}
+        onCouponSubmit={handleCouponSubmit}
+        onReferralSubmit={handleReferralSubmit}
+        applications={applications}
+        couponLoading={couponLoading}
+        referralLoading={referralLoading}
+        redeemLoading={redeemLoading}
+        hasBothApplications={hasBothApplications}
+        hasReferral={hasReferral}
+        hasCoupon={hasCoupon}
+        showTransactionTypeModal={showTransactionTypeModal}
+        setShowTransactionTypeModal={setShowTransactionTypeModal}
+        selectedTransactionType={selectedTransactionType}
+        setSelectedTransactionType={setSelectedTransactionType}
+        handleContinueTransaction={handleContinueTransaction}
+        handleTransactionSelection={handleTransactionSelection}
+        showReferralPopup={showReferralPopup}
+        setShowReferralPopup={setShowReferralPopup}
+        showRedeemChoiceModal={showRedeemChoiceModal}
+        setShowRedeemChoiceModal={setShowRedeemChoiceModal}
+        redeemOption={redeemOption}
+        setRedeemOption={setRedeemOption}
+        tempPurchaseAmount={tempPurchaseAmount}
+        handleCombinedCouponRedeem={handleCombinedCouponRedeem}
+        // currency={currency}
       />
 
       {/* RE-DESIGNED COMPLETE TRANSACTION POPUP MODAL (CHECKBOX/RADIO SYSTEM) */}
-      {showRedeemChoiceModal && (
+      {/* {showRedeemChoiceModal && (
         <div className="fixed inset-0 z-[60] flex items-center justify-center bg-slate-900/60 backdrop-blur-md p-4 animate-fade-in">
           <div className="bg-white rounded-lg w-full max-w-md p-6 sm:p-7 shadow-[0_25px_60px_rgba(0,0,0,0.18)] border border-slate-100 transform scale-100 transition-all">
             
             <h2 className="text-xl font-black text-slate-900 tracking-tight text-center mb-1">Complete Transaction</h2>
             <p className="text-xs font-medium text-slate-500 text-center mb-5">Select a balance settlement configuration method</p>
 
-            {/* Coupon Information Banner */}
             <div className="bg-amber-50 border border-amber-100 rounded-lg p-4 mb-5 flex justify-between items-center text-sm">
               <div>
                 <span className="block text-[10px] uppercase font-bold text-amber-700/80 tracking-wider">Coupon Discount Applied</span>
@@ -1479,7 +1568,6 @@ const Scanner = () => {
 
             <p className="text-xs font-bold text-slate-400 uppercase tracking-wider mb-2.5">Redeem from Referral Balance</p>
 
-            {/* Option 1: Full Balance Selection */}
             <div
               onClick={() => setRedeemOption("full")}
               className={`group p-3 border rounded-md mb-3 cursor-pointer transition-all flex items-start gap-3.5 ${
@@ -1488,7 +1576,6 @@ const Scanner = () => {
                   : "border-slate-200 hover:border-slate-300 bg-white"
               }`}
             >
-              {/* Styled Checkbox/Radio Circle Container */}
               <div className={`mt-0.5 w-5 h-5 rounded-full border flex items-center justify-center shrink-0 transition-all ${
                 redeemOption === "full" ? "border-emerald-600 bg-emerald-600 text-white" : "border-slate-300 group-hover:border-slate-400 bg-white"
               }`}>
@@ -1500,7 +1587,6 @@ const Scanner = () => {
               </div>
             </div>
 
-            {/* Option 2: Partial Selection Row */}
             <div
               onClick={() => setRedeemOption("partial")}
               className={`group p-3 border rounded-md cursor-pointer transition-all ${
@@ -1510,7 +1596,7 @@ const Scanner = () => {
               }`}
             >
               <div className="flex items-start gap-3.5">
-                {/* Styled Checkbox/Radio Circle Container */}
+                
                 <div className={`mt-0.5 w-5 h-5 rounded-full border flex items-center justify-center shrink-0 transition-all ${
                   redeemOption === "partial" ? "border-emerald-600 bg-emerald-600 text-white" : "border-slate-300 group-hover:border-slate-400 bg-white"
                 }`}>
@@ -1522,7 +1608,6 @@ const Scanner = () => {
                 </div>
               </div>
 
-              {/* Dynamic Inner input drawer panel */}
               {redeemOption === "partial" && (
                 <div className="mt-3.5 pt-3.5 border-t border-emerald-200/40" onClick={(e) => e.stopPropagation()}>
                   <div className="relative">
@@ -1541,7 +1626,6 @@ const Scanner = () => {
 
             {referralError && <p className="text-xs font-semibold text-rose-500 mt-3">{referralError}</p>}
 
-            {/* Bottom Control Actions */}
             <div className="flex gap-3.5 mt-6">
               <button 
                 onClick={() => setShowRedeemChoiceModal(false)} 
@@ -1559,7 +1643,7 @@ const Scanner = () => {
             </div>
           </div>
         </div>
-      )}
+      )} */}
 
       {/* Error Modal */}
       {errorDialogOpen && (
