@@ -411,13 +411,13 @@ const ReferrerDashboard = () => {
           <h1 className="text-3xl font-bold text-gray-800">Referral Dashboard</h1>
           <p className="text-gray-600 mt-2">Track your referral progress and rewards</p>
         </div>
-        <button
+        {/* <button
           onClick={() => setShowShareOptions(!showShareOptions)}
           className="mt-4 md:mt-0 flex items-center bg-indigo-600 hover:bg-indigo-700 text-white font-medium py-2 px-4 rounded-lg transition-colors"
         >
           <FaShareAlt className="mr-2" />
           Share Referral Link
-        </button>
+        </button> */}
       </div>
 
       {/* Share Options Modal */}
@@ -479,7 +479,7 @@ const ReferrerDashboard = () => {
       )}
 
       {/* Stats Grid */}
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
+      <div className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-3 gap-6 mb-8">
         <div className="bg-white rounded-xl shadow-sm p-6 border-l-4 border-blue-500">
           <h3 className="text-gray-500 text-sm font-medium mb-1">Total Friends Referred</h3>
           <p className="text-3xl font-bold text-gray-800">{dashboardData.totalReferred}</p>
@@ -510,7 +510,7 @@ const ReferrerDashboard = () => {
           </p>
         </div>
 
-        <div className="bg-white rounded-xl shadow-sm p-6 border-l-4 border-purple-500">
+        {/* <div className="bg-white rounded-xl shadow-sm p-6 border-l-4 border-purple-500">
           <h3 className="text-gray-500 text-sm font-medium mb-1">Next Reward Milestone</h3>
           <p className="text-lg font-bold text-gray-800">{dashboardData.nextMilestone.description}</p>
           <div className="w-full bg-gray-200 rounded-full h-2 mt-3">
@@ -523,7 +523,7 @@ const ReferrerDashboard = () => {
             {dashboardData.totalReferred} of{' '}
             {dashboardData.totalReferred + dashboardData.nextMilestone.friendsNeeded} friends
           </p>
-        </div>
+        </div> */}
       </div>
 
       {/* Tables Section */}
@@ -602,7 +602,7 @@ const ReferrerDashboard = () => {
       </div>
 
       {/* Call to Action */}
-      <div className="mt-10 bg-gradient-to-r from-indigo-500 to-purple-600 rounded-xl p-8 text-center">
+      {/* <div className="mt-10 bg-gradient-to-r from-indigo-500 to-purple-600 rounded-xl p-8 text-center">
         <h2 className="text-2xl font-bold text-white mb-2">Share with Friends, Earn More Rewards!</h2>
         <p className="text-indigo-100 mb-6 max-w-2xl mx-auto">
           Invite your friends to join and earn rewards for every successful referral. The more friends you refer, the more you earn!
@@ -614,7 +614,7 @@ const ReferrerDashboard = () => {
           <FaShareAlt className="mr-2" />
           Share Referral Link
         </button>
-      </div>
+      </div> */}
     </div>
   );
 };
