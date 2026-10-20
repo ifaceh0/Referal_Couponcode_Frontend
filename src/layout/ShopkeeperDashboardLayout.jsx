@@ -3,6 +3,7 @@ import { NavLink, useNavigate } from "react-router-dom";
 import { FaBars, FaTimes, FaUser, FaCog, FaBell, FaQrcode, FaStore, FaEnvelope } from "react-icons/fa";
 import Cookies from "js-cookie";
 import { getCurrentUser } from '../api/signin';
+import { VITE_BACKEND_URL } from "../apiConfig";
 
 const ShopkeeperDashboardLayout = ({ children }) => {
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
@@ -24,6 +25,36 @@ const ShopkeeperDashboardLayout = ({ children }) => {
     
     fetchUser();
   }, []);
+
+  const goToLoyalty = async () => {
+    try {
+      const token = localStorage.getItem("token");
+
+      const res = await fetch(`${VITE_BACKEND_URL}/api/auth/generate-transfer-token`, {
+        method: "POST",
+        credentials: "include",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+      });
+
+      if (!res.ok) {
+        const err = await res.json();
+        throw new Error(err.error || "Failed to generate transfer token");
+      }
+
+      const data = await res.json();
+      const transferToken = data.transferToken;
+
+      const targetUrl = `${import.meta.env.VITE_LOYALTY_FRONTEND_URL}/sso-login?token=${transferToken}`;
+      window.location.href = targetUrl;
+
+    } catch (err) {
+      console.error(err);
+      alert(err.message || "Unable to switch to Loyalty");
+    }
+  };
 
   const toggleSidebar = () => setIsSidebarOpen(!isSidebarOpen);
   const closeSidebar = () => setIsSidebarOpen(false); 
@@ -213,6 +244,22 @@ const ShopkeeperDashboardLayout = ({ children }) => {
               <span>{label}</span>
             </NavLink>
           ))}
+
+          {userDetails?.application_name &&
+            (Array.isArray(userDetails.application_name)
+              ? userDetails.application_name
+              : [userDetails.application_name]
+            )
+              .map((a) => a.toLowerCase())
+              .includes("loyalty") && (
+              <button
+                onClick={goToLoyalty}
+                className="flex items-center space-x-2 py-2 px-4 rounded-md hover:bg-blue-600 transition w-full text-left mt-4 border-t border-blue-700 pt-1"
+              >
+                <span className="text-xl">⚡</span>
+                <span>Switch to Loyalty</span>
+              </button>
+            )}
         </nav>
       </div>
 

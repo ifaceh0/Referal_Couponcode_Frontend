@@ -510,6 +510,7 @@ const ShopkeeperSignUp = () => {
     companyEmail: "",
     companyPhone: "",
     country: "",
+    tenantId: null
   });
   const [errors, setErrors] = useState({});
   const [captchaText, setCaptchaText] = useState("");
@@ -544,6 +545,7 @@ const ShopkeeperSignUp = () => {
 
     if (name === "companyEmail") {
       setIsEmailVerified(false);
+      setFormData(prev => ({ ...prev, tenantId: null }));
     }
   };
 
@@ -594,6 +596,12 @@ const ShopkeeperSignUp = () => {
       if (data.success === true) {
         setIsEmailVerified(true);
         toast.success("Email verified! You have access to Referral or Coupon.");
+        if (data.tenantId) {
+          setFormData(prev => ({
+            ...prev,
+            tenantId: data.tenantId
+          }));
+        }
       } else {
         setIsEmailVerified(false);
         toast.error(data.message || "Verification failed.");
