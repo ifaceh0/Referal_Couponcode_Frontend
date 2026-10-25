@@ -34,15 +34,12 @@
 //   const [purchaseAmount, setPurchaseAmount] = useState("");
 //   const [referralRedeemAmount, setReferralRedeemAmount] = useState("");
 
-//   const [showRedeemChoiceModal, setShowRedeemChoiceModal] = useState(false);
-//   const [redeemOption, setRedeemOption] = useState("");
-//   const [tempPurchaseAmount, setTempPurchaseAmount] = useState("");
 //   const [showSuccessPopup, setShowSuccessPopup] = useState(false);
 //   const [successData, setSuccessData] = useState({});
 
-//   const [showTransactionTypeModal, setShowTransactionTypeModal] = useState(false);
-//   const [selectedTransactionType, setSelectedTransactionType] = useState("");
-//   const [showReferralPopup, setShowReferralPopup] = useState(false);
+//   const [applyCoupon, setApplyCoupon] = useState(false);
+//   const [applyReferral, setApplyReferral] = useState(false);
+//   const [referralType, setReferralType] = useState("");
 
 //   const [isProcessing, setIsProcessing] = useState(false);
 
@@ -122,59 +119,29 @@
 //     setCameraFacingMode((prev) => (prev === "environment" ? "user" : "environment"));
 //   };
 
-//   const handleContinueTransaction = () => {
-//     if (!purchaseAmount || Number(purchaseAmount) <= 0) {
-//       toast.error("Please enter purchase amount");
-//       return;
-//     }
-//     setShowTransactionTypeModal(true);
-//   };
-
-//   const handleTransactionSelection = () => {
-//     if (!selectedTransactionType) {
-//       toast.error("Select transaction type");
+//   const handleCombinedTransaction = async () => {
+//     if (applyReferral && !referralType) {
+//       setReferralError("Select Full or Partial Balance Redemption");
 //       return;
 //     }
 
-//     setShowTransactionTypeModal(false);
-
-//     if (selectedTransactionType === "referral") {
-//       setShowReferralPopup(true);
-//     } else {
-//       setTempPurchaseAmount(purchaseAmount);
-//       setShowRedeemChoiceModal(true);
-//     }
-//   };
-
-//   const handleCouponSubmit = () => {
-//     if (!purchaseAmount || Number(purchaseAmount) <= 0) {
-//       setCouponError("Please enter valid purchase amount.");
-//       return;
-//     }
-
-//     if (applications.includes("Referral") && scannedData?.referralCode) {
-//       setTempPurchaseAmount(purchaseAmount);
-//       setShowRedeemChoiceModal(true);
-//     } else {
-//       handleDirectCouponApply();
-//     }
-//   };
-
-//   const handleCombinedCouponRedeem = async () => {
 //     let finalRedeemAmount = 0;
-
-//     if (redeemOption === "full") {
+//     if (referralType === "full") {
 //       finalRedeemAmount = scannedData.availableBalance;
-//     } else if (redeemOption === "partial") {
+//     } else if (referralType === "partial") {
 //       finalRedeemAmount = Number(referralRedeemAmount || 0);
 //       if (finalRedeemAmount > scannedData.availableBalance) {
-//         setReferralError("Redeem amount exceeds available balance.");
+//         setReferralError("Redeem amount exceeds available balance");
 //         return;
 //       }
-//       if (finalRedeemAmount > Number(tempPurchaseAmount)) {
-//         setReferralError("Redeem amount cannot exceed purchase amount.");
-//         return;
-//       }
+//     }
+
+//     const couponDiscount = applyCoupon ? scannedData.couponAmount : 0;
+//     const totalDiscount = couponDiscount + finalRedeemAmount;
+
+//     if (totalDiscount > Number(purchaseAmount)) {
+//       toast.error("Total discount cannot exceed purchase amount.");
+//       return;
 //     }
 
 //     const token = localStorage.getItem("token");
@@ -183,7 +150,7 @@
 //       return;
 //     }
 
-//     setReferralLoading(true);
+//     setRedeemLoading(true);
 
 //     try {
 //       await axios.post(
@@ -191,29 +158,33 @@
 //         {
 //           customerId: scannedData.customerId,
 //           couponCode: scannedData.couponCode,
-//           purchaseAmount: Number(tempPurchaseAmount),
+//           purchaseAmount: Number(purchaseAmount),
 //           redeemAmount: finalRedeemAmount,
 //         },
 //         { headers: { Authorization: `Bearer ${token}` } }
 //       );
 
 //       setSuccessData({
-//         purchaseAmount: tempPurchaseAmount,
+//         purchaseAmount,
 //         couponAmount: scannedData.couponAmount,
 //         redeemAmount: finalRedeemAmount,
 //       });
 //       setShowSuccessPopup(true);
-//       setShowRedeemChoiceModal(false);
 //     } catch (err) {
 //       const msg = err?.response?.data?.message || err.message;
 //       toast.error(msg);
 //       setReferralError(msg);
 //     } finally {
-//       setReferralLoading(false);
+//       setRedeemLoading(false);
 //     }
 //   };
 
 //   const handleDirectCouponApply = async () => {
+//     if (!purchaseAmount || Number(purchaseAmount) <= 0) {
+//       setCouponError("Please enter purchase amount");
+//       return;
+//     }
+
 //     const token = localStorage.getItem("token");
 //     if (!token) {
 //       toast.error("Authentication token missing.");
@@ -235,7 +206,7 @@
 //       );
 
 //       setSuccessData({
-//         purchaseAmount: purchaseAmount,
+//         purchaseAmount,
 //         couponAmount: scannedData.couponAmount,
 //         redeemAmount: 0,
 //       });
@@ -243,6 +214,7 @@
 //     } catch (err) {
 //       const msg = err?.response?.data?.message || err.message;
 //       toast.error(msg);
+//       setCouponError(msg);
 //     } finally {
 //       setCouponLoading(false);
 //     }
@@ -250,15 +222,38 @@
 
 //   const handleReferralSubmit = async () => {
 //     if (!purchaseAmount || Number(purchaseAmount) <= 0) {
-//       setReferralError("Please enter purchase amount.");
+//       setReferralError("Please enter purchase amount");
 //       return;
 //     }
-//     if (!referralRedeemAmount || Number(referralRedeemAmount) <= 0) {
-//       setReferralError("Please enter redeem amount.");
+
+//     if (Number(scannedData.availableBalance) <= 0) {
+//       await handlePlainPurchase();
 //       return;
 //     }
-//     if (Number(referralRedeemAmount) > (scannedData?.availableBalance || 0)) {
-//       setReferralError("Amount exceeds available balance.");
+
+//     if (!referralType) {
+//       setReferralError("Select Full or Partial");
+//       return;
+//     }
+
+//     let redeemAmount = 0;
+
+//     if (referralType === "full") {
+//       redeemAmount = scannedData.availableBalance;
+//     } else if (referralType === "partial") {
+//       if (!referralRedeemAmount || Number(referralRedeemAmount) <= 0) {
+//         setReferralError("Please enter redeem amount");
+//         return;
+//       }
+//       if (Number(referralRedeemAmount) > scannedData.availableBalance) {
+//         setReferralError("Redeem amount exceeds available balance");
+//         return;
+//       }
+//       redeemAmount = Number(referralRedeemAmount);
+//     }
+
+//     if (redeemAmount > Number(purchaseAmount)) {
+//       setReferralError("Redeem amount cannot exceed purchase amount");
 //       return;
 //     }
 
@@ -275,18 +270,20 @@
 //         `${import.meta.env.VITE_BACKEND_URL}/api/shopkeeper/redeem-discount`,
 //         {
 //           customerId: scannedData.customerId,
-//           referralCode: scannedData.referralCode && scannedData.referralCode !== "None"
-//             ? scannedData.referralCode : null,
+//           referralCode:
+//             scannedData.referralCode && scannedData.referralCode !== "None"
+//               ? scannedData.referralCode
+//               : null,
 //           purchaseAmount: Number(purchaseAmount),
-//           discountAmount: Number(referralRedeemAmount),
+//           discountAmount: redeemAmount,
 //         },
 //         { headers: { Authorization: `Bearer ${token}` } }
 //       );
 
 //       setSuccessData({
-//         purchaseAmount: purchaseAmount,
+//         purchaseAmount,
 //         couponAmount: 0,
-//         redeemAmount: referralRedeemAmount,
+//         redeemAmount,
 //       });
 //       setShowSuccessPopup(true);
 //     } catch (err) {
@@ -298,17 +295,78 @@
 //     }
 //   };
 
+//   const handlePlainPurchase = async () => {
+//     if (!purchaseAmount || Number(purchaseAmount) <= 0) {
+//       toast.error("Enter purchase amount");
+//       return;
+//     }
+
+//     const token = localStorage.getItem("token");
+//     if (!token) {
+//       toast.error("Authentication token missing.");
+//       return;
+//     }
+
+//     setRedeemLoading(true);
+
+//     try {
+//       await axios.post(
+//         `${import.meta.env.VITE_BACKEND_URL}/api/shopkeeper/record-purchase`,
+//         {
+//           customerId: scannedData.customerId,
+//           purchaseAmount: Number(purchaseAmount),
+//         },
+//         { headers: { Authorization: `Bearer ${token}` } }
+//       );
+
+//       setSuccessData({
+//         purchaseAmount,
+//         couponAmount: 0,
+//         redeemAmount: 0,
+//       });
+//       setShowSuccessPopup(true);
+//     } catch (err) {
+//       const msg = err?.response?.data?.message || err.message;
+//       toast.error(msg);
+//     } finally {
+//       setRedeemLoading(false);
+//     }
+//   };
+
+//   const handleSubmitTransaction = async () => {
+//     if (!purchaseAmount || Number(purchaseAmount) <= 0) {
+//       toast.error("Enter purchase amount");
+//       return;
+//     }
+
+//     if (!applyCoupon && !applyReferral) {
+//       await handlePlainPurchase();
+//       return;
+//     }
+
+//     if (applyCoupon && !applyReferral) {
+//       await handleDirectCouponApply();
+//       return;
+//     }
+
+//     if (!applyCoupon && applyReferral) {
+//       await handleReferralSubmit();
+//       return;
+//     }
+
+//     if (applyCoupon && applyReferral) {
+//       await handleCombinedTransaction();
+//     }
+//   };
+
 //   const resetForm = () => {
 //     setPurchaseAmount("");
 //     setReferralRedeemAmount("");
 //     setCouponError("");
 //     setReferralError("");
-//     setShowRedeemChoiceModal(false);
-//     setRedeemOption("");
-//     setTempPurchaseAmount("");
-//     setShowTransactionTypeModal(false);
-//     setSelectedTransactionType("");
-//     setShowReferralPopup(false);
+//     setApplyCoupon(false);
+//     setApplyReferral(false);
+//     setReferralType("");
 //     setShowSuccessPopup(false);
 //   };
 
@@ -414,8 +472,6 @@
 //         setReferralRedeemAmount={setReferralRedeemAmount}
 //         couponError={couponError}
 //         referralError={referralError}
-//         onCouponSubmit={handleCouponSubmit}
-//         onReferralSubmit={handleReferralSubmit}
 //         applications={applications}
 //         couponLoading={couponLoading}
 //         referralLoading={referralLoading}
@@ -423,20 +479,15 @@
 //         hasBothApplications={hasBothApplications}
 //         hasReferral={hasReferral}
 //         hasCoupon={hasCoupon}
-//         showTransactionTypeModal={showTransactionTypeModal}
-//         setShowTransactionTypeModal={setShowTransactionTypeModal}
-//         selectedTransactionType={selectedTransactionType}
-//         setSelectedTransactionType={setSelectedTransactionType}
-//         handleContinueTransaction={handleContinueTransaction}
-//         handleTransactionSelection={handleTransactionSelection}
-//         showReferralPopup={showReferralPopup}
-//         setShowReferralPopup={setShowReferralPopup}
-//         showRedeemChoiceModal={showRedeemChoiceModal}
-//         setShowRedeemChoiceModal={setShowRedeemChoiceModal}
-//         redeemOption={redeemOption}
-//         setRedeemOption={setRedeemOption}
-//         tempPurchaseAmount={tempPurchaseAmount}
-//         handleCombinedCouponRedeem={handleCombinedCouponRedeem}
+//         applyCoupon={applyCoupon}
+//         setApplyCoupon={setApplyCoupon}
+//         applyReferral={applyReferral}
+//         setApplyReferral={setApplyReferral}
+//         referralType={referralType}
+//         setReferralType={setReferralType}
+//         onSubmitTransaction={handleSubmitTransaction}
+//         onReferralSubmit={handleReferralSubmit}
+//         onCouponSubmit={handleDirectCouponApply}
 //       />
 
 //       {/* Error Modal */}
@@ -494,6 +545,7 @@
 
 
 
+
 import React, { useState, useEffect } from "react";
 import QrScanner from "react-qr-scanner";
 import { motion } from "framer-motion";
@@ -521,6 +573,8 @@ const Scanner = () => {
   const [applications, setApplications] = useState([]);
   const [couponError, setCouponError] = useState("");
   const [referralError, setReferralError] = useState("");
+  // Unified transaction error shown below Total Discount (backend + client validation)
+  const [transactionError, setTransactionError] = useState("");
 
   const [couponLoading, setCouponLoading] = useState(false);
   const [referralLoading, setReferralLoading] = useState(false);
@@ -615,34 +669,60 @@ const Scanner = () => {
     setCameraFacingMode((prev) => (prev === "environment" ? "user" : "environment"));
   };
 
+  // Helper: compute redeem amount based on referralType
+  const getFinalRedeemAmount = () => {
+    if (!applyReferral || !referralType) return 0;
+    if (referralType === "full") return Number(scannedData?.availableBalance) || 0;
+    if (referralType === "partial") return Number(referralRedeemAmount || 0);
+    if (referralType === "purchase") {
+      const purchase = Number(purchaseAmount || 0);
+      const balance = Number(scannedData?.availableBalance) || 0;
+      return Math.min(purchase, balance);
+    }
+    return 0;
+  };
+
   const handleCombinedTransaction = async () => {
+    setTransactionError("");
+    setCouponError("");
+    setReferralError("");
+
     if (applyReferral && !referralType) {
-      setReferralError("Select Full or Partial Balance Redemption");
+      setReferralError("Select Full, Partial, or Purchase Amount redemption");
       return;
     }
 
-    let finalRedeemAmount = 0;
-    if (referralType === "full") {
-      finalRedeemAmount = scannedData.availableBalance;
-    } else if (referralType === "partial") {
-      finalRedeemAmount = Number(referralRedeemAmount || 0);
-      if (finalRedeemAmount > scannedData.availableBalance) {
+    let finalRedeemAmount = getFinalRedeemAmount();
+
+    if (referralType === "partial") {
+      if (finalRedeemAmount > Number(scannedData.availableBalance)) {
         setReferralError("Redeem amount exceeds available balance");
+        return;
+      }
+      if (finalRedeemAmount <= 0) {
+        setReferralError("Please enter a valid redeem amount");
         return;
       }
     }
 
-    const couponDiscount = applyCoupon ? scannedData.couponAmount : 0;
+    if (referralType === "purchase") {
+      if (!purchaseAmount || Number(purchaseAmount) <= 0) {
+        setReferralError("Please enter purchase amount first");
+        return;
+      }
+    }
+
+    const couponDiscount = applyCoupon ? Number(scannedData.couponAmount) || 0 : 0;
     const totalDiscount = couponDiscount + finalRedeemAmount;
 
     if (totalDiscount > Number(purchaseAmount)) {
-      toast.error("Total discount cannot exceed purchase amount.");
+      setTransactionError("Total discount cannot exceed purchase amount.");
       return;
     }
 
     const token = localStorage.getItem("token");
     if (!token) {
-      toast.error("Authentication token missing.");
+      setTransactionError("Authentication token missing.");
       return;
     }
 
@@ -667,23 +747,36 @@ const Scanner = () => {
       });
       setShowSuccessPopup(true);
     } catch (err) {
-      const msg = err?.response?.data?.message || err.message;
-      toast.error(msg);
-      setReferralError(msg);
+      const msg =
+        err?.response?.data?.message ||
+        err?.response?.data?.error ||
+        err.message ||
+        "Transaction failed";
+      setTransactionError(msg);
     } finally {
       setRedeemLoading(false);
     }
   };
 
   const handleDirectCouponApply = async () => {
+    setTransactionError("");
+    setCouponError("");
+
     if (!purchaseAmount || Number(purchaseAmount) <= 0) {
       setCouponError("Please enter purchase amount");
       return;
     }
 
+    // Client-side guard so message shows under Total Discount
+    const couponAmt = Number(scannedData.couponAmount) || 0;
+    if (couponAmt > Number(purchaseAmount)) {
+      setTransactionError("Total discount cannot exceed purchase amount.");
+      return;
+    }
+
     const token = localStorage.getItem("token");
     if (!token) {
-      toast.error("Authentication token missing.");
+      setTransactionError("Authentication token missing.");
       return;
     }
 
@@ -708,15 +801,21 @@ const Scanner = () => {
       });
       setShowSuccessPopup(true);
     } catch (err) {
-      const msg = err?.response?.data?.message || err.message;
-      toast.error(msg);
-      setCouponError(msg);
+      const msg =
+        err?.response?.data?.message ||
+        err?.response?.data?.error ||
+        err.message ||
+        "Failed to apply coupon";
+      setTransactionError(msg);
     } finally {
       setCouponLoading(false);
     }
   };
 
   const handleReferralSubmit = async () => {
+    setTransactionError("");
+    setReferralError("");
+
     if (!purchaseAmount || Number(purchaseAmount) <= 0) {
       setReferralError("Please enter purchase amount");
       return;
@@ -728,15 +827,13 @@ const Scanner = () => {
     }
 
     if (!referralType) {
-      setReferralError("Select Full or Partial");
+      setReferralError("Select Full, Partial, or Purchase Amount");
       return;
     }
 
-    let redeemAmount = 0;
+    let redeemAmount = getFinalRedeemAmount();
 
-    if (referralType === "full") {
-      redeemAmount = scannedData.availableBalance;
-    } else if (referralType === "partial") {
+    if (referralType === "partial") {
       if (!referralRedeemAmount || Number(referralRedeemAmount) <= 0) {
         setReferralError("Please enter redeem amount");
         return;
@@ -746,6 +843,13 @@ const Scanner = () => {
         return;
       }
       redeemAmount = Number(referralRedeemAmount);
+    }
+
+    if (referralType === "purchase") {
+      if (!purchaseAmount || Number(purchaseAmount) <= 0) {
+        setReferralError("Please enter purchase amount first");
+        return;
+      }
     }
 
     if (redeemAmount > Number(purchaseAmount)) {
@@ -783,23 +887,28 @@ const Scanner = () => {
       });
       setShowSuccessPopup(true);
     } catch (err) {
-      const msg = err?.response?.data?.message || err.message;
-      setReferralError(msg);
-      toast.error(msg);
+      const msg =
+        err?.response?.data?.message ||
+        err?.response?.data?.error ||
+        err.message ||
+        "Redeem failed";
+      setTransactionError(msg);
     } finally {
       setReferralLoading(false);
     }
   };
 
   const handlePlainPurchase = async () => {
+    setTransactionError("");
+
     if (!purchaseAmount || Number(purchaseAmount) <= 0) {
-      toast.error("Enter purchase amount");
+      setTransactionError("Enter purchase amount");
       return;
     }
 
     const token = localStorage.getItem("token");
     if (!token) {
-      toast.error("Authentication token missing.");
+      setTransactionError("Authentication token missing.");
       return;
     }
 
@@ -822,16 +931,24 @@ const Scanner = () => {
       });
       setShowSuccessPopup(true);
     } catch (err) {
-      const msg = err?.response?.data?.message || err.message;
-      toast.error(msg);
+      const msg =
+        err?.response?.data?.message ||
+        err?.response?.data?.error ||
+        err.message ||
+        "Purchase recording failed";
+      setTransactionError(msg);
     } finally {
       setRedeemLoading(false);
     }
   };
 
   const handleSubmitTransaction = async () => {
+    setTransactionError("");
+    setCouponError("");
+    setReferralError("");
+
     if (!purchaseAmount || Number(purchaseAmount) <= 0) {
-      toast.error("Enter purchase amount");
+      setTransactionError("Enter purchase amount");
       return;
     }
 
@@ -860,10 +977,14 @@ const Scanner = () => {
     setReferralRedeemAmount("");
     setCouponError("");
     setReferralError("");
+    setTransactionError("");
     setApplyCoupon(false);
     setApplyReferral(false);
     setReferralType("");
     setShowSuccessPopup(false);
+    setRedeemLoading(false);
+    setCouponLoading(false);
+    setReferralLoading(false);
   };
 
   const handleCloseDialog = () => {
@@ -932,7 +1053,7 @@ const Scanner = () => {
                   facingMode: cameraFacingMode,
                   width: 640,
                   height: 640,
-                }
+                },
               }}
             />
             <button
@@ -968,6 +1089,10 @@ const Scanner = () => {
         setReferralRedeemAmount={setReferralRedeemAmount}
         couponError={couponError}
         referralError={referralError}
+        transactionError={transactionError}
+        setTransactionError={setTransactionError}
+        setCouponError={setCouponError}
+        setReferralError={setReferralError}
         applications={applications}
         couponLoading={couponLoading}
         referralLoading={referralLoading}
