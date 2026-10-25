@@ -57,6 +57,8 @@ import ReferralHub from "./home/ReferralHub";
 
 //import UserSignUp from "./pages/shopkeeper/signin/UserSignUp";
 
+import SsoLogin from "./pages/shopkeeper/signin/SsoLogin";
+
 const App = () => {
   return (
     <Router>
@@ -75,6 +77,7 @@ const App = () => {
               <Route path="/coupon-hub" element={<CouponHub />} />
               <Route path="/referral-hub" element={<ReferralHub />} />
               <Route path="/signin" element={<ShopkeeperSignIn />} />
+              <Route path="/sso-login" element={<SsoLogin />} />
               <Route path="/signup/:role" element={<SignUpToggle/>} />
               <Route path="/t" element={<ToastTest />} />
               <Route path="/features" element={<ProductShowcase/>} />

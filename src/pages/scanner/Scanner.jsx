@@ -1,4 +1,3 @@
-
 // import React, { useState, useEffect } from "react";
 // import QrScanner from "react-qr-scanner";
 // import { motion } from "framer-motion";
@@ -8,11 +7,12 @@
 // import { getCurrentUser } from "../../api/signin";
 // import { userInfo } from "../../api/validateCode";
 // import CustomerDetailsDialog from "./CustomerDetailsDialog";
+// import { getCurrentCurrency } from "../../utils/currencyUtils";
+// import SuccessPopup from "../shopkeeper/SuccessPopup";
 
 // const Scanner = () => {
 //   const [scannedData, setScannedData] = useState(null);
 //   const [open, setOpen] = useState(false);
-//   // const [redeemAmount, setRedeemAmount] = useState("");
 //   const [error, setError] = useState("");
 //   const [loading, setLoading] = useState(false);
 //   const [userDetails, setUserDetails] = useState(null);
@@ -29,8 +29,19 @@
 //   const [couponLoading, setCouponLoading] = useState(false);
 //   const [referralLoading, setReferralLoading] = useState(false);
 
-//   const [couponAmount, setCouponAmount] = useState("");
-//   const [referralAmount, setReferralAmount] = useState("");
+//   const [redeemLoading, setRedeemLoading] = useState(false);
+
+//   const [purchaseAmount, setPurchaseAmount] = useState("");
+//   const [referralRedeemAmount, setReferralRedeemAmount] = useState("");
+
+//   const [showSuccessPopup, setShowSuccessPopup] = useState(false);
+//   const [successData, setSuccessData] = useState({});
+
+//   const [applyCoupon, setApplyCoupon] = useState(false);
+//   const [applyReferral, setApplyReferral] = useState(false);
+//   const [referralType, setReferralType] = useState("");
+
+//   const [isProcessing, setIsProcessing] = useState(false);
 
 //   useEffect(() => {
 //     const fetchData = async () => {
@@ -50,54 +61,50 @@
 //   }, []);
 
 //   const handleScan = async (data) => {
-//     if (data) {
-//       try {
-//         const parsedData = JSON.parse(data.text);
+//     if (!data || isProcessing) return;
 
-//         if (!userDetails) {
-//           toast.error("User details not loaded yet. Please try again.");
-//           return;
-//         }
+//     setIsProcessing(true);
 
-//         if (String(parsedData.shopID) !== String(userDetails.id)) {
-//           setErrorDialogMessage("Invalid scan code. This customer does not belong to your shop.");
-//           setErrorDialogOpen(true);
-//           return;
-//         }
+//     try {
+//       const parsedData = JSON.parse(data.text);
 
-//         const freshInfo = await userInfo("", parsedData.phone);
-
-//         const firstCoupon = freshInfo?.coupons?.[0] || null;
-
-//         const updatedScannedData = {
-//           ...parsedData,
-//         //   availableBalance: freshInfo?.availableBalance ?? parsedData.availableBalance,
-//         // };
-//           availableBalance:
-//             freshInfo?.availableBalance ?? 0,
-
-//           couponCode:
-//             firstCoupon?.couponCode || null,
-
-//           couponAmount:
-//             firstCoupon?.couponAmount || 0,
-
-//           couponUsageLimit:
-//             firstCoupon?.couponUsageLimit || 0,
-
-//           usageLeft:
-//             firstCoupon?.usageLeft || 0,
-
-//           referralCode:
-//             freshInfo?.referralCode || null,
-//         };
-
-//         setScannedData(updatedScannedData);
-//         setOpen(true);
-//         setError("");
-//       } catch (error) {
-//         console.error("Invalid JSON data:", error);
+//       if (!userDetails) {
+//         toast.error("User details not loaded.");
+//         setIsProcessing(false);
+//         return;
 //       }
+
+//       if (String(parsedData.shopID) !== String(userDetails.id)) {
+//         setErrorDialogMessage(
+//           "Invalid scan code. This customer does not belong to your shop."
+//         );
+//         setErrorDialogOpen(true);
+//         setIsProcessing(false);
+//         return;
+//       }
+
+//       const freshInfo = await userInfo("", parsedData.phone);
+//       const firstCoupon = freshInfo?.coupons?.[0] || null;
+
+//       const updatedScannedData = {
+//         ...parsedData,
+//         availableBalance: freshInfo?.availableBalance ?? 0,
+//         couponCode: firstCoupon?.couponCode || null,
+//         couponAmount: firstCoupon?.couponAmount || 0,
+//         couponUsageLimit: firstCoupon?.couponUsageLimit || 0,
+//         usageLeft: firstCoupon?.usageLeft || 0,
+//         referralCode: freshInfo?.referralCode || null,
+//       };
+
+//       setScannedData(updatedScannedData);
+//       navigator.vibrate(200);
+//       setOpen(true);
+//     } catch (error) {
+//       console.error(error);
+//     } finally {
+//       setTimeout(() => {
+//         setIsProcessing(false);
+//       }, 1500);
 //     }
 //   };
 
@@ -112,213 +119,261 @@
 //     setCameraFacingMode((prev) => (prev === "environment" ? "user" : "environment"));
 //   };
 
-//   // const handleRedeemClick = async () => {
-//   //   if (!referralAmount) {
-//   //     setReferralError("Please enter an amount.");
-//   //     return;
-//   //   }
-
-//   //   const amount = parseFloat(referralAmount);
-//   //   const availableBalance = parseFloat(scannedData?.availableBalance || 0);
-
-//   //   if (amount > availableBalance) {
-//   //     setReferralError("Amount cannot exceed available balance.");
-//   //     return;
-//   //   }
-
-//   //   const token = localStorage.getItem("token");
-//   //   if (!token) {
-//   //     setReferralError("Authentication token not found.");
-//   //     return;
-//   //   }
-
-//   //   const payload = {
-//   //     customerId: scannedData.customerId,
-//   //     referralCode: scannedData.referralCode,
-//   //     discountAmount: amount,
-//   //     purchaseAmount: amount,
-//   //   };
-
-//   //   setLoading(true);
-//   //   const toastId = toast.loading("Processing redemption...");
-
-//   //   try {
-//   //     await axios.post(
-//   //       `${import.meta.env.VITE_BACKEND_URL}/api/shopkeeper/redeem-discount`,
-//   //       payload,
-//   //       {
-//   //         headers: { Authorization: `Bearer ${token}` },
-//   //       }
-//   //     );
-
-//   //     toast.update(toastId, {
-//   //       render: "Discount redeemed successfully!",
-//   //       type: "success",
-//   //       isLoading: false,
-//   //       autoClose: true,
-//   //       closeOnClick: true,
-//   //       position: "top-right",
-//   //     });
-
-//   //     setSuccessMessage(`$${amount} redeemed successfully!`);
-//   //     setSuccessDialogOpen(true);
-//   //     setOpen(false);
-//   //     setScannedData(null);
-//   //     setRedeemAmount("");
-//   //     setError("");
-//   //   } catch (err) {
-//   //     toast.update(toastId, {
-//   //       render: err.response?.data || "Redemption failed. Please try again.",
-//   //       type: "error",
-//   //       isLoading: false,
-//   //       autoClose: true,
-//   //       closeOnClick: true,
-//   //       position: "top-right",
-//   //     });
-//   //     setError(err.response?.data || "Redemption failed. Please try again.");
-//   //   } finally {
-//   //     setLoading(false);
-//   //   }
-//   // };
-//   const handleRedeemClick = async () => {
-
-//     if (!referralAmount) {
-//       setReferralError("Please enter redeem amount.");
+//   const handleCombinedTransaction = async () => {
+//     if (applyReferral && !referralType) {
+//       setReferralError("Select Full or Partial Balance Redemption");
 //       return;
 //     }
 
-//     const amount = parseFloat(referralAmount);
+//     let finalRedeemAmount = 0;
+//     if (referralType === "full") {
+//       finalRedeemAmount = scannedData.availableBalance;
+//     } else if (referralType === "partial") {
+//       finalRedeemAmount = Number(referralRedeemAmount || 0);
+//       if (finalRedeemAmount > scannedData.availableBalance) {
+//         setReferralError("Redeem amount exceeds available balance");
+//         return;
+//       }
+//     }
 
-//     const availableBalance = parseFloat(
-//       scannedData?.availableBalance || 0
-//     );
+//     const couponDiscount = applyCoupon ? scannedData.couponAmount : 0;
+//     const totalDiscount = couponDiscount + finalRedeemAmount;
 
-//     if (amount > availableBalance) {
-//       setReferralError("Amount exceeds available balance.");
+//     if (totalDiscount > Number(purchaseAmount)) {
+//       toast.error("Total discount cannot exceed purchase amount.");
 //       return;
 //     }
 
 //     const token = localStorage.getItem("token");
-
 //     if (!token) {
-//       setReferralError("Authentication token missing.");
+//       toast.error("Authentication token missing.");
 //       return;
 //     }
 
-//     setReferralError("");
+//     setRedeemLoading(true);
 
 //     try {
-
-//       setReferralLoading(true);
-
-//       await axios.post(
-//         `${import.meta.env.VITE_BACKEND_URL}/api/shopkeeper/redeem-discount`,
-//         {
-//           customerId: scannedData.customerId,
-//           referralCode: scannedData.referralCode,
-//           discountAmount: amount,
-//           // purchaseAmount: amount,
-//         },
-//         {
-//           headers: {
-//             Authorization: `Bearer ${token}`,
-//           },
-//         }
-//       );
-
-//       toast.success("Discount redeemed successfully!");
-
-//       setOpen(false);
-
-//       setReferralAmount("");
-//       setReferralError("");
-
-//     } catch (err) {
-
-//       const backendMessage =
-//         err?.response?.data?.message ||
-//         err?.response?.data?.details ||
-//         err?.response?.data ||
-//         err.message ||
-//         "Redeem failed";
-
-//       setReferralError(
-//         typeof backendMessage === "string"
-//           ? backendMessage
-//           : JSON.stringify(backendMessage)
-//       );
-
-//     } finally {
-//       setReferralLoading(false);
-//     }
-//   };
-
-//   const handleApplyCoupon = async () => {
-
-//     if (!couponAmount) {
-//       setCouponError("Please enter purchase amount.");
-//       return;
-//     }
-
-//     const token = localStorage.getItem("token");
-
-//     if (!token) {
-//       setCouponError("Authentication token missing.");
-//       return;
-//     }
-
-//     setCouponError("");
-
-//     try {
-
-//       setCouponLoading(true);
-
 //       await axios.post(
 //         `${import.meta.env.VITE_BACKEND_URL}/api/shopkeeper/apply-coupon`,
 //         {
 //           customerId: scannedData.customerId,
 //           couponCode: scannedData.couponCode,
-//           purchaseAmount: parseFloat(couponAmount),
+//           purchaseAmount: Number(purchaseAmount),
+//           redeemAmount: finalRedeemAmount,
 //         },
-//         {
-//           headers: {
-//             Authorization: `Bearer ${token}`,
-//           },
-//         }
+//         { headers: { Authorization: `Bearer ${token}` } }
 //       );
 
-//       toast.success("Coupon applied successfully!");
-
-//       setOpen(false);
-
-//       setCouponAmount("");
-//       setCouponError("");
-
+//       setSuccessData({
+//         purchaseAmount,
+//         couponAmount: scannedData.couponAmount,
+//         redeemAmount: finalRedeemAmount,
+//       });
+//       setShowSuccessPopup(true);
 //     } catch (err) {
+//       const msg = err?.response?.data?.message || err.message;
+//       toast.error(msg);
+//       setReferralError(msg);
+//     } finally {
+//       setRedeemLoading(false);
+//     }
+//   };
 
-//       const backendMessage =
-//         err?.response?.data?.message ||
-//         err?.response?.data?.details ||
-//         err?.response?.data ||
-//         err.message ||
-//         "Coupon apply failed";
+//   const handleDirectCouponApply = async () => {
+//     if (!purchaseAmount || Number(purchaseAmount) <= 0) {
+//       setCouponError("Please enter purchase amount");
+//       return;
+//     }
 
-//       setCouponError(
-//         typeof backendMessage === "string"
-//           ? backendMessage
-//           : JSON.stringify(backendMessage)
+//     const token = localStorage.getItem("token");
+//     if (!token) {
+//       toast.error("Authentication token missing.");
+//       return;
+//     }
+
+//     setCouponLoading(true);
+
+//     try {
+//       await axios.post(
+//         `${import.meta.env.VITE_BACKEND_URL}/api/shopkeeper/apply-coupon`,
+//         {
+//           customerId: scannedData.customerId,
+//           couponCode: scannedData.couponCode,
+//           purchaseAmount: Number(purchaseAmount),
+//           redeemAmount: 0,
+//         },
+//         { headers: { Authorization: `Bearer ${token}` } }
 //       );
 
+//       setSuccessData({
+//         purchaseAmount,
+//         couponAmount: scannedData.couponAmount,
+//         redeemAmount: 0,
+//       });
+//       setShowSuccessPopup(true);
+//     } catch (err) {
+//       const msg = err?.response?.data?.message || err.message;
+//       toast.error(msg);
+//       setCouponError(msg);
 //     } finally {
 //       setCouponLoading(false);
 //     }
 //   };
 
+//   const handleReferralSubmit = async () => {
+//     if (!purchaseAmount || Number(purchaseAmount) <= 0) {
+//       setReferralError("Please enter purchase amount");
+//       return;
+//     }
+
+//     if (Number(scannedData.availableBalance) <= 0) {
+//       await handlePlainPurchase();
+//       return;
+//     }
+
+//     if (!referralType) {
+//       setReferralError("Select Full or Partial");
+//       return;
+//     }
+
+//     let redeemAmount = 0;
+
+//     if (referralType === "full") {
+//       redeemAmount = scannedData.availableBalance;
+//     } else if (referralType === "partial") {
+//       if (!referralRedeemAmount || Number(referralRedeemAmount) <= 0) {
+//         setReferralError("Please enter redeem amount");
+//         return;
+//       }
+//       if (Number(referralRedeemAmount) > scannedData.availableBalance) {
+//         setReferralError("Redeem amount exceeds available balance");
+//         return;
+//       }
+//       redeemAmount = Number(referralRedeemAmount);
+//     }
+
+//     if (redeemAmount > Number(purchaseAmount)) {
+//       setReferralError("Redeem amount cannot exceed purchase amount");
+//       return;
+//     }
+
+//     const token = localStorage.getItem("token");
+//     if (!token) {
+//       setReferralError("Authentication token missing.");
+//       return;
+//     }
+
+//     setReferralLoading(true);
+
+//     try {
+//       await axios.post(
+//         `${import.meta.env.VITE_BACKEND_URL}/api/shopkeeper/redeem-discount`,
+//         {
+//           customerId: scannedData.customerId,
+//           referralCode:
+//             scannedData.referralCode && scannedData.referralCode !== "None"
+//               ? scannedData.referralCode
+//               : null,
+//           purchaseAmount: Number(purchaseAmount),
+//           discountAmount: redeemAmount,
+//         },
+//         { headers: { Authorization: `Bearer ${token}` } }
+//       );
+
+//       setSuccessData({
+//         purchaseAmount,
+//         couponAmount: 0,
+//         redeemAmount,
+//       });
+//       setShowSuccessPopup(true);
+//     } catch (err) {
+//       const msg = err?.response?.data?.message || err.message;
+//       setReferralError(msg);
+//       toast.error(msg);
+//     } finally {
+//       setReferralLoading(false);
+//     }
+//   };
+
+//   const handlePlainPurchase = async () => {
+//     if (!purchaseAmount || Number(purchaseAmount) <= 0) {
+//       toast.error("Enter purchase amount");
+//       return;
+//     }
+
+//     const token = localStorage.getItem("token");
+//     if (!token) {
+//       toast.error("Authentication token missing.");
+//       return;
+//     }
+
+//     setRedeemLoading(true);
+
+//     try {
+//       await axios.post(
+//         `${import.meta.env.VITE_BACKEND_URL}/api/shopkeeper/record-purchase`,
+//         {
+//           customerId: scannedData.customerId,
+//           purchaseAmount: Number(purchaseAmount),
+//         },
+//         { headers: { Authorization: `Bearer ${token}` } }
+//       );
+
+//       setSuccessData({
+//         purchaseAmount,
+//         couponAmount: 0,
+//         redeemAmount: 0,
+//       });
+//       setShowSuccessPopup(true);
+//     } catch (err) {
+//       const msg = err?.response?.data?.message || err.message;
+//       toast.error(msg);
+//     } finally {
+//       setRedeemLoading(false);
+//     }
+//   };
+
+//   const handleSubmitTransaction = async () => {
+//     if (!purchaseAmount || Number(purchaseAmount) <= 0) {
+//       toast.error("Enter purchase amount");
+//       return;
+//     }
+
+//     if (!applyCoupon && !applyReferral) {
+//       await handlePlainPurchase();
+//       return;
+//     }
+
+//     if (applyCoupon && !applyReferral) {
+//       await handleDirectCouponApply();
+//       return;
+//     }
+
+//     if (!applyCoupon && applyReferral) {
+//       await handleReferralSubmit();
+//       return;
+//     }
+
+//     if (applyCoupon && applyReferral) {
+//       await handleCombinedTransaction();
+//     }
+//   };
+
+//   const resetForm = () => {
+//     setPurchaseAmount("");
+//     setReferralRedeemAmount("");
+//     setCouponError("");
+//     setReferralError("");
+//     setApplyCoupon(false);
+//     setApplyReferral(false);
+//     setReferralType("");
+//     setShowSuccessPopup(false);
+//   };
+
 //   const handleCloseDialog = () => {
 //     setOpen(false);
 //     setScannedData(null);
-//     setRedeemAmount("");
-//     setError("");
+//     resetForm();
 //   };
 
 //   const handleCloseErrorDialog = () => {
@@ -330,17 +385,22 @@
 //     setSuccessDialogOpen(false);
 //   };
 
-//   const handleRedeemAmountChange = (e) => {
-//     const raw = e.target.value.substring(1);
-//     const value = raw.replace(/[^0-9.]/g, "");
-//     if (/^\d*\.?\d{0,4}$/.test(value)) {
-//       setRedeemAmount(value);
-//       setError("");
-//     }
-//   };
+//   const currency = getCurrentCurrency();
+
+//   const hasReferral = applications.includes("Referral") && scannedData?.referralCode;
+//   const hasCoupon = applications.includes("Coupon") && scannedData?.couponCode;
+//   const hasBothApplications = hasReferral && hasCoupon;
 
 //   return (
 //     <div className="flex flex-col items-center justify-center min-h-screen p-6 bg-gradient-to-r from-blue-50 to-purple-50">
+//       {isProcessing && (
+//         <div className="absolute inset-0 bg-black/40 flex items-center justify-center z-20">
+//           <div className="bg-white px-4 py-2 rounded-lg font-semibold shadow-md">
+//             Processing...
+//           </div>
+//         </div>
+//       )}
+
 //       <motion.h1
 //         initial={{ y: -50, opacity: 0 }}
 //         animate={{ y: 0, opacity: 1 }}
@@ -357,7 +417,7 @@
 //       )}
 
 //       <div className="w-full max-w-2xl flex flex-col items-center">
-//         {userDetails ? (
+//         {userDetails && !open ? (
 //           <motion.div
 //             initial={{ scale: 0.8, opacity: 0 }}
 //             animate={{ scale: 1, opacity: 1 }}
@@ -367,11 +427,17 @@
 //           >
 //             <QrScanner
 //               key={cameraFacingMode}
-//               delay={100}
+//               delay={300}
 //               onScan={handleScan}
 //               onError={handleError}
 //               style={{ width: "100%", height: "100%" }}
-//               constraints={{ video: { facingMode: cameraFacingMode, aspectRatio: 1 } }}
+//               constraints={{
+//                 video: {
+//                   facingMode: cameraFacingMode,
+//                   width: 640,
+//                   height: 640,
+//                 }
+//               }}
 //             />
 //             <button
 //               onClick={toggleCamera}
@@ -396,39 +462,32 @@
 //         {cameraFacingMode === "environment" ? "Using back camera" : "Using front camera"}
 //       </div>
 
-//       {/* Customer Details */}
-//       {/* <CustomerDetailsDialog
-//         open={open}
-//         onClose={handleCloseDialog}
-//         scannedData={scannedData}
-//         redeemAmount={redeemAmount}
-//         onRedeemAmountChange={handleRedeemAmountChange}
-//         onRedeemClick={handleRedeemClick}
-//         error={error}
-//         loading={loading}
-//       /> */}
-
 //       <CustomerDetailsDialog
 //         open={open}
 //         onClose={handleCloseDialog}
 //         scannedData={scannedData}
-//         // redeemAmount={redeemAmount}
-//         // onRedeemAmountChange={handleRedeemAmountChange}
-//         couponAmount={couponAmount}
-//         setCouponAmount={setCouponAmount}
-
-//         referralAmount={referralAmount}
-//         setReferralAmount={setReferralAmount}
-
+//         purchaseAmount={purchaseAmount}
+//         setPurchaseAmount={setPurchaseAmount}
+//         referralRedeemAmount={referralRedeemAmount}
+//         setReferralRedeemAmount={setReferralRedeemAmount}
 //         couponError={couponError}
 //         referralError={referralError}
-//         onRedeemClick={handleRedeemClick}
-//         onApplyCoupon={handleApplyCoupon}
 //         applications={applications}
-//         // error={error}
-//         // loading={loading}
 //         couponLoading={couponLoading}
 //         referralLoading={referralLoading}
+//         redeemLoading={redeemLoading}
+//         hasBothApplications={hasBothApplications}
+//         hasReferral={hasReferral}
+//         hasCoupon={hasCoupon}
+//         applyCoupon={applyCoupon}
+//         setApplyCoupon={setApplyCoupon}
+//         applyReferral={applyReferral}
+//         setApplyReferral={setApplyReferral}
+//         referralType={referralType}
+//         setReferralType={setReferralType}
+//         onSubmitTransaction={handleSubmitTransaction}
+//         onReferralSubmit={handleReferralSubmit}
+//         onCouponSubmit={handleDirectCouponApply}
 //       />
 
 //       {/* Error Modal */}
@@ -463,16 +522,23 @@
 //         </div>
 //       )}
 
+//       <SuccessPopup
+//         isOpen={showSuccessPopup}
+//         onClose={() => {
+//           setShowSuccessPopup(false);
+//           handleCloseDialog();
+//         }}
+//         purchaseAmount={successData.purchaseAmount}
+//         couponAmount={successData.couponAmount}
+//         redeemAmount={successData.redeemAmount}
+//       />
+
 //       <ToastContainer position="top-right" autoClose={3000} />
 //     </div>
 //   );
 // };
 
 // export default Scanner;
-
-
-
-
 
 
 
@@ -489,11 +555,12 @@ import { toast, ToastContainer } from "react-toastify";
 import { getCurrentUser } from "../../api/signin";
 import { userInfo } from "../../api/validateCode";
 import CustomerDetailsDialog from "./CustomerDetailsDialog";
+import { getCurrentCurrency } from "../../utils/currencyUtils";
+import SuccessPopup from "../shopkeeper/SuccessPopup";
 
 const Scanner = () => {
   const [scannedData, setScannedData] = useState(null);
   const [open, setOpen] = useState(false);
-  // const [redeemAmount, setRedeemAmount] = useState("");
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
   const [userDetails, setUserDetails] = useState(null);
@@ -506,12 +573,23 @@ const Scanner = () => {
   const [applications, setApplications] = useState([]);
   const [couponError, setCouponError] = useState("");
   const [referralError, setReferralError] = useState("");
+  // Unified transaction error shown below Total Discount (backend + client validation)
+  const [transactionError, setTransactionError] = useState("");
 
   const [couponLoading, setCouponLoading] = useState(false);
   const [referralLoading, setReferralLoading] = useState(false);
 
-  const [couponAmount, setCouponAmount] = useState("");
-  const [referralAmount, setReferralAmount] = useState("");
+  const [redeemLoading, setRedeemLoading] = useState(false);
+
+  const [purchaseAmount, setPurchaseAmount] = useState("");
+  const [referralRedeemAmount, setReferralRedeemAmount] = useState("");
+
+  const [showSuccessPopup, setShowSuccessPopup] = useState(false);
+  const [successData, setSuccessData] = useState({});
+
+  const [applyCoupon, setApplyCoupon] = useState(false);
+  const [applyReferral, setApplyReferral] = useState(false);
+  const [referralType, setReferralType] = useState("");
 
   const [isProcessing, setIsProcessing] = useState(false);
 
@@ -532,66 +610,12 @@ const Scanner = () => {
     fetchData();
   }, []);
 
-  // const handleScan = async (data) => {
-  //   if (data) {
-  //     try {
-  //       const parsedData = JSON.parse(data.text);
-
-  //       if (!userDetails) {
-  //         toast.error("User details not loaded yet. Please try again.");
-  //         return;
-  //       }
-
-  //       if (String(parsedData.shopID) !== String(userDetails.id)) {
-  //         setErrorDialogMessage("Invalid scan code. This customer does not belong to your shop.");
-  //         setErrorDialogOpen(true);
-  //         return;
-  //       }
-
-  //       const freshInfo = await userInfo("", parsedData.phone);
-
-  //       const firstCoupon = freshInfo?.coupons?.[0] || null;
-
-  //       const updatedScannedData = {
-  //         ...parsedData,
-  //       //   availableBalance: freshInfo?.availableBalance ?? parsedData.availableBalance,
-  //       // };
-  //         availableBalance:
-  //           freshInfo?.availableBalance ?? 0,
-
-  //         couponCode:
-  //           firstCoupon?.couponCode || null,
-
-  //         couponAmount:
-  //           firstCoupon?.couponAmount || 0,
-
-  //         couponUsageLimit:
-  //           firstCoupon?.couponUsageLimit || 0,
-
-  //         usageLeft:
-  //           firstCoupon?.usageLeft || 0,
-
-  //         referralCode:
-  //           freshInfo?.referralCode || null,
-  //       };
-
-  //       setScannedData(updatedScannedData);
-  //       setOpen(true);
-  //       setError("");
-  //     } catch (error) {
-  //       console.error("Invalid JSON data:", error);
-  //     }
-  //   }
-  // };
-
   const handleScan = async (data) => {
-
     if (!data || isProcessing) return;
 
     setIsProcessing(true);
 
     try {
-
       const parsedData = JSON.parse(data.text);
 
       if (!userDetails) {
@@ -610,7 +634,6 @@ const Scanner = () => {
       }
 
       const freshInfo = await userInfo("", parsedData.phone);
-
       const firstCoupon = freshInfo?.coupons?.[0] || null;
 
       const updatedScannedData = {
@@ -626,7 +649,6 @@ const Scanner = () => {
       setScannedData(updatedScannedData);
       navigator.vibrate(200);
       setOpen(true);
-
     } catch (error) {
       console.error(error);
     } finally {
@@ -647,218 +669,328 @@ const Scanner = () => {
     setCameraFacingMode((prev) => (prev === "environment" ? "user" : "environment"));
   };
 
-  // const handleRedeemClick = async () => {
-  //   if (!referralAmount) {
-  //     setReferralError("Please enter an amount.");
-  //     return;
-  //   }
-
-  //   const amount = parseFloat(referralAmount);
-  //   const availableBalance = parseFloat(scannedData?.availableBalance || 0);
-
-  //   if (amount > availableBalance) {
-  //     setReferralError("Amount cannot exceed available balance.");
-  //     return;
-  //   }
-
-  //   const token = localStorage.getItem("token");
-  //   if (!token) {
-  //     setReferralError("Authentication token not found.");
-  //     return;
-  //   }
-
-  //   const payload = {
-  //     customerId: scannedData.customerId,
-  //     referralCode: scannedData.referralCode,
-  //     discountAmount: amount,
-  //     purchaseAmount: amount,
-  //   };
-
-  //   setLoading(true);
-  //   const toastId = toast.loading("Processing redemption...");
-
-  //   try {
-  //     await axios.post(
-  //       `${import.meta.env.VITE_BACKEND_URL}/api/shopkeeper/redeem-discount`,
-  //       payload,
-  //       {
-  //         headers: { Authorization: `Bearer ${token}` },
-  //       }
-  //     );
-
-  //     toast.update(toastId, {
-  //       render: "Discount redeemed successfully!",
-  //       type: "success",
-  //       isLoading: false,
-  //       autoClose: true,
-  //       closeOnClick: true,
-  //       position: "top-right",
-  //     });
-
-  //     setSuccessMessage(`$${amount} redeemed successfully!`);
-  //     setSuccessDialogOpen(true);
-  //     setOpen(false);
-  //     setScannedData(null);
-  //     setRedeemAmount("");
-  //     setError("");
-  //   } catch (err) {
-  //     toast.update(toastId, {
-  //       render: err.response?.data || "Redemption failed. Please try again.",
-  //       type: "error",
-  //       isLoading: false,
-  //       autoClose: true,
-  //       closeOnClick: true,
-  //       position: "top-right",
-  //     });
-  //     setError(err.response?.data || "Redemption failed. Please try again.");
-  //   } finally {
-  //     setLoading(false);
-  //   }
-  // };
-  const handleRedeemClick = async () => {
-
-    if (!referralAmount) {
-      setReferralError("Please enter redeem amount.");
-      return;
+  // Helper: compute redeem amount based on referralType
+  const getFinalRedeemAmount = () => {
+    if (!applyReferral || !referralType) return 0;
+    if (referralType === "full") return Number(scannedData?.availableBalance) || 0;
+    if (referralType === "partial") return Number(referralRedeemAmount || 0);
+    if (referralType === "purchase") {
+      const purchase = Number(purchaseAmount || 0);
+      const balance = Number(scannedData?.availableBalance) || 0;
+      return Math.min(purchase, balance);
     }
-
-    const amount = parseFloat(referralAmount);
-
-    const availableBalance = parseFloat(
-      scannedData?.availableBalance || 0
-    );
-
-    if (amount > availableBalance) {
-      setReferralError("Amount exceeds available balance.");
-      return;
-    }
-
-    const token = localStorage.getItem("token");
-
-    if (!token) {
-      setReferralError("Authentication token missing.");
-      return;
-    }
-
-    setReferralError("");
-
-    try {
-
-      setReferralLoading(true);
-
-      await axios.post(
-        `${import.meta.env.VITE_BACKEND_URL}/api/shopkeeper/redeem-discount`,
-        {
-          customerId: scannedData.customerId,
-          // referralCode: scannedData.referralCode,
-          referralCode:
-            scannedData.referralCode &&
-            scannedData.referralCode !== "None"
-              ? scannedData.referralCode
-              : null,
-          discountAmount: amount,
-          // purchaseAmount: amount,
-        },
-        {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        }
-      );
-
-      toast.success("Discount redeemed successfully!");
-
-      setOpen(false);
-
-      setReferralAmount("");
-      setReferralError("");
-
-    } catch (err) {
-
-      const backendMessage =
-        err?.response?.data?.message ||
-        err?.response?.data?.details ||
-        err?.response?.data ||
-        err.message ||
-        "Redeem failed";
-
-      setReferralError(
-        typeof backendMessage === "string"
-          ? backendMessage
-          : JSON.stringify(backendMessage)
-      );
-
-    } finally {
-      setReferralLoading(false);
-    }
+    return 0;
   };
 
-  const handleApplyCoupon = async () => {
+  const handleCombinedTransaction = async () => {
+    setTransactionError("");
+    setCouponError("");
+    setReferralError("");
 
-    if (!couponAmount) {
-      setCouponError("Please enter purchase amount.");
+    if (applyReferral && !referralType) {
+      setReferralError("Select Full, Partial, or Purchase Amount redemption");
+      return;
+    }
+
+    let finalRedeemAmount = getFinalRedeemAmount();
+
+    if (referralType === "partial") {
+      if (finalRedeemAmount > Number(scannedData.availableBalance)) {
+        setReferralError("Redeem amount exceeds available balance");
+        return;
+      }
+      if (finalRedeemAmount <= 0) {
+        setReferralError("Please enter a valid redeem amount");
+        return;
+      }
+    }
+
+    if (referralType === "purchase") {
+      if (!purchaseAmount || Number(purchaseAmount) <= 0) {
+        setReferralError("Please enter purchase amount first");
+        return;
+      }
+    }
+
+    const couponDiscount = applyCoupon ? Number(scannedData.couponAmount) || 0 : 0;
+    const totalDiscount = couponDiscount + finalRedeemAmount;
+
+    if (totalDiscount > Number(purchaseAmount)) {
+      setTransactionError("Total discount cannot exceed purchase amount.");
       return;
     }
 
     const token = localStorage.getItem("token");
-
     if (!token) {
-      setCouponError("Authentication token missing.");
+      setTransactionError("Authentication token missing.");
       return;
     }
 
-    setCouponError("");
+    setRedeemLoading(true);
 
     try {
-
-      setCouponLoading(true);
-
       await axios.post(
         `${import.meta.env.VITE_BACKEND_URL}/api/shopkeeper/apply-coupon`,
         {
           customerId: scannedData.customerId,
           couponCode: scannedData.couponCode,
-          purchaseAmount: parseFloat(couponAmount),
+          purchaseAmount: Number(purchaseAmount),
+          redeemAmount: finalRedeemAmount,
         },
-        {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        }
+        { headers: { Authorization: `Bearer ${token}` } }
       );
 
-      toast.success("Coupon applied successfully!");
-
-      setOpen(false);
-
-      setCouponAmount("");
-      setCouponError("");
-
+      setSuccessData({
+        purchaseAmount,
+        couponAmount: scannedData.couponAmount,
+        redeemAmount: finalRedeemAmount,
+      });
+      setShowSuccessPopup(true);
     } catch (err) {
-
-      const backendMessage =
+      const msg =
         err?.response?.data?.message ||
-        err?.response?.data?.details ||
-        err?.response?.data ||
+        err?.response?.data?.error ||
         err.message ||
-        "Coupon apply failed";
+        "Transaction failed";
+      setTransactionError(msg);
+    } finally {
+      setRedeemLoading(false);
+    }
+  };
 
-      setCouponError(
-        typeof backendMessage === "string"
-          ? backendMessage
-          : JSON.stringify(backendMessage)
+  const handleDirectCouponApply = async () => {
+    setTransactionError("");
+    setCouponError("");
+
+    if (!purchaseAmount || Number(purchaseAmount) <= 0) {
+      setCouponError("Please enter purchase amount");
+      return;
+    }
+
+    // Client-side guard so message shows under Total Discount
+    const couponAmt = Number(scannedData.couponAmount) || 0;
+    if (couponAmt > Number(purchaseAmount)) {
+      setTransactionError("Total discount cannot exceed purchase amount.");
+      return;
+    }
+
+    const token = localStorage.getItem("token");
+    if (!token) {
+      setTransactionError("Authentication token missing.");
+      return;
+    }
+
+    setCouponLoading(true);
+
+    try {
+      await axios.post(
+        `${import.meta.env.VITE_BACKEND_URL}/api/shopkeeper/apply-coupon`,
+        {
+          customerId: scannedData.customerId,
+          couponCode: scannedData.couponCode,
+          purchaseAmount: Number(purchaseAmount),
+          redeemAmount: 0,
+        },
+        { headers: { Authorization: `Bearer ${token}` } }
       );
 
+      setSuccessData({
+        purchaseAmount,
+        couponAmount: scannedData.couponAmount,
+        redeemAmount: 0,
+      });
+      setShowSuccessPopup(true);
+    } catch (err) {
+      const msg =
+        err?.response?.data?.message ||
+        err?.response?.data?.error ||
+        err.message ||
+        "Failed to apply coupon";
+      setTransactionError(msg);
     } finally {
       setCouponLoading(false);
     }
   };
 
+  const handleReferralSubmit = async () => {
+    setTransactionError("");
+    setReferralError("");
+
+    if (!purchaseAmount || Number(purchaseAmount) <= 0) {
+      setReferralError("Please enter purchase amount");
+      return;
+    }
+
+    if (Number(scannedData.availableBalance) <= 0) {
+      await handlePlainPurchase();
+      return;
+    }
+
+    if (!referralType) {
+      setReferralError("Select Full, Partial, or Purchase Amount");
+      return;
+    }
+
+    let redeemAmount = getFinalRedeemAmount();
+
+    if (referralType === "partial") {
+      if (!referralRedeemAmount || Number(referralRedeemAmount) <= 0) {
+        setReferralError("Please enter redeem amount");
+        return;
+      }
+      if (Number(referralRedeemAmount) > scannedData.availableBalance) {
+        setReferralError("Redeem amount exceeds available balance");
+        return;
+      }
+      redeemAmount = Number(referralRedeemAmount);
+    }
+
+    if (referralType === "purchase") {
+      if (!purchaseAmount || Number(purchaseAmount) <= 0) {
+        setReferralError("Please enter purchase amount first");
+        return;
+      }
+    }
+
+    if (redeemAmount > Number(purchaseAmount)) {
+      setReferralError("Redeem amount cannot exceed purchase amount");
+      return;
+    }
+
+    const token = localStorage.getItem("token");
+    if (!token) {
+      setReferralError("Authentication token missing.");
+      return;
+    }
+
+    setReferralLoading(true);
+
+    try {
+      await axios.post(
+        `${import.meta.env.VITE_BACKEND_URL}/api/shopkeeper/redeem-discount`,
+        {
+          customerId: scannedData.customerId,
+          referralCode:
+            scannedData.referralCode && scannedData.referralCode !== "None"
+              ? scannedData.referralCode
+              : null,
+          purchaseAmount: Number(purchaseAmount),
+          discountAmount: redeemAmount,
+        },
+        { headers: { Authorization: `Bearer ${token}` } }
+      );
+
+      setSuccessData({
+        purchaseAmount,
+        couponAmount: 0,
+        redeemAmount,
+      });
+      setShowSuccessPopup(true);
+    } catch (err) {
+      const msg =
+        err?.response?.data?.message ||
+        err?.response?.data?.error ||
+        err.message ||
+        "Redeem failed";
+      setTransactionError(msg);
+    } finally {
+      setReferralLoading(false);
+    }
+  };
+
+  const handlePlainPurchase = async () => {
+    setTransactionError("");
+
+    if (!purchaseAmount || Number(purchaseAmount) <= 0) {
+      setTransactionError("Enter purchase amount");
+      return;
+    }
+
+    const token = localStorage.getItem("token");
+    if (!token) {
+      setTransactionError("Authentication token missing.");
+      return;
+    }
+
+    setRedeemLoading(true);
+
+    try {
+      await axios.post(
+        `${import.meta.env.VITE_BACKEND_URL}/api/shopkeeper/record-purchase`,
+        {
+          customerId: scannedData.customerId,
+          purchaseAmount: Number(purchaseAmount),
+        },
+        { headers: { Authorization: `Bearer ${token}` } }
+      );
+
+      setSuccessData({
+        purchaseAmount,
+        couponAmount: 0,
+        redeemAmount: 0,
+      });
+      setShowSuccessPopup(true);
+    } catch (err) {
+      const msg =
+        err?.response?.data?.message ||
+        err?.response?.data?.error ||
+        err.message ||
+        "Purchase recording failed";
+      setTransactionError(msg);
+    } finally {
+      setRedeemLoading(false);
+    }
+  };
+
+  const handleSubmitTransaction = async () => {
+    setTransactionError("");
+    setCouponError("");
+    setReferralError("");
+
+    if (!purchaseAmount || Number(purchaseAmount) <= 0) {
+      setTransactionError("Enter purchase amount");
+      return;
+    }
+
+    if (!applyCoupon && !applyReferral) {
+      await handlePlainPurchase();
+      return;
+    }
+
+    if (applyCoupon && !applyReferral) {
+      await handleDirectCouponApply();
+      return;
+    }
+
+    if (!applyCoupon && applyReferral) {
+      await handleReferralSubmit();
+      return;
+    }
+
+    if (applyCoupon && applyReferral) {
+      await handleCombinedTransaction();
+    }
+  };
+
+  const resetForm = () => {
+    setPurchaseAmount("");
+    setReferralRedeemAmount("");
+    setCouponError("");
+    setReferralError("");
+    setTransactionError("");
+    setApplyCoupon(false);
+    setApplyReferral(false);
+    setReferralType("");
+    setShowSuccessPopup(false);
+    setRedeemLoading(false);
+    setCouponLoading(false);
+    setReferralLoading(false);
+  };
+
   const handleCloseDialog = () => {
     setOpen(false);
     setScannedData(null);
-    // setRedeemAmount("");
-    setError("");
+    resetForm();
   };
 
   const handleCloseErrorDialog = () => {
@@ -870,25 +1002,22 @@ const Scanner = () => {
     setSuccessDialogOpen(false);
   };
 
-  const handleRedeemAmountChange = (e) => {
-    const raw = e.target.value.substring(1);
-    const value = raw.replace(/[^0-9.]/g, "");
-    if (/^\d*\.?\d{0,4}$/.test(value)) {
-      setRedeemAmount(value);
-      setError("");
-    }
-  };
+  const currency = getCurrentCurrency();
 
-  {isProcessing && (
-    <div className="absolute inset-0 bg-black/40 flex items-center justify-center z-20">
-      <div className="bg-white px-4 py-2 rounded-lg font-semibold">
-        Processing...
-      </div>
-    </div>
-  )}
+  const hasReferral = applications.includes("Referral") && scannedData?.referralCode;
+  const hasCoupon = applications.includes("Coupon") && scannedData?.couponCode;
+  const hasBothApplications = hasReferral && hasCoupon;
 
   return (
     <div className="flex flex-col items-center justify-center min-h-screen p-6 bg-gradient-to-r from-blue-50 to-purple-50">
+      {isProcessing && (
+        <div className="absolute inset-0 bg-black/40 flex items-center justify-center z-20">
+          <div className="bg-white px-4 py-2 rounded-lg font-semibold shadow-md">
+            Processing...
+          </div>
+        </div>
+      )}
+
       <motion.h1
         initial={{ y: -50, opacity: 0 }}
         animate={{ y: 0, opacity: 1 }}
@@ -919,13 +1048,12 @@ const Scanner = () => {
               onScan={handleScan}
               onError={handleError}
               style={{ width: "100%", height: "100%" }}
-              // constraints={{ video: { facingMode: cameraFacingMode, aspectRatio: 1 } }}
               constraints={{
                 video: {
                   facingMode: cameraFacingMode,
                   width: 640,
                   height: 640,
-                }
+                },
               }}
             />
             <button
@@ -951,39 +1079,36 @@ const Scanner = () => {
         {cameraFacingMode === "environment" ? "Using back camera" : "Using front camera"}
       </div>
 
-      {/* Customer Details */}
-      {/* <CustomerDetailsDialog
-        open={open}
-        onClose={handleCloseDialog}
-        scannedData={scannedData}
-        redeemAmount={redeemAmount}
-        onRedeemAmountChange={handleRedeemAmountChange}
-        onRedeemClick={handleRedeemClick}
-        error={error}
-        loading={loading}
-      /> */}
-
       <CustomerDetailsDialog
         open={open}
         onClose={handleCloseDialog}
         scannedData={scannedData}
-        // redeemAmount={redeemAmount}
-        // onRedeemAmountChange={handleRedeemAmountChange}
-        couponAmount={couponAmount}
-        setCouponAmount={setCouponAmount}
-
-        referralAmount={referralAmount}
-        setReferralAmount={setReferralAmount}
-
+        purchaseAmount={purchaseAmount}
+        setPurchaseAmount={setPurchaseAmount}
+        referralRedeemAmount={referralRedeemAmount}
+        setReferralRedeemAmount={setReferralRedeemAmount}
         couponError={couponError}
         referralError={referralError}
-        onRedeemClick={handleRedeemClick}
-        onApplyCoupon={handleApplyCoupon}
+        transactionError={transactionError}
+        setTransactionError={setTransactionError}
+        setCouponError={setCouponError}
+        setReferralError={setReferralError}
         applications={applications}
-        // error={error}
-        // loading={loading}
         couponLoading={couponLoading}
         referralLoading={referralLoading}
+        redeemLoading={redeemLoading}
+        hasBothApplications={hasBothApplications}
+        hasReferral={hasReferral}
+        hasCoupon={hasCoupon}
+        applyCoupon={applyCoupon}
+        setApplyCoupon={setApplyCoupon}
+        applyReferral={applyReferral}
+        setApplyReferral={setApplyReferral}
+        referralType={referralType}
+        setReferralType={setReferralType}
+        onSubmitTransaction={handleSubmitTransaction}
+        onReferralSubmit={handleReferralSubmit}
+        onCouponSubmit={handleDirectCouponApply}
       />
 
       {/* Error Modal */}
@@ -1017,6 +1142,17 @@ const Scanner = () => {
           </div>
         </div>
       )}
+
+      <SuccessPopup
+        isOpen={showSuccessPopup}
+        onClose={() => {
+          setShowSuccessPopup(false);
+          handleCloseDialog();
+        }}
+        purchaseAmount={successData.purchaseAmount}
+        couponAmount={successData.couponAmount}
+        redeemAmount={successData.redeemAmount}
+      />
 
       <ToastContainer position="top-right" autoClose={3000} />
     </div>
