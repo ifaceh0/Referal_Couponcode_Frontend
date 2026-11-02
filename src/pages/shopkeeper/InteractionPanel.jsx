@@ -1154,6 +1154,7 @@ import { getCurrentUser } from "../../api/signin";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
 import { getCurrentCurrency } from "../../utils/currencyUtils";
+import { VITE_BACKEND_URL } from '../../apiConfig';
 import SuccessPopup from "./SuccessPopup";
 
 const InteractionPanel = () => {
@@ -1195,11 +1196,14 @@ const InteractionPanel = () => {
       try {
         const user = await getCurrentUser();
         setUserDetails(user);
+
+        let apps = [];
         if (user.application_name && Array.isArray(user.application_name)) {
-          setApplications(user.application_name);
+          apps = user.application_name;
         } else if (user.application_name) {
-          setApplications([user.application_name]);
+          apps = [user.application_name];
         }
+        setApplications(apps.map((a) => String(a).toLowerCase().trim()));
       } catch (error) {
         console.error("Error fetching user:", error);
       }
@@ -1635,6 +1639,38 @@ const InteractionPanel = () => {
     }
   };
 
+  const goToLoyalty = async () => {
+    try {
+      const token = localStorage.getItem("token");
+      const res = await fetch(`${VITE_BACKEND_URL}/api/auth/generate-transfer-token`, {
+        method: "POST",
+        credentials: "include",
+        headers: {
+          "Content-Type": "application/json",
+          ...(token ? { Authorization: `Bearer ${token}` } : {}),
+        },
+      });
+
+      if (!res.ok) {
+        const err = await res.json().catch(() => ({}));
+        throw new Error(err.error || err.message || "Failed to generate transfer token");
+      }
+
+      const data = await res.json();
+      const loyaltyUrl = import.meta.env.VITE_LOYALTY_FRONTEND_URL;
+
+      if (!loyaltyUrl) {
+        toast.error("Loyalty frontend URL is not configured");
+        return;
+      }
+
+      window.location.href = `${loyaltyUrl}/sso-login?token=${data.transferToken}`;
+    } catch (err) {
+      console.error(err);
+      toast.error(err.message || "Unable to switch to Loyalty");
+    }
+  };
+
   const hasReferral =
     applications.includes("Referral") && verificationData?.referralCode;
 
@@ -1657,6 +1693,8 @@ const InteractionPanel = () => {
     }
     return `${currency.symbol}0`;
   };
+
+  const hasLoyalty = applications.includes("loyalty");
 
   return (
     <div className="min-h-screen flex flex-col items-center p-8 bg-gray-100">
@@ -1691,13 +1729,33 @@ const InteractionPanel = () => {
         </div>
       ) : (
         <>
-          <div className="w-full max-w-6xl mb-6 bg-white p-4 rounded shadow text-center">
+          {/* <div className="w-full max-w-6xl mb-6 bg-white p-4 rounded shadow text-center">
             <h1 className="text-2xl font-bold text-gray-800">
               {userDetails?.name || "Shop Name"}
             </h1>
             <p className="text-sm text-gray-500">
               Shop ID: {userDetails?.id || shopkeeperId}
             </p>
+          </div> */}
+          <div className="w-full max-w-6xl mb-6 bg-white p-4 rounded shadow flex flex-col sm:flex-row items-center justify-between gap-3">
+            <div className="text-center sm:text-left">
+              <h1 className="text-2xl font-bold text-gray-800">
+                {userDetails?.name || "Shop Name"}
+              </h1>
+              <p className="text-sm text-gray-500">
+                Shop ID: {userDetails?.shopkeeperId || userDetails?.id || shopkeeperId}
+              </p>
+            </div>
+
+            {/* SSO switch – employees and shopkeepers can use this on Interaction Panel */}
+            {hasLoyalty && (
+              <button
+                onClick={goToLoyalty}
+                className="px-4 py-2 text-xs font-bold uppercase tracking-wider bg-indigo-50 text-indigo-700 rounded-sm border border-indigo-100 hover:bg-indigo-100 transition"
+              >
+                Switch to Loyalty
+              </button>
+            )}
           </div>
 
           {/* RE-DESIGNED CUSTOMER DETAILS MODAL */}

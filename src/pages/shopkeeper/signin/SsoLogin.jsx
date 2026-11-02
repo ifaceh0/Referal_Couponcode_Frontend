@@ -1,5 +1,6 @@
 import { useEffect } from "react";
 import { useNavigate, useSearchParams } from "react-router-dom";
+import { getCurrentUser } from '../../../api/signin';
 import { VITE_BACKEND_URL } from "../../../apiConfig";
 
 function SsoLogin() {
@@ -34,8 +35,19 @@ function SsoLogin() {
         localStorage.setItem("token", data.token);
         localStorage.setItem("data", JSON.stringify(data));
 
-        // Go to dashboard
-        window.location.href = "/shopkeeper/dashboard";
+        const user = await getCurrentUser();
+
+        if (user?.role === "SHOP_EMPLOYEE") {
+          if (user.shopkeeperId) {
+            localStorage.setItem("shopkeeperId", String(user.shopkeeperId));
+          }
+          window.location.href = "/shopkeeper/interaction-panel";
+        } else {
+          window.location.href = "/shopkeeper/dashboard";
+        }
+
+        // // Go to dashboard
+        // window.location.href = "/shopkeeper/dashboard";
       } catch (err) {
         console.error(err);
         alert(err.message || "SSO failed. Please login normally.");
